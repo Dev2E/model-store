@@ -1,5 +1,5 @@
 ================================================================================
-                    BOUTIQUE - LOJA REACT PREMIUM
+                    VELLENIA STORE - LOJA REACT PREMIUM
                         MANUAL DE USO COMPLETO
 ================================================================================
 
@@ -7,7 +7,7 @@
 1. O QUE ESTE SITE FAZ
 ═══════════════════════════════════════════════════════════════════════════════
 
-A BOUTIQUE é uma loja de e-commerce PREMIUM com as seguintes funcionalidades:
+VELLENIA STORE é uma loja de e-commerce PREMIUM com as seguintes funcionalidades:
 
 PARA CLIENTES:
   ✓ Catálogo de produtos com busca e filtros
@@ -20,12 +20,14 @@ PARA CLIENTES:
   ✓ reCAPTCHA para proteção contra bots
 
 PARA ADMINISTRADORES:
-  ✓ Dashboard com estatísticas de vendas
-  ✓ Gestão de produtos (criar, editar, deletar)
-  ✓ Gestão de pedidos (ver status, atualizar)
-  ✓ Gestão de clientes (roles, permissões)
-  ✓ Relatórios de envios
-  ✓ Logs de atividades
+  ✓ Dashboard com estatísticas de vendas em tempo real
+  ✓ Gestão de produtos (criar, editar, deletar, categorizar)
+  ✓ Gestão de pedidos com filtros avançados (data, mês, ano, status)
+  ✓ Busca de pedidos por ID, CPF ou nome do cliente
+  ✓ Atualização de status de pedidos em tempo real
+  ✓ Relatórios imprimíveis com resumos de vendas
+  ✓ Gestão de métodos de envio e rastreamento
+  ✓ Análise de receita por produto e período
 
 TECNOLOGIA:
   ✓ Frontend: React 18 + Vite + Tailwind CSS v4
@@ -62,12 +64,12 @@ PASSO 4: CRIAR USUÁRIOS DE TESTE
   No Supabase Dashboard > Authentication > Users, crie:
   
   CLIENTE:
-    Email: teste@boutique.com
+    Email: teste@vellenia.com
     Senha: Teste@123456
     Role: customer
   
   ADMIN:
-    Email: admin@boutique.com
+    Email: admin@vellenia.com
     Senha: Admin@123456
     Role: admin
 
@@ -77,8 +79,8 @@ PASSO 5: INICIAR DESENVOLVIMENTO
   Acessa em http://localhost:5173
   
   Testa login com:
-    Cliente: teste@boutique.com / Teste@123456
-    Admin: admin@boutique.com / Admin@123456
+    Cliente: teste@vellenia.com / Teste@123456
+    Admin: admin@vellenia.com / Admin@123456
 
 PASSO 6: CONFIGURAR SECRETS DO SUPABASE (Pagamentos)
   $ npx supabase secrets set MERCADOPAGO_ACCESS_TOKEN="seu-access-token"
@@ -165,11 +167,12 @@ AUTENTICAÇÃO:
   - Proteção com reCAPTCHA
 
 PRODUTOS:
-  - Listagem dinâmica do banco
+  - 20 produtos de moda minimalista em 6 categorias
+  - Camisetas, Calças, Blazers, Vestidos, Cardigans e Acessórios
   - Busca por nome
   - Filtros por categoria
-  - Imagem e descrição
-  - Preço com moeda formatada
+  - Imagem (emoji) e descrição detalhada
+  - Preço com formatação localizada (pt-BR): R$ 349,90 (vírgula como decimal)
 
 CARRINHO:
   - Adicionar/remover items
@@ -190,10 +193,34 @@ PAGAMENTO:
   - Redirecionamento automático
 
 PEDIDOS:
-  - Histórico com filtros (pagos/pendentes/cancelados)
-  - Status colorido com ícones
-  - Detalhes expandíveis
+  - Histórico com filtros avançados (dia, mês, ano, status)
+  - Busca por ID do pedido, CPF ou nome do cliente
+  - Status colorido com ícones e atualização em tempo real
+  - Detalhes expandíveis com informações completas
   - Rastreamento de envio
+  - Valores formatados em pt-BR (R$ 349,90)
+  - Data e hora localizadas (DD/MM/YYYY HH:MM)
+
+═══════════════════════════════════════════════════════════════════════════════
+6. LOCALIZAÇÃO E FORMATAÇÃO (pt-BR)
+═══════════════════════════════════════════════════════════════════════════════
+
+A aplicação está completamente localizada para português brasileiro:
+
+MOEDA:
+  - Formato: R$ 349,90 (vírgula como separador decimal)
+  - Função: formatCurrency() em src/utils/formatters.js
+  - Aplicado em: carrinho, checkout, pedidos, admin, relatórios
+
+DATA E HORA:
+  - Formato Data: DD/MM/YYYY (ex: 10/04/2026)
+  - Formato Hora: HH:MM:SS
+  - Função: formatDate(), formatDateTime()
+
+TELEFONE E CPF:
+  - Telefone: (XX) XXXXX-XXXX
+  - CPF: XXX.XXX.XXX-XX
+  - Funções: formatPhone(), formatCPF()
 
 ═══════════════════════════════════════════════════════════════════════════════
 6. SEGURANÇA IMPLEMENTADA
@@ -288,8 +315,52 @@ LONGO PRAZO (2+ meses):
   ☐ Suporte ao vivo (chat)
   ☐ Inventory management automático
 
+════════════════════════════════════════════════════════════════════════════════
+9. FUNCIONALIDADES DE ADMIN AVANÇADAS
 ═══════════════════════════════════════════════════════════════════════════════
-9. TROUBLESHOOTING
+
+FILTGRAGEN DE PEDIDOS (Admin > Pedidos):
+  - Por Período: Hoje, Últimos 7 dias, Este mês, Últimos 30 dias, Últimos 90 dias
+  - Por Status: Pendente, Aguardando Pagamento, Pago, Em Trânsito, Entregue, Cancelado
+  - Busca Avançada: 
+    • Por ID do pedido (#12345)
+    • Por CPF do cliente (com formatação XXX.XXX.XXX-XX)
+    • Por nome do cliente
+  - Resultados com estatísticas (total de pedidos, valor total)
+
+RELATÓRIOS PRINTÁVEIS (Admin > Relatórios):
+  - Receita Total (últimos 90 dias, customizável)
+  - Ticket Médio (valor médio por pedido)
+  - Top 10 Produtos (por receita gerada)
+  - Tabela de Pedidos (com datas filtradas)
+  - Gráfico de Receita Diária (últimos 30 dias)
+  - Resumo com estatísticas por período
+  - Exportar para impressão (botão Print)
+
+DASHBOARD ESTATÍSTICO (Admin > Dashboard):
+  - Total de Pedidos em tempo real
+  - Receita Total formatada em pt-BR
+  - Total de Clientes registrados
+  - Taxa de Conversão
+  - Pedidos recentes com status atualizado
+  - Estatísticas por período selecionado
+
+GESTÃO DE ENVIOS (Admin > Envios):
+  - Métodos de envio (SEDEX, PAC, Expresso)
+  - Preços formatados em pt-BR
+  - Tempo de entrega estimado
+  - Status Ativo/Inativo
+  - Editar e deletar métodos
+
+GESTÃO DE PRODUTOS (Admin > Produtos):
+  - Criar novo produto com categoria
+  - Editar nome, preço, descrição, estoque, categoria
+  - Preços exibidos em pt-BR (R$ XXX,XX)
+  - Busca por nome
+  - Listar/deletar produtos
+
+═══════════════════════════════════════════════════════════════════════════════
+10. TROUBLESHOOTING
 ═══════════════════════════════════════════════════════════════════════════════
 
 PROBLEMA: "Erro de autenticação ao fazer login"
@@ -323,7 +394,7 @@ SOLUÇÃO:
   - Verificar versão Node: npm --version (deve ser >= 18)
 
 ═══════════════════════════════════════════════════════════════════════════════
-10. CONTATO E SUPORTE
+11. CONTATO E SUPORTE
 ═══════════════════════════════════════════════════════════════════════════════
 
 Documentação técnica:
@@ -347,8 +418,8 @@ Versões utilizadas:
 
 ═══════════════════════════════════════════════════════════════════════════════
 
-Última atualização: 9 de Abril de 2026
-Status: ✅ Pronto para produção
-Versão: 1.0.0
+Última atualização: 10 de Abril de 2026
+Status: ✅ Pronto para produção com localização pt-BR
+Versão: 1.1.0
 
 ================================================================================

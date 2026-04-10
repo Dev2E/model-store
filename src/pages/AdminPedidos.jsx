@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { adminService, ordersService } from '../services/supabaseService';
+import { formatCurrency } from '../utils/formatters';
 
 export default function AdminPedidos() {
   const [orders, setOrders] = useState([]);
@@ -185,7 +186,7 @@ export default function AdminPedidos() {
                 <td>${order.users_profile?.cpf || 'N/A'}</td>
                 <td>${new Date(order.created_at).toLocaleDateString('pt-BR')}</td>
                 <td><strong>${getStatusLabel(order.status)}</strong></td>
-                <td>R$ ${parseFloat(order.total).toFixed(2)}</td>
+                <td>${formatCurrency(order.total)}</td>
               </tr>
             `).join('')}
           </tbody>
@@ -194,7 +195,7 @@ export default function AdminPedidos() {
         <div class="summary">
           <p><strong>Resumo:</strong></p>
           <p>Total de Pedidos: ${filteredOrders.length}</p>
-          <p>Valor Total: R$ ${filteredOrders.reduce((sum, o) => sum + parseFloat(o.total), 0).toFixed(2)}</p>
+          <p>Valor Total: ${formatCurrency(filteredOrders.reduce((sum, o) => sum + parseFloat(o.total), 0))}</p>
           <p>Pendentes: ${filteredOrders.filter(o => o.status === 'pendente').length}</p>
           <p>Em Trânsito: ${filteredOrders.filter(o => o.status === 'em_transito').length}</p>
           <p>Entregues: ${filteredOrders.filter(o => o.status === 'entregue').length}</p>
@@ -386,7 +387,7 @@ export default function AdminPedidos() {
           <div className="mt-4 pt-4 border-t border-gray-200">
             <p className="text-sm text-gray-600">
               📊 <strong>{filteredOrders.length}</strong> pedido(s) encontrado(s) | 
-              💰 Total: <strong>R$ {filteredOrders.reduce((sum, o) => sum + parseFloat(o.total), 0).toFixed(2)}</strong>
+              💰 Total: <strong>{formatCurrency(filteredOrders.reduce((sum, o) => sum + parseFloat(o.total), 0))}</strong>
             </p>
           </div>
         </div>
@@ -422,7 +423,7 @@ export default function AdminPedidos() {
                         {order.users_profile?.cpf || 'N/A'}
                       </td>
                       <td className="px-6 py-4 text-sm font-semibold">
-                        R$ {parseFloat(order.total).toFixed(2)}
+                        {formatCurrency(order.total)}
                       </td>
                       <td className="px-6 py-4 text-sm">
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>
@@ -462,7 +463,7 @@ export default function AdminPedidos() {
               </div>
               <div>
                 <h3 className="font-semibold mb-2">Total</h3>
-                <p className="text-lg font-bold">R$ {parseFloat(selectedOrder.total).toFixed(2)}</p>
+                <p className="text-lg font-bold">{formatCurrency(selectedOrder.total)}</p>
                 <p className="text-gray-600">
                   {new Date(selectedOrder.created_at).toLocaleDateString('pt-BR')} às {new Date(selectedOrder.created_at).toLocaleTimeString('pt-BR')}
                 </p>
@@ -477,7 +478,7 @@ export default function AdminPedidos() {
                   <div key={idx} className="flex justify-between">
                     <span>{item.name} x {item.quantity}</span>
                     <span className="font-semibold">
-                      R$ {((item.price || 0) * (item.quantity || 1)).toFixed(2)}
+                      {formatCurrency((item.price || 0) * (item.quantity || 1))}
                     </span>
                   </div>
                 ))}

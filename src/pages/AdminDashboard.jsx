@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { adminService } from '../services/supabaseService';
+import { formatCurrency } from '../utils/formatters';
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -142,7 +143,7 @@ export default function AdminDashboard() {
           <StatCard
             icon="💰"
             title="Receita Total"
-            value={`R$ ${stats.totalRevenue.toFixed(2)}`}
+            value={formatCurrency(stats.totalRevenue)}
             color="from-green-500 to-green-600"
           />
           <StatCard
@@ -199,7 +200,7 @@ export default function AdminDashboard() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-white font-bold">R$ {parseFloat(order.total).toFixed(2)}</p>
+                        <p className="text-white font-bold">{formatCurrency(order.total)}</p>
                         <StatusBadge status={order.status} />
                       </div>
                     </div>

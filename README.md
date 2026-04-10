@@ -1,6 +1,6 @@
-# 🛍️ BOUTIQUE - Loja E-commerce Premium
+# 🛍️ VELLENIA STORE - Loja E-commerce Premium
 
-Uma loja de e-commerce **completa e pronta para produção** desenvolvida em React 18 + Supabase + Mercado Pago.
+Uma loja de e-commerce **completa e pronta para produção** desenvolvida em React 18 + Supabase + Mercado Pago, com **localização completa para português brasileiro** (pt-BR).
 
 ## ✨ Recursos Principais
 
@@ -16,12 +16,40 @@ Uma loja de e-commerce **completa e pronta para produção** desenvolvida em Rea
 - ✅ Proteção reCAPTCHA
 
 ### 👨‍💼 Para Administradores
-- ✅ Dashboard com estatísticas
+- ✅ Dashboard com estatísticas em tempo real
 - ✅ Gestão de produtos (CRUD)
-- ✅ Gestão de pedidos
-- ✅ Gestão de clientes
-- ✅ Relatórios de envios
-- ✅ Logs de atividades
+- ✅ Gestão de pedidos com filtros avançados
+- ✅ Busca de pedidos por ID, CPF ou nome do cliente
+- ✅ Atualização de status em tempo real
+- ✅ Relatórios imprimíveis com gráficos
+- ✅ Gestão de envios e rastreamento
+- ✅ Análise de receita por produto/período
+
+## 🌍 Localização Brasileira (pt-BR) ✨
+
+Toda a aplicação está localizada para português brasileiro:
+
+| Recurso | Formato |
+|---------|---------|
+| **Moeda** | R$ 349,90 (vírgula como decimal) |
+| **Data** | 10/04/2026 (DD/MM/YYYY) |
+| **Hora** | 14:30:45 |
+| **Telefone** | (11) 12345-6789 |
+| **CPF** | 123.456.789-00 |
+
+**Implementado em:** `src/utils/formatters.js`  
+Utilizado em todos os componentes de página e admin.
+
+## 👗 20 Produtos Vellenia Store
+
+Moda minimalista em 6 categorias:
+
+- **Camisetas:** R$ 89,90 - R$ 109,90
+- **Calças:** R$ 189,90 - R$ 249,90  
+- **Blazers:** R$ 349,90
+- **Vestidos:** R$ 279,90 - R$ 329,90
+- **Cardigans:** R$ 169,90 - R$ 189,90
+- **Acessórios:** R$ 79,90 - R$ 159,90
 
 ## 🚀 Quick Start
 
@@ -61,7 +89,7 @@ npm run dev
 
 ## 📚 Documentação
 
-- **[MANUAL.txt](./MANUAL.txt)** - Guia completo de uso
+- **[MANUAL.txt](./MANUAL.txt)** - Guia completo de uso e features
 - **[INSTRUCOES.txt](./INSTRUCOES.txt)** - Avisos críticos para desenvolvedores
 - **[SUPABASE_SETUP.md](./SUPABASE_SETUP.md)** - Schema SQL do banco
 - **[SECURITY_AUDIT.md](./SECURITY_AUDIT.md)** - Análise de segurança

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { adminService, productsService } from '../services/supabaseService';
 import { storageService } from '../services/storageService';
+import { formatCurrency } from '../utils/formatters';
 
 export default function AdminProdutos() {
   const [products, setProducts] = useState([]);
@@ -437,7 +438,7 @@ export default function AdminProdutos() {
                 {products.map((product) => (
                   <tr key={product.id} className="border-t border-gray-200 hover:bg-gray-50">
                     <td className="px-6 py-4 text-sm font-semibold">{product.name}</td>
-                    <td className="px-6 py-4 text-sm">R$ {parseFloat(product.price).toFixed(2)}</td>
+                    <td className="px-6 py-4 text-sm">{formatCurrency(product.price)}</td>
                     <td className="px-6 py-4 text-sm">{product.category}</td>
                     <td className="px-6 py-4 text-sm">{product.stock}</td>
                     <td className="px-6 py-4 text-sm space-x-3">

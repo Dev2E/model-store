@@ -9,29 +9,20 @@
 
 1. TAILWIND CSS - AMBIENTE DE DESENVOLVIMENTO
    
-   ❌ PROBLEMA:
+   ✅ IMPLEMENTADO:
       O projeto usa Tailwind CSS via CDN em DESENVOLVIMENTO:
       <script src="https://cdn.tailwindcss.com"></script>
-      
-      Isso gera warning no console: 
-      "cdn.tailwindcss.com should not be used in production"
    
-   ✅ SOLUÇÃO ADOTADA:
-      - Deixar CDN em DEV para o design funcionar corretamente
-      - NÃO mexer em postcss.config.js nem src/index.css
-      - Quando ir para produção, refatorar para npm build (complexo, não fazer agora)
-   
-   ⚡ AÇÃO RECOMENDADA:
-      Se o design sumir ou CSS quebrar:
-      1. Verificar se <script src="https://cdn.tailwindcss.com"></script> está em index.html
-      2. Nunca remover o CDN sem ter PostCSS 100% funcional
-      3. Deixar como está por enquanto
+   ⚡ AÇÃO SE DESIGN SUMIR:
+      1. Verificar se script está em index.html (ANTES de </head>)
+      2. Se removido acidentalmente, reparar: 
+         <script src="https://cdn.tailwindcss.com"></script>
+      3. Limpar cache do navegador (Ctrl+Shift+Del)
    
    🔴 NÃO FAÇA:
       ✗ Remover script do CDN sem configurar build npm
-      ✗ Mudar postcss.config.js para '@tailwindcss/postcss'
-      ✗ Adicionar @tailwind directives sem PostCSS correto
-      ✗ Usar Tailwind v4 syntax sem estrutura npm
+      ✗ Usar Tailwind v4 syntax diferente do config atual
+      ✗ Mexer em postcss.config.js (DEV já está correto)
 
 ───────────────────────────────────────────────────────────────────────────────
 
@@ -53,7 +44,35 @@
 
 ───────────────────────────────────────────────────────────────────────────────
 
-3. FRETE/SHIPPING - DADOS PADRÃO
+3. FORMATAÇÃO LOCALIZADA (pt-BR) - NOVO ✨
+   
+   ✅ IMPLEMENTADO:
+      Arquivo: src/utils/formatters.js
+      Exporta funções para localização brasileira:
+      
+      - formatCurrency(value) → R$ 349,90 (vírgula decimal)
+      - formatCurrencyWithoutSymbol(value) → 349,90
+      - formatDate(dateString) → 10/04/2026
+      - formatDateTime(dateString) → 10/04/2026 14:30:45
+      - formatPhone(phone) → (11) 12345-6789
+      - formatCPF(cpf) → 123.456.789-00
+   
+   📝 COMO USAR:
+      import { formatCurrency } from '../utils/formatters';
+     VALORES AGORA FORMATADOS EM pt-BR:
+      Mostram como: R$ 25,00 (não R$ 25.00)
+      Usa formatCurrency() do utils/formatters.js
+
+───────────────────────────────────────────────────────────────────────────────
+
+5     ✗ Usar .toFixed(2) para valores monetários em páginas
+      ✗ .replace('.', ',') manual (use formatCurrency)
+      ✗ Deixar valores em formato pt-BR hardcoded
+      ✗ Mostrar datas sem formatDate()
+
+───────────────────────────────────────────────────────────────────────────────
+
+4. FRETE/SHIPPING - DADOS PADRÃO
    
    ✅ SISTEMA ATUAL:
       - Usa dados padrão (fictícios) para cálculo de frete
@@ -101,7 +120,7 @@
 
 5. AUTENTICAÇÃO - CONSOLIDADA EM src/context/AuthContext.jsx
    
-   ✅ FUNCIONANDO:
+6  ✅ FUNCIONANDO:
       - Login/Signup com email/senha
       - JWT automaticamente gerenciado
       - Contexto global com user state
@@ -119,7 +138,79 @@
 
 ───────────────────────────────────────────────────────────────────────────────
 
-6. .gitignore - CREDENCIAIS PROTEGIDAS
+7. PRODUTOS - 20 ITEMS VELLENIA STORE
+   
+   ✅ IMPLEMENTADO:
+      - 20 produtos de moda minimalista
+      - Distribuídos em categorias: Camisetas, Calças, Blazers, Vestidos, 
+        Cardigans, Acessórios
+      - Preços de R$ 79,90 a R$ 349,90
+      - Script SQL: scripts/seed-products.sql
+   
+   📝 PARA POPULAR BANCO:
+      1. Supabase Dashboard > SQL Editor
+      2. Copiar conteúdo de scripts/seed-products.sql
+      3. Executar no SQL Editor
+      4. Verificar: 20 produtos criados
+   
+   ⚠️ IMPORTANTE:
+      - Usar scripts/seed-products.sql (atualizado)
+      - SEED_INSTRUCTIONS.txt foi deletado (obsoleto)
+      - seedProducts.mjs foi deletado (obsoleto)
+
+───────────────────────────────────────────────────────────────────────────────
+
+8. ADMIN FEATURES AVANÇADAS - NOVO ✨
+    + novos features)
+□ Ler este arquivo (INSTRUCOES.txt) completamente
+□ Entender src/lib/supabase.js (cliente único)
+□ Verificar src/utils/formatters.js para valores monetários
+□ Verificar se existe Edge Function pronta em supabase/functions/
+□ Conferir supabaseService.js para não duplicar lógica
+□ Testar em http://localhost:5173 antes de commitar
+□ Sempre usar formatCurrency() para valores em páginas
+      ✅ Relatório imprimível com resumo
+   
+   DASHBOARD (Admin > Dashboard):
+      ✅ Total de pedidos
+      ✅ Receita total formatada (pt-BR)
+      ✅ Total de clientes
+      ✅ Taxa de conversão
+      ✅ Pedidos recentes com status
+   
+   rc/utils/         - Utilitários como formatters.js
+  supabase/functions/ - Edge Functions de backend
+  Sempre npm run dev depois de mudança
+
+⚠️ CUIDADO EXTREMO:
+  src/lib/supabase.js            - Único cliente, não duplicar
+  src/context/AuthContext.jsx    - GoTrueClient consolidado
+  src/services/supabaseService.js - Tem 19 métodos, não quebrar
+  src/utils/formatters.js        - Formatação global, usar em toda parte
+  index.html                     - CDN Tailwind está aqui
+  postcss.config.js              - Não mexer (DEV=CDN
+      ✅ Criar novo product com categoria
+      ✅ Editar nome, preço, descrição, estoque, categoria
+      ✅ Preços exibidos em pt-BR
+      ✅ Buscar por nome
+      ✅ Deletar produtos
+   
+   ENVIOS (Admin > Envios):
+      ✅ Métodos: SEDEX, PAC, Expresso
+      ✅ Preços formatados em pt-BR
+      ✅R$ 89.90 em vez de R$ 89,90"
+  → Arquivo: Qualquer página de produtos/admin
+  → Causa: Não usando formatCurrency()
+  → Solução: import { formatCurrency } from '../utils/formatters';
+             Mudar {valor.toFixed(2)} para {formatCurrency(valor)}
+
+ERRO: " Tempo de entrega estimado
+      ✅ Status Ativo/Inativo
+      ✅ Editar e deletar
+
+───────────────────────────────────────────────────────────────────────────────
+
+9. .gitignore - CREDENCIAIS PROTEGIDAS
    
    ✅ ARQUIVOS IGNORADOS (seguro):
       .env.local         - Variáveis locais não são versionadas
@@ -233,20 +324,22 @@ EXEMPLO: Adicionar "Cupons de Desconto"
        const { data, error } = await supabase
          .from('cupons')
          .select('*')
-         .eq('codigo', codigo)
-         .eq('ativo', true)
-         .single();
-       return { data, error };
-     }
-   };
-
-3. USAR EM COMPONENTE (src/pages/Checkout.jsx)
-   
-   import { cuponsService } from '../services/supabaseService';
+   import { formatCurrency } from '../utils/formatters';
    
    const aplicarCupom = async (codigo) => {
      const { data: cupom, error } = await cuponsService.verificarCupom(codigo);
      if (cupom) {
+       setDesconto(cupom.desconto_pct);
+       setDescricaoDesconto(formatCurrency(valorDesconto)); // Usar formatador!
+   };
+
+3. USAR EM COMPONENTE (src/pages/Checkout.jsx)
+   
+   import { cuponsService } from '../se e exibe em pt-BR
+
+5. COMMITAR
+   git add .
+   git commit -m "feat: adicionar sistema de cupons com formatação pt-BR
        setDesconto(cupom.desconto_pct);
      }
    };
@@ -262,10 +355,11 @@ EXEMPLO: Adicionar "Cupons de Desconto"
 
 ═══════════════════════════════════════════════════════════════════════════════
 ANTES DE FAZER DEPLOY PARA PRODUCAO
-═══════════════════════════════════════════════════════════════════════════════
-
-CHECKLIST PRÉ-DEPLOY:
-
+══════════════════════ com preços em pt-BR
+  └─ Carrinho exibe valores corretamente (R$ 89,90)
+  └─ Frete calcula
+  └─ Checkout valores em pt-BR
+  └─ Admin filters funcionam
 □ npm run build (criar dist/)
   └─ Verificar se não há erros
   └─ Verificar arquivo gerado em dist/index.html
@@ -286,60 +380,14 @@ CHECKLIST PRÉ-DEPLOY:
   └─ npx supabase functions deploy
   └─ Verificar em Supabase Dashboard > Edge Functions
 
-□ Secrets em produção
-  └─ npx supabase secrets set MERCADOPAGO_ACCESS_TOKEN="token-producao"
-  └─ Token deve ser da conta Mercado Pago PRODUÇÃO
-
-□ Deploy Frontend
-  └─ Vercel: git push origin main (auto-deploy)
-  └─ Netlify: npm run build && netlify deploy --prod
-
-□ Testar em produção
-  └─ Acessar site em domínio
-  └─ Fazer teste de compra completo
+□ Secrets em prformatação de valores (R$ XXX,XX)
   └─ Verificar webhook recebeu confirmação
 
 ═══════════════════════════════════════════════════════════════════════════════
-CONTATOS E REFERENCIAS
-═══════════════════════════════════════════════════════════════════════════════
 
-DOCUMENTAÇÃO DO PROJETO:
-  └─ MANUAL.txt            (uso completo)
-  └─ SUPABASE_SETUP.md     (schema SQL)
-  └─ SECURITY_AUDIT.md     (segurança implementada)
-
-TECNOLOGIAS:
-  └─ React: https://react.dev/learn
-  └─ Supabase: https://supabase.com/docs
-  └─ Tailwind: https://tailwindcss.com/docs
-  └─ Mercado Pago: https://developers.mercadopago.com
-  └─ Vite: https://vitejs.dev/guide/
-
-KEYS/TOKENS A CONFIGURAR:
-  └─ VITE_SUPABASE_URL
-  └─ VITE_SUPABASE_ANON_KEY
-  └─ VITE_MERCADO_PAGO_PUBLIC_KEY
-  └─ VITE_RECAPTCHA_PUBLIC_KEY
-  └─ MERCADOPAGO_ACCESS_TOKEN (Supabase Secret)
-
-═══════════════════════════════════════════════════════════════════════════════
-RESUMO SUPER RÁPIDO (30 SEGUNDOS)
-═══════════════════════════════════════════════════════════════════════════════
-
-🎯 PONTOS CRÍTICOS:
-
-1. TAILWIND CDN está em index.html
-   → Deixar como está (warning é normal em DEV)
-   
-2. Supabase Client está centralizado
-   → import { supabase } from '../lib/supabase'
-   → Nunca criar novo createClient()
-   
-3. Frete usa dados padrão
-   → SEDEX (R$25), PAC (R$15), Expresso (R$40)
-   → Para API real, adicionar Melhor Envio depois
-   
-4. Mercado Pago funciona
+Última atualização: 10 de Abril de 2026
+Versão: 2.0.0 (com formatação pt-BR e admin features avançadas)
+Status: ✅ Pronto para prod
    → Token em Supabase Secrets (seguro)
    → 3 Edge Functions já deployed
    

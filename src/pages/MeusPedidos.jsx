@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { ordersService } from '../services/supabaseService';
+import { formatCurrency } from '../utils/formatters';
 
 export default function MeusPedidos() {
   const [orders, setOrders] = useState([]);
@@ -298,7 +299,7 @@ export default function MeusPedidos() {
                       <div>
                         <p className="text-sm text-gray-600">Valor Total</p>
                         <p className="text-2xl font-bold font-manrope">
-                          R$ {parseFloat(order.total || 0).toFixed(2)}
+                          {formatCurrency(order.total || 0)}
                         </p>
                       </div>
                     </div>
@@ -335,13 +336,13 @@ export default function MeusPedidos() {
                               <p className="font-semibold">{item.name}</p>
                               <p className="text-gray-600 text-xs">Quantidade: {item.quantity || 1}</p>
                             </div>
-                            <p className="font-semibold">R$ {(item.price * (item.quantity || 1)).toFixed(2)}</p>
+                            <p className="font-semibold">{formatCurrency(item.price * (item.quantity || 1))}</p>
                           </div>
                         ))}
                       </div>
                       <div className="bg-white bg-opacity-70 rounded p-4 flex justify-between font-bold border border-gray-300">
                         <span>Total:</span>
-                        <span>R$ {parseFloat(order.total || 0).toFixed(2)}</span>
+                        <span>{formatCurrency(order.total || 0)}</span>
                       </div>
                     </div>
                   )}

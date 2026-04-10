@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { adminService } from '../services/supabaseService';
+import { formatCurrency } from '../utils/formatters';
 
 export default function PedidoConfirmado() {
   const [searchParams] = useSearchParams();
@@ -142,7 +143,7 @@ export default function PedidoConfirmado() {
                     <div>
                       <p className="text-sm text-gray-600 mb-1">Valor Total</p>
                       <p className="text-3xl font-bold text-green-600">
-                        R$ {parseFloat(orderData.total).toFixed(2)}
+                        {formatCurrency(orderData.total)}
                       </p>
                     </div>
 
@@ -190,7 +191,7 @@ export default function PedidoConfirmado() {
                         <p className="text-sm text-gray-600">Quantidade: {item.quantity || 1}</p>
                       </div>
                       <p className="font-bold text-gray-900">
-                        R$ {(item.price * (item.quantity || 1)).toFixed(2)}
+                        {formatCurrency(item.price * (item.quantity || 1))}
                       </p>
                     </div>
                   ))}

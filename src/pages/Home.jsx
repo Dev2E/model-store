@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { adminService } from '../services/supabaseService';
 // Importado do cliente Supabase centralizado
 import { supabase } from "../lib/supabase";
+import { formatCurrency } from '../utils/formatters';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -126,7 +127,7 @@ export default function Home() {
                     {product.name}
                   </h3>
                   <p className="text-lg font-bold text-gray-900">
-                    R$ {Number(product.price).toFixed(2).replace('.', ',')}
+                    {formatCurrency(product.price)}
                   </p>
                 </div>
               </Link>

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { adminService } from "../services/supabaseService";
+import { formatCurrency } from "../utils/formatters";
 
 export default function AdminRelatorios() {
   const { user, isAuthenticated } = useAuth();
@@ -166,7 +167,7 @@ export default function AdminRelatorios() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
             <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-6 text-white shadow-lg">
               <p className="text-blue-100 text-sm font-semibold">Receita Total</p>
-              <p className="text-3xl font-bold font-manrope mt-2">R$ {stats.totalRevenue.toFixed(2)}</p>
+              <p className="text-3xl font-bold font-manrope mt-2">{formatCurrency(stats.totalRevenue)}</p>
               <p className="text-blue-200 text-xs mt-2">↑ 12% vs período anterior</p>
             </div>
 
@@ -178,7 +179,7 @@ export default function AdminRelatorios() {
 
             <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg p-6 text-white shadow-lg">
               <p className="text-purple-100 text-sm font-semibold">Ticket Médio</p>
-              <p className="text-3xl font-bold font-manrope mt-2">R$ {stats.averageOrderValue.toFixed(2)}</p>
+              <p className="text-3xl font-bold font-manrope mt-2">{formatCurrency(stats.averageOrderValue)}</p>
               <p className="text-purple-200 text-xs mt-2">↑ 5% vs período anterior</p>
             </div>
 
@@ -202,7 +203,7 @@ export default function AdminRelatorios() {
                       <p className="text-slate-400 text-sm">{product.quantity} unidades vendidas</p>
                     </div>
                   </div>
-                  <p className="text-white font-bold">R$ {product.revenue.toFixed(2)}</p>
+                  <p className="text-white font-bold">{formatCurrency(product.revenue)}</p>
                 </div>
               ))}
             </div>
@@ -236,7 +237,7 @@ export default function AdminRelatorios() {
                           {order.status}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-white font-bold">R$ {parseFloat(order.total).toFixed(2)}</td>
+                      <td className="px-4 py-3 text-white font-bold">{formatCurrency(order.total)}</td>
                       <td className="px-4 py-3 text-slate-400">{new Date(order.created_at).toLocaleDateString('pt-BR')}</td>
                     </tr>
                   ))}
@@ -262,7 +263,7 @@ export default function AdminRelatorios() {
                       <span className="text-white text-xs font-bold">{day.orders} pedidos</span>
                     </div>
                   </div>
-                  <span className="text-white font-bold w-28">R$ {day.amount.toFixed(2)}</span>
+                  <span className="text-white font-bold w-28">{formatCurrency(day.amount)}</span>\n                </div>
                 </div>
               ))}
             </div>

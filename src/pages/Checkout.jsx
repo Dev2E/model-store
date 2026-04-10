@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { formatCurrency } from '../utils/formatters';
 import { ordersService } from '../services/supabaseService';
 
 export default function Checkout() {
@@ -313,12 +314,12 @@ export default function Checkout() {
                   {cartItems.map((item) => (
                     <div key={`${item.id}-${item.color}-${item.size}`} className="flex justify-between text-sm mb-2">
                       <span>{item.name} x {item.quantity}</span>
-                      <span>R$ {(item.price * item.quantity).toFixed(2)}</span>
+                      <span>{formatCurrency(item.price * item.quantity)}</span>
                     </div>
                   ))}
                   <div className="border-t border-gray-200 mt-4 pt-4 flex justify-between font-bold">
                     <span>Total</span>
-                    <span>R$ {total.toFixed(2)}</span>
+                    <span>{formatCurrency(total)}</span>
                   </div>
                 </div>
 
@@ -356,7 +357,7 @@ export default function Checkout() {
                       Qtd: {item.quantity}
                     </p>
                   </div>
-                  <p className="font-semibold">R$ {(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="font-semibold">{formatCurrency(item.price * item.quantity)}</p>
                 </div>
               ))}
             </div>
@@ -364,11 +365,11 @@ export default function Checkout() {
             <div className="space-y-3 border-t border-gray-200 pt-4">
               <div className="flex justify-between">
                 <span className="text-gray-600">Subtotal</span>
-                <span>R$ {subtotal.toFixed(2)}</span>
+                <span>{formatCurrency(subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-600">Impostos (10%)</span>
-                <span>R$ {tax.toFixed(2)}</span>
+                <span>{formatCurrency(tax)}</span>
               </div>
               <div className="flex justify-between text-gray-600 text-sm">
                 <span>Frete</span>
@@ -378,7 +379,7 @@ export default function Checkout() {
 
             <div className="border-t border-gray-200 mt-4 pt-4 flex justify-between font-bold text-lg">
               <span>Total</span>
-              <span>R$ {total.toFixed(2)}</span>
+              <span>{formatCurrency(total)}</span>
             </div>
           </div>
         </div>

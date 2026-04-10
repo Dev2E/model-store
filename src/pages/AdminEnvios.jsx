@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import supabaseService from "../services/supabaseService";
+import { formatCurrency } from "../utils/formatters";
 
 export default function AdminEnvios() {
   const { user, isAuthenticated } = useAuth();
@@ -264,7 +265,7 @@ export default function AdminEnvios() {
                       {metodo.descricao}
                     </p>
                     <div className="flex gap-4 mt-2 text-sm text-slate-400">
-                      <span>💰 R$ {parseFloat(metodo.preco).toFixed(2)}</span>
+                      <span>💰 {formatCurrency(metodo.preco)}</span>
                       <span>📅 {metodo.tempo_dias} dias</span>
                       <span>
                         🟢 {metodo.ativo ? "Ativo" : "Inativo"}

@@ -2,6 +2,7 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
+import { formatCurrency } from '../utils/formatters';
 import shippingService from '../services/shippingService';
 
 export default function Carrinho() {
@@ -136,7 +137,7 @@ export default function Carrinho() {
                               +
                             </button>
                           </div>
-                          <p className="font-bold text-lg">R$ {(item.price * item.quantity).toFixed(2)}</p>
+                          <p className="font-bold text-lg">{formatCurrency(item.price * item.quantity)}</p>
                         </div>
                       </div>
 
@@ -202,7 +203,7 @@ export default function Carrinho() {
                               <p className="font-semibold">{metodo.nome}</p>
                               <p className="text-gray-600 text-xs">{metodo.tempo_entrega_ajustado} dias úteis</p>
                             </div>
-                            <p className="font-bold">R$ {metodo.preco_final.toFixed(2)}</p>
+                            <p className="font-bold">{formatCurrency(metodo.preco_final)}</p>
                           </label>
                         ))}
                       </div>
@@ -216,23 +217,23 @@ export default function Carrinho() {
                     <div className="space-y-3 border-b border-gray-200 pb-4 mb-4">
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Subtotal</span>
-                        <span>R$ {subtotal.toFixed(2)}</span>
+                        <span>{formatCurrency(subtotal)}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Frete</span>
                         <span className={selectedShipping && shipping === 0 ? 'text-green-600 font-semibold' : ''}>
-                          {selectedShipping ? `R$ ${shipping.toFixed(2)}` : '—'}
+                          {selectedShipping ? formatCurrency(shipping) : '—'}
                         </span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span className="text-gray-600">Impostos</span>
-                        <span>R$ {tax.toFixed(2)}</span>
+                        <span>{formatCurrency(tax)}</span>
                       </div>
                     </div>
 
                     <div className="flex justify-between font-bold text-lg mb-6">
                       <span>Total</span>
-                      <span>R$ {total.toFixed(2)}</span>
+                      <span>{formatCurrency(total)}</span>
                     </div>
 
                     <button
