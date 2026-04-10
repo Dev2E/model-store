@@ -1,0 +1,354 @@
+================================================================================
+                    BOUTIQUE - LOJA REACT PREMIUM
+                        MANUAL DE USO COMPLETO
+================================================================================
+
+═══════════════════════════════════════════════════════════════════════════════
+1. O QUE ESTE SITE FAZ
+═══════════════════════════════════════════════════════════════════════════════
+
+A BOUTIQUE é uma loja de e-commerce PREMIUM com as seguintes funcionalidades:
+
+PARA CLIENTES:
+  ✓ Catálogo de produtos com busca e filtros
+  ✓ Carrinho de compras com cálculo de frete
+  ✓ Autenticação segura (login/cadastro)
+  ✓ Checkout 2 etapas com pagamento Mercado Pago
+  ✓ Histórico de pedidos com status em tempo real
+  ✓ Perfil do usuário personalizável
+  ✓ Recuperação de senha por email
+  ✓ reCAPTCHA para proteção contra bots
+
+PARA ADMINISTRADORES:
+  ✓ Dashboard com estatísticas de vendas
+  ✓ Gestão de produtos (criar, editar, deletar)
+  ✓ Gestão de pedidos (ver status, atualizar)
+  ✓ Gestão de clientes (roles, permissões)
+  ✓ Relatórios de envios
+  ✓ Logs de atividades
+
+TECNOLOGIA:
+  ✓ Frontend: React 18 + Vite + Tailwind CSS v4
+  ✓ Backend: Supabase (PostgreSQL + Edge Functions)
+  ✓ Autenticação: Supabase Auth (JWT)
+  ✓ Pagamentos: Mercado Pago API v2
+  ✓ Hospedagem: Supabase + Vercel/Netlify (frontend)
+
+═══════════════════════════════════════════════════════════════════════════════
+2. COMO USAR (DESENVOLVIMENTO LOCAL)
+═══════════════════════════════════════════════════════════════════════════════
+
+PASSO 1: CLONAR E INSTALAR
+  $ git clone https://github.com/seu-usuario/loja_react_pronta.git
+  $ cd loja_react_pronta
+  $ npm install
+
+PASSO 2: CONFIGURAR VARIÁVEIS DE AMBIENTE
+  $ cp .env.example .env.local
+  
+  Abra .env.local e preencha:
+    VITE_SUPABASE_URL=https://seu-projeto.supabase.co
+    VITE_SUPABASE_ANON_KEY=sua_chave_publica
+    VITE_MERCADO_PAGO_PUBLIC_KEY=APP_USR-xxxxxxxxxxxx
+    VITE_RECAPTCHA_PUBLIC_KEY=seu_recaptcha_key
+
+PASSO 3: CONFIGURAR BANCO DE DADOS
+  - Abra Supabase Dashboard > SQL Editor
+  - Copie TODO o conteúdo de SUPABASE_SETUP.md
+  - Execute no SQL Editor
+  - Aguarde criar as tabelas
+
+PASSO 4: CRIAR USUÁRIOS DE TESTE
+  No Supabase Dashboard > Authentication > Users, crie:
+  
+  CLIENTE:
+    Email: teste@boutique.com
+    Senha: Teste@123456
+    Role: customer
+  
+  ADMIN:
+    Email: admin@boutique.com
+    Senha: Admin@123456
+    Role: admin
+
+PASSO 5: INICIAR DESENVOLVIMENTO
+  $ npm run dev
+  
+  Acessa em http://localhost:5173
+  
+  Testa login com:
+    Cliente: teste@boutique.com / Teste@123456
+    Admin: admin@boutique.com / Admin@123456
+
+PASSO 6: CONFIGURAR SECRETS DO SUPABASE (Pagamentos)
+  $ npx supabase secrets set MERCADOPAGO_ACCESS_TOKEN="seu-access-token"
+  
+  Para obter o token:
+  1. Acesse https://www.mercadopago.com.br/
+  2. Login na sua conta
+  3. Configurações > Credenciais > Access Token
+  4. Copie o token da categoria "Produção" ou "Teste"
+
+═══════════════════════════════════════════════════════════════════════════════
+3. ROTAS E NAVEGAÇÃO
+═══════════════════════════════════════════════════════════════════════════════
+
+PÚBLICAS (sem login):
+  /                 - Home com produtos
+  /produtos         - Catálogo completo
+  /login            - Tela de login
+  /signup           - Criar conta
+  /recuperar-conta  - Resetar senha
+
+COM LOGIN (protegidas):
+  /perfil           - Dados do usuário
+  /carrinho         - Seu carrinho
+  /checkout         - Finalizar compra
+  /meus-pedidos     - Histórico de pedidos
+  /enderecos        - Gestão de endereços
+
+ADMIN (admin only):
+  /admin            - Dashboard principal
+  /admin/produtos   - Gerenciar produtos
+  /admin/pedidos    - Gerenciar pedidos
+  /admin/clientes   - Gerenciar usuários
+  /admin/envios     - Relatórios de envio
+  /admin/relatorios - Relatórios gerais
+
+═══════════════════════════════════════════════════════════════════════════════
+4. ESTRUTURA DE ARQUIVOS IMPORTANTES
+═══════════════════════════════════════════════════════════════════════════════
+
+src/
+├── pages/              - Componentes de página (rotas)
+│   ├── Home.jsx        - Home com produtos
+│   ├── Produto.jsx     - Detalhes do produto
+│   ├── Carrinho.jsx    - Carrinho com cálculo de frete
+│   ├── Checkout.jsx    - Pagamento Mercado Pago
+│   ├── MeusPedidos.jsx - Histórico com filtros
+│   ├── Perfil.jsx      - Dados do usuário
+│   └── Admin*/         - Páginas administrativas
+│
+├── services/           - Lógica de negócio (API Supabase)
+│   ├── supabaseService.js    - Auth, produtos, pedidos
+│   ├── cepService.js         - Validação de CEP (ViaCEP)
+│   └── shippingService.js    - Cálculo de frete
+│
+├── components/         - Componentes React reutilizáveis
+│   ├── Header.jsx      - Navbar
+│   ├── Footer.jsx      - Rodapé
+│   ├── Cart.jsx        - Ícone do carrinho
+│   └── Modal*/         - Modais diversos
+│
+├── context/            - Estados globais
+│   ├── AuthContext.jsx - Autenticação e usuário
+│   └── CartContext.jsx - Carrinho
+│
+├── lib/                - Configurações
+│   └── supabase.js     - Cliente Supabase (singleton)
+│
+└── index.css           - Estilos globais Tailwind
+
+supabase/functions/    - Edge Functions (backend)
+├── criar-pagamento/    - Criar preferência Mercado Pago
+├── webhooks-mercadopago/ - Receber confirmação de pagamento
+└── consultar-pagamento/ - Verificar status do pagamento
+
+═══════════════════════════════════════════════════════════════════════════════
+5. FUNCIONALIDADES PRINCIPAIS
+═══════════════════════════════════════════════════════════════════════════════
+
+AUTENTICAÇÃO:
+  - Login/Signup com email e senha
+  - Recuperação de senha com código de 6 dígitos
+  - JWT automaticamente gerenciado
+  - Proteção com reCAPTCHA
+
+PRODUTOS:
+  - Listagem dinâmica do banco
+  - Busca por nome
+  - Filtros por categoria
+  - Imagem e descrição
+  - Preço com moeda formatada
+
+CARRINHO:
+  - Adicionar/remover items
+  - Ajustar quantidade
+  - Persistência local (localStorage)
+  - Cálculo automático de subtotal
+
+FRETE:
+  - Cálculo por CEP (ViaCEP API pública)
+  - 3 métodos: SEDEX (R$25), PAC (R$15), Expresso (R$40)
+  - Ajuste automático por região/peso
+  - Tempo de entrega estimado
+
+PAGAMENTO:
+  - Integrado Mercado Pago Sandbox
+  - Checkout seguro com 2 etapas
+  - Status em tempo real (webhook)
+  - Redirecionamento automático
+
+PEDIDOS:
+  - Histórico com filtros (pagos/pendentes/cancelados)
+  - Status colorido com ícones
+  - Detalhes expandíveis
+  - Rastreamento de envio
+
+═══════════════════════════════════════════════════════════════════════════════
+6. SEGURANÇA IMPLEMENTADA
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ Credenciais removidas do git (.env.local ignorado)
+✓ CORS configurado (apenas localhost + domínio produção)
+✓ reCAPTCHA contra bots no login
+✓ Webhook Mercado Pago sem JWT (verify_jwt=false)
+✓ Row Level Security (RLS) no Supabase
+✓ Sanitização de inputs
+✓ Variáveis de ambiente para secrets
+✓ Documentação de segurança (SECURITY_AUDIT.md)
+
+═══════════════════════════════════════════════════════════════════════════════
+7. DEPLOY PARA PRODUÇÃO
+═══════════════════════════════════════════════════════════════════════════════
+
+BACKEND (Edge Functions - Supabase):
+
+1. Login Supabase CLI:
+   $ npx supabase login
+
+2. Deploy das funções:
+   $ npx supabase functions deploy --project-ref kfqquqappfixjuakgotf
+
+3. Configurar secrets:
+   $ npx supabase secrets set MERCADOPAGO_ACCESS_TOKEN="token-producao"
+
+4. Verificar:
+   Dashboard > Edge Functions > Deve listar 3 funções
+
+FRONTEND (Vercel - Recomendado):
+
+1. Fazer push para GitHub:
+   $ git push origin main
+
+2. Login em https://vercel.com
+
+3. Importar projeto
+   - Selecionar repositório
+   - Framework: Vite
+   - Build: npm run build
+   - Output: dist
+
+4. Adicionar variáveis de ambiente (Settings > Environment Variables):
+   VITE_SUPABASE_URL=https://seu-projeto.supabase.co
+   VITE_SUPABASE_ANON_KEY=sua-chave-publica
+   VITE_MERCADO_PAGO_PUBLIC_KEY=APP_USR-producao
+   VITE_RECAPTCHA_PUBLIC_KEY=seu-recaptcha-producao
+
+5. Deploy automático com cada push
+
+ALTERNATIVA (Netlify):
+
+1. Build localmente:
+   $ npm run build
+
+2. Fazer push para GitHub
+
+3. No Netlify > New site from Git
+   - Selecionar repositório
+   - Build: npm run build
+   - Publish: dist
+
+═══════════════════════════════════════════════════════════════════════════════
+8. FUTURAS IMPLEMENTAÇÕES (ROADMAP)
+═══════════════════════════════════════════════════════════════════════════════
+
+CURTO PRAZO (1-2 semanas):
+  ☐ Integrar com API real de Melhor Envio (fretes dinâmicos)
+  ☐ Implementar avaliações de produtos (stars, comentários)
+  ☐ Email automático com SendGrid (confirmação, rastreamento)
+  ☐ Cupons e códigos de desconto
+  ☐ Wishlist (favoritos)
+  ☐ Busca com filtros avançados
+
+MÉDIO PRAZO (1 mês):
+  ☐ Integração PIX (CPF/CNPJ)
+  ☐ Suporte a múltiplos idiomas (i18n)
+  ☐ Checkout com múltiplos endereços
+  ☐ Programa de pontos/cashback
+  ☐ Notificações push
+  ☐ Dark mode
+
+LONGO PRAZO (2+ meses):
+  ☐ Aplicativo mobile (React Native)
+  ☐ Marketplace (multi-vendedor)
+  ☐ IA para recomendações
+  ☐ Integração com Shopify
+  ☐ Relatórios avançados (BI)
+  ☐ Suporte ao vivo (chat)
+  ☐ Inventory management automático
+
+═══════════════════════════════════════════════════════════════════════════════
+9. TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════════
+
+PROBLEMA: "Erro de autenticação ao fazer login"
+SOLUÇÃO: 
+  - Verificar se usuário existe em Supabase > Auth > Users
+  - Confirmar .env.local tem VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY corretos
+  - Testar token em https://supabase.com/dashboard
+
+PROBLEMA: "Frete não calcula ao inserir CEP"
+SOLUÇÃO:
+  - Verificar se CEP é válido (8 dígitos, ex: 01310100)
+  - ViaCEP API pode estar indisponível (testar em https://viacep.com.br)
+  - Abrir console (F12) e verificar erros
+
+PROBLEMA: "Erro 401 no webhook Mercado Pago"
+SOLUÇÃO:
+  - Verificar se config.toml tem: verify_jwt = false
+  - Confirmar MERCADOPAGO_ACCESS_TOKEN está em Supabase Secrets
+  - Testar webhook manualmente em Mercado Pago Dashboard
+
+PROBLEMA: "Design desapareceu (Tailwind CDN warning)"
+SOLUÇÃO:
+  - Tailwind CDN está correto em produção (ignore warning)
+  - Se quiser remover warning, mudar para build npm (complexo)
+  - Deixa como está por enquanto
+
+PROBLEMA: "npm run dev não inicia"
+SOLUÇÃO:
+  - Matar processo node: taskkill /IM node.exe /F (Windows)
+  - Deletar node_modules: rm -r node_modules && npm install
+  - Verificar versão Node: npm --version (deve ser >= 18)
+
+═══════════════════════════════════════════════════════════════════════════════
+10. CONTATO E SUPORTE
+═══════════════════════════════════════════════════════════════════════════════
+
+Documentação técnica:
+  - SUPABASE_SETUP.md     - Schema SQL completo
+  - SECURITY_AUDIT.md     - Análise de segurança
+  - .env.example          - Variáveis necessárias
+
+Links úteis:
+  - Supabase Dashboard: https://supabase.com/dashboard
+  - Mercado Pago Sandbox: https://www.mercadopago.com.br/
+  - Vercel Deploy: https://vercel.com
+  - React Docs: https://react.dev
+  - Tailwind CSS: https://tailwindcss.com
+
+Versões utilizadas:
+  - Node.js: >= 18.0.0
+  - React: 18.x
+  - Vite: 8.x
+  - Tailwind: 4.2.2
+  - Supabase-js: 2.x
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Última atualização: 9 de Abril de 2026
+Status: ✅ Pronto para produção
+Versão: 1.0.0
+
+================================================================================

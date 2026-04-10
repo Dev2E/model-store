@@ -1,0 +1,355 @@
+================================================================================
+                    INSTRUCOES PARA PROXIMA IA/DESENVOLVEDOR
+                         LEIA ANTES DE QUALQUER MUDANCA
+================================================================================
+
+═══════════════════════════════════════════════════════════════════════════════
+⚠️ AVISOS CRITICOS
+═══════════════════════════════════════════════════════════════════════════════
+
+1. TAILWIND CSS - AMBIENTE DE DESENVOLVIMENTO
+   
+   ❌ PROBLEMA:
+      O projeto usa Tailwind CSS via CDN em DESENVOLVIMENTO:
+      <script src="https://cdn.tailwindcss.com"></script>
+      
+      Isso gera warning no console: 
+      "cdn.tailwindcss.com should not be used in production"
+   
+   ✅ SOLUÇÃO ADOTADA:
+      - Deixar CDN em DEV para o design funcionar corretamente
+      - NÃO mexer em postcss.config.js nem src/index.css
+      - Quando ir para produção, refatorar para npm build (complexo, não fazer agora)
+   
+   ⚡ AÇÃO RECOMENDADA:
+      Se o design sumir ou CSS quebrar:
+      1. Verificar se <script src="https://cdn.tailwindcss.com"></script> está em index.html
+      2. Nunca remover o CDN sem ter PostCSS 100% funcional
+      3. Deixar como está por enquanto
+   
+   🔴 NÃO FAÇA:
+      ✗ Remover script do CDN sem configurar build npm
+      ✗ Mudar postcss.config.js para '@tailwindcss/postcss'
+      ✗ Adicionar @tailwind directives sem PostCSS correto
+      ✗ Usar Tailwind v4 syntax sem estrutura npm
+
+───────────────────────────────────────────────────────────────────────────────
+
+2. SUPABASE CLIENT - SINGLETON CONSOLIDADO
+   
+   ✅ IMPLEMENTADO:
+      Apenas 1 cliente Supabase em src/lib/supabase.js
+      Todas as páginas importam daqui:
+      import { supabase } from '../lib/supabase';
+   
+   🔴 NÃO FAÇA:
+      ✗ Criar novo createClient() em outro lugar
+      ✗ Importar de src/config/supabase.js (deletado)
+      ✗ Ter múltiplas instâncias GoTrueClient
+   
+   ⚡ SE APARECER "Multiple GoTrueClient instances":
+      Procure por createClient() no código
+      Sempre use o import de src/lib/supabase.js
+
+───────────────────────────────────────────────────────────────────────────────
+
+3. FRETE/SHIPPING - DADOS PADRÃO
+   
+   ✅ SISTEMA ATUAL:
+      - Usa dados padrão (fictícios) para cálculo de frete
+      - 3 métodos: SEDEX (R$25), PAC (R$15), Expresso (R$40)
+      - Ajusta preço por região/peso automaticamente
+      - CEP validado via ViaCEP API pública (gratuito)
+   
+   📦 MÉTODOS DE ENVIO (em shippingService.js):
+      const METODOS_PADRAO = [
+        { id: 1, nome: 'SEDEX', preco: 25.00, tempo_dias: 2, ativo: true },
+        { id: 2, nome: 'PAC', preco: 15.00, tempo_dias: 7, ativo: true },
+        { id: 3, nome: 'Expresso', preco: 40.00, tempo_dias: 1, ativo: true },
+      ];
+   
+   ⚡ PARA USAR API REAL (Melhor Envio):
+      - Criar arquivo supabase/functions/calcular-frete-melhor-envio/index.ts
+      - Atualizar shippingService.calcularFrete() para chamar Edge Function
+      - Adicionar MELHOR_ENVIO_TOKEN em Supabase Secrets
+      - Ver MANUAL.txt seção "Futuras Implementações"
+
+───────────────────────────────────────────────────────────────────────────────
+
+4. MERCADO PAGO - INTEGRAÇÃO 100% FUNCIONAL
+   
+   ✅ FUNCIONANDO:
+      - Edge Function criar-pagamento cria preferência
+      - Checkout redireciona para Mercado Pago Sandbox
+      - Webhook recebe confirmação de pagamento
+      - Status atualizado em tempo real
+   
+   🔐 CONFIGURAÇÃO:
+      - MERCADOPAGO_ACCESS_TOKEN está em Supabase Secrets (seguro)
+      - Não está em .env.local (evita vazar no git)
+      - Token de produção deve ser diferente do sandbox
+   
+   📝 SE PRECISAR MUDAR TOKEN:
+      npx supabase secrets set MERCADOPAGO_ACCESS_TOKEN="novo-token"
+   
+   🔗 3 EDGE FUNCTIONS (todas em produção):
+      GET /functions/v1/criar-pagamento
+      POST /functions/v1/webhooks-mercadopago
+      GET /functions/v1/consultar-pagamento
+
+───────────────────────────────────────────────────────────────────────────────
+
+5. AUTENTICAÇÃO - CONSOLIDADA EM src/context/AuthContext.jsx
+   
+   ✅ FUNCIONANDO:
+      - Login/Signup com email/senha
+      - JWT automaticamente gerenciado
+      - Contexto global com user state
+      - reCAPTCHA no formulário de login
+   
+   🔐 PROTEÇÕES:
+      - 2FA via código de 6 dígitos (resetar senha)
+      - CORS restrito a localhost + domínio produção
+      - RLS policies no Supabase
+   
+   ⚠️ IMPORTANTE:
+      Se aparecer "Cannot read properties of undefined (reading 'from')":
+      Procure no shippingService.js - já foi corrigido
+      Tem import { supabase } from '../lib/supabase'; correto
+
+───────────────────────────────────────────────────────────────────────────────
+
+6. .gitignore - CREDENCIAIS PROTEGIDAS
+   
+   ✅ ARQUIVOS IGNORADOS (seguro):
+      .env.local         - Variáveis locais não são versionadas
+      node_modules/      - Re-instala com npm install
+      dist/              - Build gerado localmente
+      .supabase/         - Tokens locais ignorados
+   
+   ️⚠️ SE CLONAR O PROJETO:
+      cp .env.example .env.local
+      Preencher com suas credenciais (nunca commit .env.local)
+   
+   🔴 NÃO FAÇA:
+      ✗ Fazer git commit -m "add .env.local" (vaza credenciais)
+      ✗ Remover .env.local do .gitignore
+      ✗ Fazer push com MERCADOPAGO_ACCESS_TOKEN visível
+
+═══════════════════════════════════════════════════════════════════════════════
+CHECKLIST ANTES DE FAZER QUALQUER MUDANÇA
+═══════════════════════════════════════════════════════════════════════════════
+
+Antes de adicionar feature nova ou mexer em código:
+
+□ Ler MANUAL.txt (entender arquitetura)
+□ Ler este arquivo (INSTRUCOES.txt) completamente
+□ Entender src/lib/supabase.js (cliente único)
+□ Verificar se existe Edge Function pronta em supabase/functions/
+□ Conferir supabaseService.js para não duplicar lógica
+□ Testar em http://localhost:5173 antes de commitar
+□ Nunca fazer git commit com .env.local
+
+═══════════════════════════════════════════════════════════════════════════════
+ESTRUTURA DE PASTAS - O QUE MEXER E O QUE NÃO MEXER
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ SEGURO MEXER:
+  src/pages/         - Componentes de página (rotas)
+  src/components/    - Componentes reutilizáveis
+  src/services/      - Lógica de negócio (menos supabaseService.js)
+  src/context/       - Estados globais (Auth, Cart)
+  supabase/functions/ - Edge Functions de backend
+  Sempre npm run dev depois de mudança
+
+⚠️ CUIDADO EXTREMO:
+  src/lib/supabase.js            - Único cliente, não duplicar
+  src/context/AuthContext.jsx    - GoTrueClient consolidado
+  src/services/supabaseService.js - Tem 19 métodos, não quebrar
+  index.html                     - CDN Tailwind está aqui, deixar
+  postcss.config.js              - Não mexer (DEV=CDN, PROD=npm)
+
+❌ NUNCA MEXER:
+  .gitignore          - Já está correto
+  package.json        - Dependências estáveis (versões fixadas)
+  vite.config.js      - Build já configurado
+  tailwind.config.js  - Já tem colors/fonts corretos
+
+═══════════════════════════════════════════════════════════════════════════════
+ERROS COMUNS E COMO RESOLVER
+═══════════════════════════════════════════════════════════════════════════════
+
+ERRO: "Cannot read properties of undefined (reading 'from')"
+  → Arquivo: src/services/shippingService.js
+  → Causa: Estava importando supabaseService.supabase (deletado)
+  → Solução: Já corrigido, mas se aparecer novamente:
+             Procure "supabaseService.supabase" e mude para "supabase"
+             import { supabase } from '../lib/supabase';
+
+ERRO: "Multiple GoTrueClient instances detected"
+  → Arquivo: src/context/AuthContext.jsx ou src/services/
+  → Causa: Múltiplos createClient() diferentes
+  → Solução: Usar SEMPRE import de src/lib/supabase.js
+             Deletar qualquer createClient() que não esteja em lib/supabase.js
+
+ERRO: "API 406 Not Acceptable"
+  → Arquivo: supabaseService.js, método isUserAdmin()
+  → Causa: Query com filtros duplicados
+  → Solução: Já foi corrigido para:
+             .select('role').eq('id', userId).single()
+             Depois verificar role === 'admin' em JS
+
+ERRO: "Design sumiu / CSS não aplica"
+  → Arquivo: index.html (procure CDN script)
+  → Causa: CDN Tailwind removido ou quebrado
+  → Solução: Verificar se <script src="https://cdn.tailwindcss.com"></script>
+             está em uma linha vazia ANTES de </head>
+
+ERRO: "npm run dev não inicia"
+  → Comando: taskkill /IM node.exe /F (Windows) ou pkill node (Mac/Linux)
+  → Depois: npm run dev novamente
+
+═══════════════════════════════════════════════════════════════════════════════
+COMO ADICIONAR NOVAS FEATURES (PASSO A PASSO)
+═══════════════════════════════════════════════════════════════════════════════
+
+EXEMPLO: Adicionar "Cupons de Desconto"
+
+1. CRIAR TABELA NO SUPABASE
+   Supabase Dashboard > SQL Editor > Nova query:
+   
+   CREATE TABLE cupons (
+     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+     codigo VARCHAR(20) UNIQUE,
+     desconto_pct INT,
+     ativo BOOLEAN DEFAULT true,
+     created_at TIMESTAMP DEFAULT NOW()
+   );
+
+2. CRIAR SERVIÇO (src/services/supabaseService.js)
+   
+   export const cuponsService = {
+     async verificarCupom(codigo) {
+       const { data, error } = await supabase
+         .from('cupons')
+         .select('*')
+         .eq('codigo', codigo)
+         .eq('ativo', true)
+         .single();
+       return { data, error };
+     }
+   };
+
+3. USAR EM COMPONENTE (src/pages/Checkout.jsx)
+   
+   import { cuponsService } from '../services/supabaseService';
+   
+   const aplicarCupom = async (codigo) => {
+     const { data: cupom, error } = await cuponsService.verificarCupom(codigo);
+     if (cupom) {
+       setDesconto(cupom.desconto_pct);
+     }
+   };
+
+4. TESTAR
+   npm run dev
+   Preencher formulário com cupom
+   Verificar console se aplica desconto
+
+5. COMMITAR
+   git add .
+   git commit -m "feat: adicionar sistema de cupons"
+
+═══════════════════════════════════════════════════════════════════════════════
+ANTES DE FAZER DEPLOY PARA PRODUCAO
+═══════════════════════════════════════════════════════════════════════════════
+
+CHECKLIST PRÉ-DEPLOY:
+
+□ npm run build (criar dist/)
+  └─ Verificar se não há erros
+  └─ Verificar arquivo gerado em dist/index.html
+
+□ Testar em http://localhost:5173
+  └─ Login funciona
+  └─ Produtos carregam
+  └─ Carrinho funciona
+  └─ Frete calcula
+  └─ Checkout redireciona
+
+□ Variáveis de produção
+  └─ VITE_SUPABASE_URL correto
+  └─ VITE_MERCADO_PAGO_PUBLIC_KEY é de PRODUÇÃO (não sandbox)
+  └─ VITE_RECAPTCHA_PUBLIC_KEY é de produção
+
+□ Edge Functions
+  └─ npx supabase functions deploy
+  └─ Verificar em Supabase Dashboard > Edge Functions
+
+□ Secrets em produção
+  └─ npx supabase secrets set MERCADOPAGO_ACCESS_TOKEN="token-producao"
+  └─ Token deve ser da conta Mercado Pago PRODUÇÃO
+
+□ Deploy Frontend
+  └─ Vercel: git push origin main (auto-deploy)
+  └─ Netlify: npm run build && netlify deploy --prod
+
+□ Testar em produção
+  └─ Acessar site em domínio
+  └─ Fazer teste de compra completo
+  └─ Verificar webhook recebeu confirmação
+
+═══════════════════════════════════════════════════════════════════════════════
+CONTATOS E REFERENCIAS
+═══════════════════════════════════════════════════════════════════════════════
+
+DOCUMENTAÇÃO DO PROJETO:
+  └─ MANUAL.txt            (uso completo)
+  └─ SUPABASE_SETUP.md     (schema SQL)
+  └─ SECURITY_AUDIT.md     (segurança implementada)
+
+TECNOLOGIAS:
+  └─ React: https://react.dev/learn
+  └─ Supabase: https://supabase.com/docs
+  └─ Tailwind: https://tailwindcss.com/docs
+  └─ Mercado Pago: https://developers.mercadopago.com
+  └─ Vite: https://vitejs.dev/guide/
+
+KEYS/TOKENS A CONFIGURAR:
+  └─ VITE_SUPABASE_URL
+  └─ VITE_SUPABASE_ANON_KEY
+  └─ VITE_MERCADO_PAGO_PUBLIC_KEY
+  └─ VITE_RECAPTCHA_PUBLIC_KEY
+  └─ MERCADOPAGO_ACCESS_TOKEN (Supabase Secret)
+
+═══════════════════════════════════════════════════════════════════════════════
+RESUMO SUPER RÁPIDO (30 SEGUNDOS)
+═══════════════════════════════════════════════════════════════════════════════
+
+🎯 PONTOS CRÍTICOS:
+
+1. TAILWIND CDN está em index.html
+   → Deixar como está (warning é normal em DEV)
+   
+2. Supabase Client está centralizado
+   → import { supabase } from '../lib/supabase'
+   → Nunca criar novo createClient()
+   
+3. Frete usa dados padrão
+   → SEDEX (R$25), PAC (R$15), Expresso (R$40)
+   → Para API real, adicionar Melhor Envio depois
+   
+4. Mercado Pago funciona
+   → Token em Supabase Secrets (seguro)
+   → 3 Edge Functions já deployed
+   
+5. Nunca commitar .env.local
+   → Sempre usar .env.example como template
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Última atualização: 9 de Abril de 2026
+Criado por: Copilot Agent
+Status: ✅ Pronto para manutenção e evolução
+
+================================================================================

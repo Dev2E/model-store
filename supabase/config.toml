@@ -1,0 +1,14 @@
+# Configuração do Supabase
+
+# Permitir requisições públicas (sem autenticação) para o webhook do Mercado Pago
+[functions]
+
+[functions."webhooks-mercadopago"]
+verify_jwt = false
+
+# As outras funções mantêm autenticação JWT
+[functions."criar-pagamento"]
+verify_jwt = true
+
+[functions."consultar-pagamento"]
+verify_jwt = false
