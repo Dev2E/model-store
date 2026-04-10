@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 
@@ -7,6 +7,7 @@ export default function Header() {
   const { user, isAuthenticated, logout } = useAuth();
   const { cartItems = [] } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -27,24 +28,24 @@ export default function Header() {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8">
-          <Link to="/produtos" className={`text-sm font-semibold ${
-            window.location.pathname === '/produtos' 
+          <Link to="/produtos" className={`text-sm font-semibold transition-colors ${
+            location.pathname === '/produtos' 
               ? 'text-gray-900 border-b-2 border-gray-900 pb-1' 
-              : 'hover:text-gray-600'
+              : 'text-gray-600 hover:text-gray-900'
           }`}>
             Produtos
           </Link>
-          <Link to="/categorias" className={`text-sm font-semibold ${
-            window.location.pathname === '/categorias' 
+          <Link to="/categorias" className={`text-sm font-semibold transition-colors ${
+            location.pathname === '/categorias' 
               ? 'text-gray-900 border-b-2 border-gray-900 pb-1' 
-              : 'hover:text-gray-600'
+              : 'text-gray-600 hover:text-gray-900'
           }`}>
             Categorias
           </Link>
-          <Link to="/sobre" className={`text-sm font-semibold ${
-            window.location.pathname === '/sobre' 
+          <Link to="/sobre" className={`text-sm font-semibold transition-colors ${
+            location.pathname === '/sobre' 
               ? 'text-gray-900 border-b-2 border-gray-900 pb-1' 
-              : 'hover:text-gray-600'
+              : 'text-gray-600 hover:text-gray-900'
           }`}>
             Sobre
           </Link>
