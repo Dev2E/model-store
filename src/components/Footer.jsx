@@ -44,13 +44,16 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-600">
-          <p>&copy; 2024 Boutique. Todos os direitos reservados.</p>
-          <div className="flex gap-4 mt-4 md:mt-0">
-            <a href="#" className="hover:text-black">Instagram</a>
-            <a href="#" className="hover:text-black">Facebook</a>
-            <a href="#" className="hover:text-black">Pinterest</a>
+        <div className="border-t border-gray-200 pt-8">
+          <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600 mb-4">
+            <p>&copy; 2024 Boutique. Todos os direitos reservados.</p>
+            <div className="flex gap-4 mt-4 md:mt-0">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-black">Instagram</a>
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-black">Facebook</a>
+              <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" className="hover:text-black">Pinterest</a>
+            </div>
           </div>
+          <p className="text-center md:text-right text-xs text-gray-500">Feito por <span className="font-semibold">2E</span></p>
         </div>
       </div>
     </footer>

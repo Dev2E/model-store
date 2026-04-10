@@ -162,6 +162,11 @@ button {
   animation: zoomIn 0.3s ease-out;
 }
 
+/* Desabilitar badge do reCAPTCHA */
+.grecaptcha-badge {
+  display: none !important;
+}
+
 .animate-bounce {
   animation: bounce 1s infinite;
 }

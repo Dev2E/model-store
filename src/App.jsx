@@ -37,6 +37,7 @@ import Loading from "./pages/Loading";
 import PedidoConfirmado from "./pages/PedidoConfirmado";
 import PagamentoRecusado from "./pages/PagamentoRecusado";
 import PagamentoPendente from "./pages/PagamentoPendente";
+import ConfirmacaoEmail from "./pages/ConfirmacaoEmail";
 
 function AppContent() {
   const location = useLocation();
@@ -58,6 +59,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/criar-conta" element={<CriarConta />} />
         <Route path="/recuperar-conta" element={<RecuperarConta />} />
+        <Route path="/confirmar-email" element={<ConfirmacaoEmail />} />
         <Route path="/meu-perfil" element={<MeuPerfil />} />
         <Route path="/meus-pedidos" element={<MeusPedidos />} />
         <Route path="/wishlist" element={<Wishlist />} />
