@@ -30,12 +30,12 @@ export default function Home() {
     checkAdminRedirect();
   }, [isAuthenticated, user, navigate]);
 
-  // Mantemos as categorias fixas por enquanto (já que não criamos tabela para elas)
+  // Mantemos as categorias focadas em ROUPAS
   const categories = [
-    { id: 'casa-decoracao', name: 'Casa e Decoração', image: '🏠' },
-    { id: 'iluminacao', name: 'Iluminação', image: '💡' },
-    { id: 'cuidados', name: 'Cuidados Pessoais', image: '✨' },
-    { id: 'vestuario', name: 'Vestuário', image: '👔' },
+    { id: 'camisetas', name: 'Camisetas', image: '👕' },
+    { id: 'calcas', name: 'Calças', image: '👖' },
+    { id: 'blazers', name: 'Blazers', image: '🧥' },
+    { id: 'vestidos', name: 'Vestidos', image: '👗' },
   ];
 
   // 2. Buscamos os produtos do Supabase assim que a página carrega
@@ -67,12 +67,12 @@ export default function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 px-6 py-16 max-w-7xl mx-auto">
         {/* Text Content */}
         <div className="flex flex-col justify-center">
-          <p className="text-sm font-semibold text-gray-500 mb-2">NOVA COLEÇÃO 2026</p>
+          <p className="text-sm font-semibold text-gray-500 mb-2">COLEÇÃO MINIMALISTA 2026</p>
           <h1 className="text-5xl md:text-6xl font-bold font-manrope leading-tight mb-6">
             A Declaração Silenciosa.
           </h1>
           <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-            Essenciais modernos produzidos para o curador moderno. Unimos a ascésia entre forma arquitetônica e funcionalidade cotidiana.
+            Peças essenciais para o curador moderno. Simplicidade e qualidade encontram-se no corte perfeito, nas cores neutras e nos tecidos nobres.
           </p>
           <div className="flex gap-4">
             <button className="bg-gray-900 text-white px-6 py-3 rounded-md hover:bg-gray-800 transition">Explorar Coleção</button>
@@ -82,7 +82,7 @@ export default function Home() {
 
         {/* Hero Image */}
         <div className="bg-gray-200 rounded-lg h-96 md:h-full flex items-center justify-center text-6xl shadow-inner">
-          🛋️
+          👔
         </div>
       </section>
 
