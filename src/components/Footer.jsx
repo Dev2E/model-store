@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
           {/* Column 1 */}
           <div>
-            <h3 className="font-manrope font-bold text-lg mb-4">Boutique</h3>
+            <h3 className="font-manrope font-bold text-lg mb-4">Vellenia Store</h3>
             <p className="text-sm text-gray-600">
               A galeria digital curada de produtos para viver bem em qualquer espaço.
             </p>
@@ -46,7 +46,7 @@ export default function Footer() {
 
         <div className="border-t border-gray-200 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center text-sm text-gray-600 mb-4">
-            <p>&copy; 2024 Boutique. Todos os direitos reservados.</p>
+            <p>&copy; 2024 Vellenia Store. Todos os direitos reservados.</p>
             <div className="flex gap-4 mt-4 md:mt-0">
               <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-black">Instagram</a>
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-black">Facebook</a>

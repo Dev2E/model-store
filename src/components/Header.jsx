@@ -23,7 +23,7 @@ export default function Header() {
       <nav className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
         {/* Logo */}
         <Link to="/" className="text-2xl font-bold font-manrope">
-          Boutique
+          Vellenia
         </Link>
 
         {/* Desktop Menu */}
