@@ -1,0 +1,70 @@
+📋 INSTRUÇÕES PARA POPULAR O BANCO COM VELLENIA STORE
+=====================================================
+
+Você tem 2 opções para adicionar os 20 produtos Vellenia Store:
+
+OPÇÃO 1: Usar o gerador HTML (RECOMENDADO)
+------------------------------------------
+1. Abra o arquivo: scripts/seed-products.html no navegador
+2. Clique no botão "▶ Começar Seed"
+3. Aguarde a mensagem de sucesso
+
+⚠️ IMPORTANTE: Este método apenas funciona se o RLS estiver configurado corretamente.
+Se receber erro 42501, use a OPÇÃO 2.
+
+
+OPÇÃO 2: Usar SQL direto (ALTERNATIVA)
+--------------------------------------
+1. Acesse o Supabase Dashboard: 
+   https://supabase.com/dashboard/project/kfqquqappfixjuakgotf
+
+2. Vá para SQL Editor > "New Query"
+
+3. Copie todo o conteúdo do arquivo: scripts/seed-products.sql
+
+4. Cole no SQL Editor do Supabase
+
+5. Clique em "Run"
+
+6. Verifique a mensagem: "20 | xxxxx" (20 produtos com X items de estoque)
+
+
+O QUE SERÁ CRIADO:
+==================
+
+Total: 20 produtos Vellenia Store
+- 4 Camisetas (R$ 89,90 - R$ 109,90)
+- 4 Calças (R$ 189,90 - R$ 249,90)
+- 3 Blazers (R$ 349,90)
+- 3 Vestidos (R$ 279,90 - R$ 329,90)
+- 3 Cardigans (R$ 169,90 - R$ 189,90)
+- 3 Acessórios (R$ 79,90 - R$ 159,90)
+
+Estoque Total: 604 unidades
+Preço Médio: R$ 191,61
+
+
+APÓS O SEED:
+============
+✅ Produtos aparecerão em /produtos
+✅ Categorias funcionarão com novos produtos
+✅ Carrinho detectará estoque corretamente
+✅ Admin pode gerenciar via dashboard
+
+
+ROLLBACK (DESFAZER):
+====================
+Se quiser remover os produtos, execute este SQL:
+
+DELETE FROM products WHERE active = true AND category IN ('Camisetas', 'Calças', 'Blazers', 'Vestidos', 'Cardigans', 'Acessórios');
+
+OU para desativar sem deletar:
+
+UPDATE products SET active = false WHERE category IN ('Camisetas', 'Calças', 'Blazers', 'Vestidos', 'Cardigans', 'Acessórios');
+
+
+DÚVIDAS OU ERROS?
+================
+- Erro 42501: RLS bloqueando insert → Use OPÇÃO 2 (SQL direto)
+- Erro de conexão: Verifique se o URL e chaves do Supabase estão corretos
+- Produtos não aparecem: Verifique se estão com active = true
