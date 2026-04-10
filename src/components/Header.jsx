@@ -27,13 +27,25 @@ export default function Header() {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8">
-          <Link to="/produtos" className="text-sm font-semibold hover:text-gray-600">
+          <Link to="/produtos" className={`text-sm font-semibold ${
+            window.location.pathname === '/produtos' 
+              ? 'text-gray-900 border-b-2 border-gray-900 pb-1' 
+              : 'hover:text-gray-600'
+          }`}>
             Produtos
           </Link>
-          <Link to="/colecoes" className="text-sm font-semibold hover:text-gray-600">
-            Coleções
+          <Link to="/categorias" className={`text-sm font-semibold ${
+            window.location.pathname === '/categorias' 
+              ? 'text-gray-900 border-b-2 border-gray-900 pb-1' 
+              : 'hover:text-gray-600'
+          }`}>
+            Categorias
           </Link>
-          <Link to="/sobre" className="text-sm font-semibold hover:text-gray-600">
+          <Link to="/sobre" className={`text-sm font-semibold ${
+            window.location.pathname === '/sobre' 
+              ? 'text-gray-900 border-b-2 border-gray-900 pb-1' 
+              : 'hover:text-gray-600'
+          }`}>
             Sobre
           </Link>
         </div>

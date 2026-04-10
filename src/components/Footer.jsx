@@ -18,7 +18,7 @@ export default function Footer() {
             <h4 className="font-semibold mb-4 text-sm">Compras</h4>
             <ul className="space-y-2 text-sm text-gray-600">
               <li><Link to="/produtos" className="hover:text-black">Todos os Produtos</Link></li>
-              <li><Link to="/colecoes" className="hover:text-black">Coleções</Link></li>
+              <li><Link to="/categorias" className="hover:text-black">Categorias</Link></li>
               <li><Link to="/produtos" className="hover:text-black">Novos Produtos</Link></li>
             </ul>
           </div>
@@ -51,6 +51,13 @@ export default function Footer() {
               <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-black">Instagram</a>
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-black">Facebook</a>
               <a href="https://pinterest.com" target="_blank" rel="noopener noreferrer" className="hover:text-black">Pinterest</a>
+            </div>
+          </div>
+          <div className="flex items-center gap-6 justify-center md:justify-end mb-4">
+            <span className="text-2xl">🔒</span>
+            <div className="text-xs text-gray-500">
+              <p className="font-semibold">Site Seguro</p>
+              <p>SSL Certificado</p>
             </div>
           </div>
           <p className="text-center md:text-right text-xs text-gray-500">Feito por <span className="font-semibold">2E</span></p>

@@ -13,7 +13,7 @@ import Produto from "./pages/Produto";
 import Carrinho from "./pages/Carrinho";
 import Checkout from "./pages/Checkout";
 import Produtos from "./pages/Produtos";
-import Colecoes from "./pages/Colecoes";
+import Categorias from "./pages/Categorias";
 import Sobre from "./pages/Sobre";
 import Contato from "./pages/Contato";
 import Politicas from "./pages/Politicas";
@@ -49,7 +49,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/produtos" element={<Produtos />} />
-        <Route path="/colecoes" element={<Colecoes />} />
+        <Route path="/categorias" element={<Categorias />} />
         <Route path="/sobre" element={<Sobre />} />
         <Route path="/contato" element={<Contato />} />
         <Route path="/produto/:id" element={<Produto />} />
