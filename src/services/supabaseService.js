@@ -15,14 +15,18 @@ export const authService = {
         },
       });
 
+      if (error) {
+        return { success: false, error: error.message || error };
+      }
+
       // Auto-criar perfil em users_profile
       if (data?.user?.id) {
         await this.ensureUserProfile(data.user.id, email, name);
       }
 
-      return { data, error };
+      return { success: true, data };
     } catch (error) {
-      return { data: null, error };
+      return { success: false, error: error?.message || 'Erro ao criar conta' };
     }
   },
 
@@ -34,14 +38,18 @@ export const authService = {
         password,
       });
 
+      if (error) {
+        return { success: false, error: error.message || error };
+      }
+
       // Auto-criar perfil em users_profile se não existir
-      if (data?.user?.id && !error) {
+      if (data?.user?.id) {
         await this.ensureUserProfile(data.user.id, email, data.user.user_metadata?.name);
       }
 
-      return { data, error };
+      return { success: true, data };
     } catch (error) {
-      return { data: null, error };
+      return { success: false, error: error?.message || 'Erro ao fazer login' };
     }
   },
 

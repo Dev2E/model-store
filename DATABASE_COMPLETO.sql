@@ -237,6 +237,10 @@ CREATE POLICY "Users can read own profile"
 ON users_profile FOR SELECT 
 USING (auth.uid() = id);
 
+CREATE POLICY "Users can create own profile" 
+ON users_profile FOR INSERT 
+WITH CHECK (auth.uid() = id);
+
 CREATE POLICY "Users can update own profile" 
 ON users_profile FOR UPDATE 
 USING (auth.uid() = id);
@@ -263,10 +267,18 @@ CREATE POLICY "Categories are readable by everyone"
   ON categories FOR SELECT
   USING (true);
 
+CREATE POLICY "Only admins can manage categories"
+  ON categories FOR INSERT
+  WITH CHECK (auth.jwt() ->> 'role' = 'admin');
+
+CREATE POLICY "Only admins can update categories"
+  ON categories FOR UPDATE
+  USING (auth.jwt() ->> 'role' = 'admin');
+
 -- === PRODUCTS ===
 CREATE POLICY "Everyone can view active products"
   ON products FOR SELECT
-  USING (active = true);
+  USING (active = true OR auth.jwt() ->> 'role' = 'admin');
 
 CREATE POLICY "Admins can manage own store products"
   ON products FOR ALL

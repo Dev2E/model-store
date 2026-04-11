@@ -33,16 +33,17 @@ export function AuthProvider({ children }) {
     try {
       setLoading(true);
       setError(null);
-      const { data, error } = await authService.signup(email, password, name);
-      if (error) {
-        setError(error.message);
+      const { success, error, data } = await authService.signup(email, password, name);
+      if (!success || error) {
+        setError(error);
         return { success: false, error };
       }
       setUser(data?.user || null);
       return { success: true, data };
     } catch (err) {
-      setError(err.message);
-      return { success: false, error: err };
+      const errorMsg = err?.message || 'Erro ao criar conta';
+      setError(errorMsg);
+      return { success: false, error: errorMsg };
     } finally {
       setLoading(false);
     }
@@ -52,16 +53,17 @@ export function AuthProvider({ children }) {
     try {
       setLoading(true);
       setError(null);
-      const { data, error } = await authService.login(email, password);
-      if (error) {
-        setError(error.message);
+      const { success, error, data } = await authService.login(email, password);
+      if (!success || error) {
+        setError(error);
         return { success: false, error };
       }
       setUser(data?.user || null);
       return { success: true, data };
     } catch (err) {
-      setError(err.message);
-      return { success: false, error: err };
+      const errorMsg = err?.message || 'Erro ao fazer login';
+      setError(errorMsg);
+      return { success: false, error: errorMsg };
     } finally {
       setLoading(false);
     }

@@ -88,15 +88,22 @@ export default function CriarConta() {
         // Redireciona para o perfil
         navigate('/meu-perfil');
       } else {
-        if (error?.includes('already registered')) {
+        // Converter erro para string se for objeto
+        const errorMessage = error?.message || error || 'Erro desconhecido';
+        const errorStr = typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage);
+        
+        if (errorStr.includes('already registered') || errorStr.includes('duplicate')) {
           showNotification('Este email já está cadastrado', 'error');
           setErrors({ form: 'Este email já está cadastrado' });
-        } else if (error?.includes('weak password')) {
+        } else if (errorStr.includes('weak password')) {
           showNotification('Senha fraca. Use uma combinação de maiúsculas, minúsculas e números', 'error');
           setErrors({ form: 'Senha fraca' });
+        } else if (errorStr.includes('invalid email')) {
+          showNotification('Email inválido', 'error');
+          setErrors({ form: 'Email inválido' });
         } else {
-          showNotification(error || 'Erro ao criar conta', 'error');
-          setErrors({ form: error || 'Erro ao criar conta' });
+          showNotification(errorStr || 'Erro ao criar conta', 'error');
+          setErrors({ form: errorStr || 'Erro ao criar conta' });
         }
       }
     } catch (err) {
