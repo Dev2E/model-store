@@ -21,6 +21,7 @@ import {
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [stats, setStats] = useState({
     totalOrders: 0,
     totalUsers: 0,
@@ -34,17 +35,32 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     if (!isAuthenticated) {
+      console.log('Não autenticado, redirecionando para login');
       navigate('/login');
       return;
     }
 
     const checkAdminAndLoadStats = async () => {
       try {
+        console.log('Verificando permissões de admin para usuário:', user?.id);
+        
+        if (!user?.id) {
+          throw new Error('ID do usuário não disponível');
+        }
+
         // Verifica se é admin
-        const { isAdmin: adminCheck, error: adminError } = await adminService.isUserAdmin(user?.id);
+        const { isAdmin: adminCheck, error: adminError } = await adminService.isUserAdmin(user.id);
+        
+        console.log('Resultado da verificação de admin:', { isAdmin: adminCheck, error: adminError });
+        
+        if (adminError) {
+          throw new Error(`Erro ao verificar permissões: ${adminError.message || adminError}`);
+        }
         
         if (!adminCheck) {
-          navigate('/');
+          console.log('Usuário não é admin, redirecionando');
+          setError('Você não tem permissão para acessar esta página.');
+          setTimeout(() => navigate('/'), 2000);
           return;
         }
 
@@ -64,8 +80,9 @@ export default function AdminDashboard() {
           recentOrders: ordersData?.slice(0, 5) || [],
         });
       } catch (err) {
-        console.error('Error loading admin stats:', err);
-        navigate('/');
+        console.error('Erro ao carregar dashboard de admin:', err);
+        setError(err.message || 'Erro ao carregar dashboard');
+        setLoading(false);
       } finally {
         setLoading(false);
       }
@@ -86,6 +103,27 @@ export default function AdminDashboard() {
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
             <p className="text-white font-semibold">Carregando Dashboard...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
+        <div className="flex items-center justify-center h-screen px-4">
+          <div className="text-center max-w-md">
+            <div className="bg-red-500/20 border border-red-500 rounded-lg p-6 mb-4">
+              <p className="text-red-200 font-semibold text-lg">{error}</p>
+            </div>
+            <p className="text-slate-300 mb-6">Redirecionando...</p>
+            <button
+              onClick={() => navigate('/')}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition"
+            >
+              Ir para Home
+            </button>
           </div>
         </div>
       </main>
