@@ -372,6 +372,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
+-- Remover triggers antigos se existirem
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+DROP TRIGGER IF EXISTS update_stores_updated_at ON stores;
+DROP TRIGGER IF EXISTS update_products_updated_at ON products;
+DROP TRIGGER IF EXISTS update_orders_updated_at ON orders;
+DROP TRIGGER IF EXISTS update_addresses_updated_at ON addresses;
+DROP TRIGGER IF EXISTS update_users_profile_updated_at ON users_profile;
+
 -- Trigger para criar perfil quando novo usuário assina
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users
