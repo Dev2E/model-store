@@ -520,6 +520,30 @@ SELECT
 FROM products LIMIT 1;
 
 -- ============================================================
+-- PARTE 9: SETUP ADMIN (OPCIONAL)
+-- ============================================================
+-- Este script configura um usuário como admin
+-- INSTRUÇÕES:
+-- 1. Primeiro, crie sua conta normalmente na aplicação
+-- 2. Encontre o email que você utilizou (ex: seu@email.com)
+-- 3. Descomente a linha abaixo e substitua 'seu@email.com'
+-- 4. Execute este script no Supabase SQL Editor
+-- 5. Seu usuário será marcado como admin e poderá acessar /admin
+-- ============================================================
+
+-- OPÇÃO 1: Marcar um usuário como admin (descomente e use)
+-- UPDATE users_profile SET role = 'admin' WHERE email = 'seu@email.com';
+
+-- OPÇÃO 2: Ver todos os usuários cadastrados
+-- SELECT id, email, role, created_at FROM users_profile ORDER BY created_at DESC;
+
+-- OPÇÃO 3: Marcar múltiplos admins
+-- UPDATE users_profile SET role = 'admin' WHERE email IN ('admin1@email.com', 'admin2@email.com');
+
+-- OPÇÃO 4: Remover acesso admin (reverter para customer)
+-- UPDATE users_profile SET role = 'customer' WHERE email = 'seu@email.com';
+
+-- ============================================================
 -- ✅ SCRIPT FINALIZADO COM SUCESSO!
 -- ============================================================
 -- Seu banco agora tem:
@@ -538,4 +562,5 @@ FROM products LIMIT 1;
 --    • 6 Calçados
 -- ✅ Estrutura multi-tenant pronta
 -- ✅ Endereços, pedidos e carrinho funcionando
+-- ✅ Setup de admin pronto para usar
 -- ============================================================
