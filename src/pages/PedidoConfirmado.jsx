@@ -18,12 +18,7 @@ export default function PedidoConfirmado() {
         // Consultar status do pagamento via Edge Function
         if (paymentId) {
           const response = await fetch(
-            `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/consultar-pagamento?payment_id=${paymentId}`,
-            {
-              headers: {
-                'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-              },
-            }
+            `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/consultar-pagamento?payment_id=${paymentId}`
           );
 
           if (response.ok) {

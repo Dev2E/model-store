@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { formatCurrency } from '../utils/formatters';
 
 export default function Wishlist() {
   const wishlistItems = [
@@ -32,7 +33,7 @@ export default function Wishlist() {
                   <div className="flex-1 flex flex-col justify-between">
                     <div>
                       <h3 className="text-lg font-semibold mb-2">{item.name}</h3>
-                      <p className="text-2xl font-bold text-gray-800">R$ {item.price.toLocaleString('pt-BR')},00</p>
+                      <p className="text-2xl font-bold text-gray-800">{formatCurrency(item.price)}</p>
                     </div>
                     <div className="flex gap-3">
                       {item.inStock ? (

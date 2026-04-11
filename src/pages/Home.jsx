@@ -68,12 +68,12 @@ export default function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-8 px-6 py-16 max-w-7xl mx-auto">
         {/* Text Content */}
         <div className="flex flex-col justify-center">
-          <p className="text-sm font-semibold text-gray-500 mb-2">COLEÇÃO MINIMALISTA 2026</p>
+          <p className="text-sm font-semibold text-gray-500 mb-2">VELLENIA STORE 2026</p>
           <h1 className="text-5xl md:text-6xl font-bold font-manrope leading-tight mb-6">
-            A Declaração Silenciosa.
+            Moda Contemporânea.
           </h1>
           <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-            Peças essenciais para o curador moderno. Simplicidade e qualidade encontram-se no corte perfeito, nas cores neutras e nos tecidos nobres.
+            Descubra uma seleção curada de peças que combinam estilo, qualidade e conforto. Cada item foi selecionado para trazer sofisticação ao seu guarda-roupa.
           </p>
           <div className="flex gap-4">
             <button className="bg-gray-900 text-white px-6 py-3 rounded-md hover:bg-gray-800 transition">Explorar Coleção</button>

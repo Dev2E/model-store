@@ -1,11 +1,12 @@
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { formatCurrency } from '../utils/formatters';
 import shippingService from '../services/shippingService';
 
 export default function Carrinho() {
+  const navigate = useNavigate();
   const { cartItems, removeFromCart, updateQuantity, cartTotal, showNotification } = useCart();
   const [showConfirmModal, setShowConfirmModal] = useState(null);
   const [cep, setCep] = useState('');
@@ -15,10 +16,10 @@ export default function Carrinho() {
   const [shippingError, setShippingError] = useState(null);
   const [addressInfo, setAddressInfo] = useState(null);
 
-  const subtotal = cartTotal;
-  const shipping = selectedShipping ? parseFloat(selectedShipping.preco_final) : 0;
-  const tax = subtotal * 0.1;
-  const total = subtotal + shipping + tax;
+  const subtotal = typeof cartTotal === 'string' ? parseFloat(cartTotal) : (cartTotal || 0);
+  const shipping = selectedShipping ? parseFloat(selectedShipping.preco_final || selectedShipping.preco_ajustado || 0) : 0;
+  const tax = Math.round(subtotal * 0.1 * 100) / 100; // 10% tax
+  const total = Math.round((subtotal + shipping + tax) * 100) / 100; // Evitar problemas de ponto flutuante
 
   const handleRemoveClick = (item) => {
     setShowConfirmModal(item);
@@ -69,11 +70,23 @@ export default function Carrinho() {
       showNotification('Carrinho vazio!', 'error');
       return;
     }
+
+    // VALIDAÇÃO CRÍTICA: Verificar se todos os itens têm tamanho
+    const itemsSemTamanho = cartItems.filter(item => !item.size || item.size === null || item.size === '');
+    if (itemsSemTamanho.length > 0) {
+      showNotification('❌ ERRO CRÍTICO: Alguns itens não têm tamanho! Remova e adicione novamente (obrigatório selecionar tamanho).', 'error');
+      return;
+    }
+
     if (!selectedShipping) {
       showNotification('Selecione um método de frete!', 'error');
       return;
     }
+    
+    // Salvar shipping no localStorage para usar no Checkout
+    localStorage.setItem('selectedShipping', JSON.stringify(selectedShipping));
     showNotification('Redirecionando para pagamento...', 'info');
+    navigate('/checkout');
   };
 
   return (

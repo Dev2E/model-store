@@ -41,6 +41,17 @@ export function CartProvider({ children }) {
 
   // Adicionar produto ao carrinho
   const addToCart = (product, quantity = 1, color = null, size = null) => {
+    // Validação: produto DEVE ter tamanho
+    if (!size || size === null || size === '') {
+      showNotification('❌ ERRO: Tamanho é OBRIGATÓRIO! Volte e selecione um tamanho.', 'error');
+      return false;
+    }
+
+    if (!product || !product.id) {
+      showNotification('Erro: Produto inválido', 'error');
+      return false;
+    }
+
     setCartItems(prevItems => {
       const existingItem = prevItems.find(
         item => item.id === product.id && item.color === color && item.size === size
@@ -57,7 +68,8 @@ export function CartProvider({ children }) {
       }
     });
 
-    showNotification(`${product.name} adicionado ao carrinho!`, 'success');
+    showNotification(`${product.name} (${size}) adicionado ao carrinho!`, 'success');
+    return true;
   };
 
   // Remover produto do carrinho
@@ -129,8 +141,10 @@ export function CartProvider({ children }) {
 
   // Calcular total do carrinho
   const cartTotal = cartItems.reduce((total, item) => {
-    const price = item.price || 0;
-    return total + (price * item.quantity);
+    const price = typeof item.price === 'string' ? parseFloat(item.price) : (item.price || 0);
+    const quantity = typeof item.quantity === 'string' ? parseInt(item.quantity) : (item.quantity || 0);
+    const itemTotal = price * quantity;
+    return Math.round((total + itemTotal) * 100) / 100; // Evitar problemas de ponto flutuante
   }, 0);
 
   const cartCount = cartItems.reduce((count, item) => count + item.quantity, 0);

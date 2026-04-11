@@ -1,43 +1,47 @@
 ================================================================================
                     VELLENIA STORE - LOJA REACT PREMIUM
-                        MANUAL DE USO COMPLETO
+                        MANUAL DE USO COMPLETO (v1.1.0)
 ================================================================================
+
+Data: 10 de Abril de 2026
+Status: ✅ Pronto para Produção
+Desenvolvido com: React 18 + Vite + Tailwind CSS + Supabase + Mercado Pago
 
 ═══════════════════════════════════════════════════════════════════════════════
 1. O QUE ESTE SITE FAZ
 ═══════════════════════════════════════════════════════════════════════════════
 
-VELLENIA STORE é uma loja de e-commerce PREMIUM com as seguintes funcionalidades:
+VELLENIA STORE é uma loja de e-commerce PREMIUM completa com as seguintes:
 
 PARA CLIENTES:
-  ✓ Catálogo de produtos com busca e filtros
-  ✓ Carrinho de compras com cálculo de frete
-  ✓ Autenticação segura (login/cadastro)
-  ✓ Checkout 2 etapas com pagamento Mercado Pago
-  ✓ Histórico de pedidos com status em tempo real
-  ✓ Perfil do usuário personalizável
-  ✓ Recuperação de senha por email
-  ✓ reCAPTCHA para proteção contra bots
+  ✓ Catálogo de produtos com busca e filtros avançados
+  ✓ Carrinho de compras com cálculo de frete em tempo real
+  ✓ Autenticação segura (login/cadastro com 2FA opcional)
+  ✓ Checkout 2 etapas com validação de dados
+  ✓ Pagamento via Mercado Pago (PIX, cartão, débito)
+  ✓ Histórico de pedidos com rastreamento
+  ✓ Perfil do usuário personalizável com endereços
+  ✓ Recuperação de senha segura
+  ✓ Proteção contra bots com reCAPTCHA
 
 PARA ADMINISTRADORES:
   ✓ Dashboard com estatísticas de vendas em tempo real
-  ✓ Gestão de produtos (criar, editar, deletar, categorizar)
-  ✓ Gestão de pedidos com filtros avançados (data, mês, ano, status)
-  ✓ Busca de pedidos por ID, CPF ou nome do cliente
-  ✓ Atualização de status de pedidos em tempo real
-  ✓ Relatórios imprimíveis com resumos de vendas
-  ✓ Gestão de métodos de envio e rastreamento
-  ✓ Análise de receita por produto e período
+  ✓ Gestão completa de produtos (CRUD)
+  ✓ Gestão de pedidos com filtros avançados
+  ✓ Busca por ID, CPF, nome do cliente
+  ✓ Relatórios imprimíveis e gráficos
+  ✓ Gestão de métodos de envio
+  ✓ Análise de receita por período
 
-TECNOLOGIA:
+ARQUITETURA TÉCNICA:
   ✓ Frontend: React 18 + Vite + Tailwind CSS v4
   ✓ Backend: Supabase (PostgreSQL + Edge Functions)
-  ✓ Autenticação: Supabase Auth (JWT)
+  ✓ Autenticação: Supabase Auth com JWT
   ✓ Pagamentos: Mercado Pago API v2
-  ✓ Hospedagem: Supabase + Vercel/Netlify (frontend)
+  ✓ Hospedagem: Supabase (backend) + Vercel/Netlify (frontend)
 
 ═══════════════════════════════════════════════════════════════════════════════
-2. COMO USAR (DESENVOLVIMENTO LOCAL)
+2. COMO CONFIGURAR (DESENVOLVIMENTO LOCAL)
 ═══════════════════════════════════════════════════════════════════════════════
 
 PASSO 1: CLONAR E INSTALAR
@@ -48,378 +52,294 @@ PASSO 1: CLONAR E INSTALAR
 PASSO 2: CONFIGURAR VARIÁVEIS DE AMBIENTE
   $ cp .env.example .env.local
   
-  Abra .env.local e preencha:
+  Arquivo: .env.local (não versionado, use valores reais)
     VITE_SUPABASE_URL=https://seu-projeto.supabase.co
-    VITE_SUPABASE_ANON_KEY=sua_chave_publica
-    VITE_MERCADO_PAGO_PUBLIC_KEY=APP_USR-xxxxxxxxxxxx
-    VITE_RECAPTCHA_PUBLIC_KEY=seu_recaptcha_key
+    VITE_SUPABASE_ANON_KEY=sua_chave_publicavel
+    VITE_MERCADO_PAGO_PUBLIC_KEY=APP_USR-sua-chave
+    VITE_RECAPTCHA_PUBLIC_KEY=seu-recaptcha-key
+
+  ⚠️ NUNCA COMMITE .env.local! Use .gitignore para proteger
 
 PASSO 3: CONFIGURAR BANCO DE DADOS
-  - Abra Supabase Dashboard > SQL Editor
-  - Copie TODO o conteúdo de SUPABASE_SETUP.md
-  - Execute no SQL Editor
-  - Aguarde criar as tabelas
+  1. Login em https://supabase.com/dashboard
+  2. Abra seu projeto
+  3. SQL Editor > Novo Query
+  4. Copie TODO o conteúdo de SUPABASE_SETUP.md
+  5. Execute (aguarde criar as tabelas)
 
 PASSO 4: CRIAR USUÁRIOS DE TESTE
-  No Supabase Dashboard > Authentication > Users, crie:
+  Dashboard > Authentication > Add user
   
-  CLIENTE:
-    Email: teste@vellenia.com
-    Senha: Teste@123456
-    Role: customer
+  Recomendado criar:
+    - Cliente teste (role: customer)
+    - Admin teste (role: admin)
   
-  ADMIN:
-    Email: admin@vellenia.com
-    Senha: Admin@123456
-    Role: admin
+  Use senhas seguras e NÃO COMMITE as credenciais
 
 PASSO 5: INICIAR DESENVOLVIMENTO
   $ npm run dev
-  
-  Acessa em http://localhost:5173
-  
-  Testa login com:
-    Cliente: teste@vellenia.com / Teste@123456
-    Admin: admin@vellenia.com / Admin@123456
+  Acessa: http://localhost:5173
 
-PASSO 6: CONFIGURAR SECRETS DO SUPABASE (Pagamentos)
-  $ npx supabase secrets set MERCADOPAGO_ACCESS_TOKEN="seu-access-token"
+PASSO 6: CONFIGURAR SECRETS DO SUPABASE
+  ⚠️ O MERCADOPAGO_ACCESS_TOKEN é sensível (NUNCA em .env.local)
   
-  Para obter o token:
-  1. Acesse https://www.mercadopago.com.br/
-  2. Login na sua conta
-  3. Configurações > Credenciais > Access Token
-  4. Copie o token da categoria "Produção" ou "Teste"
+  Comando:
+    $ npx supabase secrets set MERCADOPAGO_ACCESS_TOKEN="seu-token-producao"
+  
+  Obter token:
+    1. https://www.mercadopago.com.br
+    2. Conta teste (sandbox) ou produção
+    3. Configurações > Credenciais > Access Token
 
 ═══════════════════════════════════════════════════════════════════════════════
 3. ROTAS E NAVEGAÇÃO
 ═══════════════════════════════════════════════════════════════════════════════
 
-PÚBLICAS (sem login):
-  /                 - Home com produtos
-  /produtos         - Catálogo completo
-  /login            - Tela de login
-  /signup           - Criar conta
-  /recuperar-conta  - Resetar senha
+PÚBLICAS (sem autenticação):
+  /                    - Home com catálogo
+  /produtos            - Listagem completa
+  /produto/:id         - Detalhes do produto
+  /login               - Tela de login
+  /signup              - Criar conta (registro)
+  /recuperar-conta     - Resetar senha
 
-COM LOGIN (protegidas):
-  /perfil           - Dados do usuário
-  /carrinho         - Seu carrinho
-  /checkout         - Finalizar compra
-  /meus-pedidos     - Histórico de pedidos
-  /enderecos        - Gestão de endereços
+PROTEGIDAS (com login):
+  /carrinho            - Carrinho de compras
+  /checkout            - Finalizar pedido (2 etapas)
+  /meus-pedidos        - Histórico de pedidos
+  /pedido/:id          - Detalhes do pedido
+  /perfil              - Dados do usuário
+  /enderecos           - Gerenciar endereços
 
-ADMIN (admin only):
-  /admin            - Dashboard principal
-  /admin/produtos   - Gerenciar produtos
-  /admin/pedidos    - Gerenciar pedidos
-  /admin/clientes   - Gerenciar usuários
-  /admin/envios     - Relatórios de envio
-  /admin/relatorios - Relatórios gerais
+ADMIN (role: admin):
+  /admin               - Dashboard principal
+  /admin/produtos      - CRUD de produtos
+  /admin/pedidos       - Gestão de pedidos
+  /admin/relatorios    - Relatórios e análises
+  /admin/envios        - Métodos de envio
+  /pedido-confirmado   - Confirmação pós-pagamento
 
 ═══════════════════════════════════════════════════════════════════════════════
-4. ESTRUTURA DE ARQUIVOS IMPORTANTES
+4. ESTRUTURA DO PROJETO
 ═══════════════════════════════════════════════════════════════════════════════
 
 src/
-├── pages/              - Componentes de página (rotas)
-│   ├── Home.jsx        - Home com produtos
-│   ├── Produto.jsx     - Detalhes do produto
-│   ├── Carrinho.jsx    - Carrinho com cálculo de frete
-│   ├── Checkout.jsx    - Pagamento Mercado Pago
-│   ├── MeusPedidos.jsx - Histórico com filtros
-│   ├── Perfil.jsx      - Dados do usuário
-│   └── Admin*/         - Páginas administrativas
+├── pages/                    - Componentes de página
+│   ├── Home.jsx             - Home com produtos
+│   ├── Produto.jsx          - Detalhes (com size obrigatório)
+│   ├── Produtos.jsx         - Listagem
+│   ├── Carrinho.jsx         - Cart (com validação de size)
+│   ├── Checkout.jsx         - Pagamento (CPF, formatação)
+│   ├── MeusPedidos.jsx      - Histórico
+│   ├── PedidoConfirmado.jsx - Confirmação pós-pagamento
+│   ├── Perfil.jsx           - Dados do usuário
+│   └── Admin*.jsx           - Páginas administrativas
 │
-├── services/           - Lógica de negócio (API Supabase)
-│   ├── supabaseService.js    - Auth, produtos, pedidos
-│   ├── cepService.js         - Validação de CEP (ViaCEP)
-│   └── shippingService.js    - Cálculo de frete
+├── components/              - Componentes reutilizáveis
+│   ├── Header.jsx           - Navbar
+│   ├── Footer.jsx           - Rodapé
+│   ├── Toast.jsx            - Notificações
+│   └── Modal*.jsx           - Modais
 │
-├── components/         - Componentes React reutilizáveis
-│   ├── Header.jsx      - Navbar
-│   ├── Footer.jsx      - Rodapé
-│   ├── Cart.jsx        - Ícone do carrinho
-│   └── Modal*/         - Modais diversos
+├── context/                 - Estados globais
+│   ├── AuthContext.jsx      - Autenticação
+│   └── CartContext.jsx      - Carrinho com validação
 │
-├── context/            - Estados globais
-│   ├── AuthContext.jsx - Autenticação e usuário
-│   └── CartContext.jsx - Carrinho
+├── services/                - Lógica de negócio
+│   ├── supabaseService.js   - CRUD e auth (19 métodos)
+│   ├── cepService.js        - Validação de CEP
+│   └── shippingService.js   - Cálculo de frete
 │
-├── lib/                - Configurações
-│   └── supabase.js     - Cliente Supabase (singleton)
+├── lib/                     - Configurações
+│   └── supabase.js          - Cliente Supabase (singleton)
 │
-└── index.css           - Estilos globais Tailwind
+├── utils/                   - Utilitários
+│   └── formatters.js        - Formatação pt-BR (moeda, data, CPF)
+│
+└── index.css                - Estilos Tailwind
 
-supabase/functions/    - Edge Functions (backend)
-├── criar-pagamento/    - Criar preferência Mercado Pago
-├── webhooks-mercadopago/ - Receber confirmação de pagamento
-└── consultar-pagamento/ - Verificar status do pagamento
+supabase/functions/         - Edge Functions (backend)
+├── criar-pagamento/         - Cria preferência Mercado Pago
+├── webhooks-mercadopago/    - Recebe confirmação de pagamento
+└── consultar-pagamento/     - Verifica status do pagamento
 
 ═══════════════════════════════════════════════════════════════════════════════
 5. FUNCIONALIDADES PRINCIPAIS
 ═══════════════════════════════════════════════════════════════════════════════
 
-AUTENTICAÇÃO:
-  - Login/Signup com email e senha
-  - Recuperação de senha com código de 6 dígitos
-  - JWT automaticamente gerenciado
-  - Proteção com reCAPTCHA
-
 PRODUTOS:
-  - 20 produtos de moda minimalista em 6 categorias
-  - Camisetas, Calças, Blazers, Vestidos, Cardigans e Acessórios
-  - Busca por nome
-  - Filtros por categoria
-  - Imagem (emoji) e descrição detalhada
-  - Preço com formatação localizada (pt-BR): R$ 349,90 (vírgula como decimal)
+  ✓ 20 produtos de moda em 6 categorias
+  ✓ Busca e filtros por categoria
+  ✓ Seleção OBRIGATÓRIA de tamanho antes de adicionar ao carrinho
+  ✓ Preços em pt-BR: R$ 349,90 (não R$ 349.90)
+  ✓ Imagens (emojis) e descrições
 
 CARRINHO:
-  - Adicionar/remover items
-  - Ajustar quantidade
-  - Persistência local (localStorage)
-  - Cálculo automático de subtotal
+  ✓ Add/remove items
+  ✓ Quantidade ajustável
+  ✓ Validação: rejeita items sem tamanho
+  ✓ Cálculo de subtotal em tempo real
+  ✓ Persistência em localStorage
 
 FRETE:
-  - Cálculo por CEP (ViaCEP API pública)
-  - 3 métodos: SEDEX (R$25), PAC (R$15), Expresso (R$40)
-  - Ajuste automático por região/peso
-  - Tempo de entrega estimado
+  ✓ Cálculo por CEP (ViaCEP API)
+  ✓ 3 métodos: SEDEX (R$25), PAC (R$15), Expresso (R$40)
+  ✓ Ajuste automático por região/peso
+  ✓ Tempo estimado de entrega
+  ✓ Validação do CEP com 8 dígitos
 
-PAGAMENTO:
-  - Integrado Mercado Pago Sandbox
-  - Checkout seguro com 2 etapas
-  - Status em tempo real (webhook)
-  - Redirecionamento automático
+CHECKOUT (2 ETAPAS):
+  Etapa 1 - Entrega:
+    ✓ Nome, Email, Telefone (formatado: (11) 99999-9999)
+    ✓ CPF obrigatório (formatado: 123.456.789-09)
+    ✓ Endereço (Rua, Número, CEP, Cidade, Estado)
+    ✓ CEP validado (formatado: 12345-678)
+    ✓ Validação em tempo real com cores (verde/vermelho)
+  
+  Etapa 2 - Pagamento:
+    ✓ Redirecionamento para Mercado Pago
+    ✓ CPF enviado para Mercado Pago
+    ✓ Suporta: PIX, cartão crédito, débito, boleto
+    ✓ Sandbox mode para testes
+    ✓ Webhook recebe confirmação em tempo real
 
-PEDIDOS:
-  - Histórico com filtros avançados (dia, mês, ano, status)
-  - Busca por ID do pedido, CPF ou nome do cliente
-  - Status colorido com ícones e atualização em tempo real
-  - Detalhes expandíveis com informações completas
-  - Rastreamento de envio
-  - Valores formatados em pt-BR (R$ 349,90)
-  - Data e hora localizadas (DD/MM/YYYY HH:MM)
+VALIDAÇÃO DE ENTRADA:
+  ✓ Formatação automática enquanto digita
+  ✓ Rejeita caracteres inválidos
+  ✓ Validação ao colar (Ctrl+V)
+  ✓ Feedback visual (bordas verde/vermelho)
+  ✓ CPF obrigatório com validação de 11 dígitos
 
 ═══════════════════════════════════════════════════════════════════════════════
-6. LOCALIZAÇÃO E FORMATAÇÃO (pt-BR)
+6. LOCALIZAÇÃO pt-BR
 ═══════════════════════════════════════════════════════════════════════════════
 
-A aplicação está completamente localizada para português brasileiro:
+Toda a aplicação usa formatação brasileira:
 
 MOEDA:
-  - Formato: R$ 349,90 (vírgula como separador decimal)
-  - Função: formatCurrency() em src/utils/formatters.js
-  - Aplicado em: carrinho, checkout, pedidos, admin, relatórios
+  R$ 349,90 (vírgula como separador decimal)
+  Função: formatCurrency() em src/utils/formatters.js
+  Aplicado em: carrinho, checkout, pedidos, admin
 
-DATA E HORA:
-  - Formato Data: DD/MM/YYYY (ex: 10/04/2026)
-  - Formato Hora: HH:MM:SS
-  - Função: formatDate(), formatDateTime()
+DATA:
+  Formato: 10/04/2026 (DD/MM/YYYY)
+  Hora: 14:30:45 (HH:MM:SS)
+  Funções: formatDate(), formatDateTime()
 
-TELEFONE E CPF:
-  - Telefone: (XX) XXXXX-XXXX
-  - CPF: XXX.XXX.XXX-XX
-  - Funções: formatPhone(), formatCPF()
+TELEFONE:
+  (11) 99999-9999
+  Função: formatPhone()
+
+CPF:
+  123.456.789-09
+  Função: formatCPF()
+  Obrigatório no checkout
 
 ═══════════════════════════════════════════════════════════════════════════════
-6. SEGURANÇA IMPLEMENTADA
+7. SEGURANÇA IMPLEMENTADA
 ═══════════════════════════════════════════════════════════════════════════════
 
-✓ Credenciais removidas do git (.env.local ignorado)
-✓ CORS configurado (apenas localhost + domínio produção)
-✓ reCAPTCHA contra bots no login
-✓ Webhook Mercado Pago sem JWT (verify_jwt=false)
+✓ .env.local ignorado (credenciais não vazam no git)
+✓ MERCADOPAGO_ACCESS_TOKEN em Supabase Secrets (não em código)
+✓ CORS restrito a localhost (dev) e domínio produção
+✓ reCAPTCHA no formulário de login
 ✓ Row Level Security (RLS) no Supabase
+✓ JWT gerenciado automaticamente
 ✓ Sanitização de inputs
-✓ Variáveis de ambiente para secrets
-✓ Documentação de segurança (SECURITY_AUDIT.md)
+✓ Validação na Edge Function
+✓ Webhook sem JWT (já validado)
+✓ CPF obrigatório e validado (11 dígitos)
+
+⚠️ ANTES DE PRODUÇÂO:
+  1. Revogar tokens de teste em Supabase/Mercado Pago
+  2. Mudar sandbox_mode: false na Edge Function
+  3. Usar MERCADOPAGO_ACCESS_TOKEN de produção
+  4. Testar com valores pequenos
+  5. Configurar domínio de produção em CORS
 
 ═══════════════════════════════════════════════════════════════════════════════
-7. DEPLOY PARA PRODUÇÃO
+8. DEPLOY PARA PRODUÇÃO
 ═══════════════════════════════════════════════════════════════════════════════
 
-BACKEND (Edge Functions - Supabase):
-
-1. Login Supabase CLI:
-   $ npx supabase login
-
-2. Deploy das funções:
-   $ npx supabase functions deploy --project-ref kfqquqappfixjuakgotf
-
-3. Configurar secrets:
-   $ npx supabase secrets set MERCADOPAGO_ACCESS_TOKEN="token-producao"
-
-4. Verificar:
-   Dashboard > Edge Functions > Deve listar 3 funções
+EDGE FUNCTIONS (Supabase):
+  1. npx supabase login
+  2. npx supabase functions deploy --project-ref SEU_PROJECT_ID
+  3. npx supabase secrets set MERCADOPAGO_ACCESS_TOKEN="token-prod"
+  4. Verificar em Dashboard > Edge Functions
 
 FRONTEND (Vercel - Recomendado):
-
-1. Fazer push para GitHub:
-   $ git push origin main
-
-2. Login em https://vercel.com
-
-3. Importar projeto
-   - Selecionar repositório
-   - Framework: Vite
-   - Build: npm run build
-   - Output: dist
-
-4. Adicionar variáveis de ambiente (Settings > Environment Variables):
-   VITE_SUPABASE_URL=https://seu-projeto.supabase.co
-   VITE_SUPABASE_ANON_KEY=sua-chave-publica
-   VITE_MERCADO_PAGO_PUBLIC_KEY=APP_USR-producao
-   VITE_RECAPTCHA_PUBLIC_KEY=seu-recaptcha-producao
-
-5. Deploy automático com cada push
+  1. git push origin main
+  2. https://vercel.com > Import project
+  3. Selecionar repositório GitHub
+  4. Framework: Vite | Build: npm run build | Output: dist
+  5. Environment Variables:
+     - VITE_SUPABASE_URL
+     - VITE_SUPABASE_ANON_KEY
+     - VITE_MERCADO_PAGO_PUBLIC_KEY (produção)
+     - VITE_RECAPTCHA_PUBLIC_KEY (produção)
+  6. Deploy automático a cada push
 
 ALTERNATIVA (Netlify):
-
-1. Build localmente:
-   $ npm run build
-
-2. Fazer push para GitHub
-
-3. No Netlify > New site from Git
-   - Selecionar repositório
-   - Build: npm run build
-   - Publish: dist
+  1. npm run build (gera /dist)
+  2. git push origin main
+  3. Netlify > New site from Git
+  4. Build: npm run build | Publish: dist
+  5. Adicionar enviáveis de ambiente
 
 ═══════════════════════════════════════════════════════════════════════════════
-8. FUTURAS IMPLEMENTAÇÕES (ROADMAP)
+9. ROADMAP (Próximos Passos)
 ═══════════════════════════════════════════════════════════════════════════════
 
-CURTO PRAZO (1-2 semanas):
-  ☐ Integrar com API real de Melhor Envio (fretes dinâmicos)
-  ☐ Implementar avaliações de produtos (stars, comentários)
-  ☐ Email automático com SendGrid (confirmação, rastreamento)
-  ☐ Cupons e códigos de desconto
+CURTO PRAZO:
+  ☐ Sistema de cupons com desconto
+  ☐ Avaliações de produtos (stars + comentários)
+  ☐ Email automático (SendGrid)
   ☐ Wishlist (favoritos)
-  ☐ Busca com filtros avançados
+  ☐ Integração Melhor Envio (fretes reais)
 
-MÉDIO PRAZO (1 mês):
-  ☐ Integração PIX (CPF/CNPJ)
-  ☐ Suporte a múltiplos idiomas (i18n)
-  ☐ Checkout com múltiplos endereços
+MÉDIO PRAZO:
   ☐ Programa de pontos/cashback
-  ☐ Notificações push
+  ☐ Suporte a múltiplos idiomas (i18n)
   ☐ Dark mode
+  ☐ Notificações push
+  ☐ Live chat
 
-LONGO PRAZO (2+ meses):
-  ☐ Aplicativo mobile (React Native)
+LONGO PRAZO:
+  ☐ App mobile (React Native)
   ☐ Marketplace (multi-vendedor)
   ☐ IA para recomendações
-  ☐ Integração com Shopify
-  ☐ Relatórios avançados (BI)
-  ☐ Suporte ao vivo (chat)
-  ☐ Inventory management automático
-
-════════════════════════════════════════════════════════════════════════════════
-9. FUNCIONALIDADES DE ADMIN AVANÇADAS
-═══════════════════════════════════════════════════════════════════════════════
-
-FILTGRAGEN DE PEDIDOS (Admin > Pedidos):
-  - Por Período: Hoje, Últimos 7 dias, Este mês, Últimos 30 dias, Últimos 90 dias
-  - Por Status: Pendente, Aguardando Pagamento, Pago, Em Trânsito, Entregue, Cancelado
-  - Busca Avançada: 
-    • Por ID do pedido (#12345)
-    • Por CPF do cliente (com formatação XXX.XXX.XXX-XX)
-    • Por nome do cliente
-  - Resultados com estatísticas (total de pedidos, valor total)
-
-RELATÓRIOS PRINTÁVEIS (Admin > Relatórios):
-  - Receita Total (últimos 90 dias, customizável)
-  - Ticket Médio (valor médio por pedido)
-  - Top 10 Produtos (por receita gerada)
-  - Tabela de Pedidos (com datas filtradas)
-  - Gráfico de Receita Diária (últimos 30 dias)
-  - Resumo com estatísticas por período
-  - Exportar para impressão (botão Print)
-
-DASHBOARD ESTATÍSTICO (Admin > Dashboard):
-  - Total de Pedidos em tempo real
-  - Receita Total formatada em pt-BR
-  - Total de Clientes registrados
-  - Taxa de Conversão
-  - Pedidos recentes com status atualizado
-  - Estatísticas por período selecionado
-
-GESTÃO DE ENVIOS (Admin > Envios):
-  - Métodos de envio (SEDEX, PAC, Expresso)
-  - Preços formatados em pt-BR
-  - Tempo de entrega estimado
-  - Status Ativo/Inativo
-  - Editar e deletar métodos
-
-GESTÃO DE PRODUTOS (Admin > Produtos):
-  - Criar novo produto com categoria
-  - Editar nome, preço, descrição, estoque, categoria
-  - Preços exibidos em pt-BR (R$ XXX,XX)
-  - Busca por nome
-  - Listar/deletar produtos
+  ☐ Integração Shopify
+  ☐ Business Intelligence (gráficos avançados)
 
 ═══════════════════════════════════════════════════════════════════════════════
-10. TROUBLESHOOTING
+10. DOCUMENTAÇÃO TÉCNICA
 ═══════════════════════════════════════════════════════════════════════════════
 
-PROBLEMA: "Erro de autenticação ao fazer login"
-SOLUÇÃO: 
-  - Verificar se usuário existe em Supabase > Auth > Users
-  - Confirmar .env.local tem VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY corretos
-  - Testar token em https://supabase.com/dashboard
+Arquivos importantes:
+  - INSTRUCOES.txt       - Para desenvolvedores (leia antes de mexer)
+  - SECURITY_AUDIT.md    - Análise de segurança
+  - SUPABASE_SETUP.md    - Schema SQL completo
+  - .env.example         - Variáveis necessárias (copie para .env.local)
 
-PROBLEMA: "Frete não calcula ao inserir CEP"
-SOLUÇÃO:
-  - Verificar se CEP é válido (8 dígitos, ex: 01310100)
-  - ViaCEP API pode estar indisponível (testar em https://viacep.com.br)
-  - Abrir console (F12) e verificar erros
+Tecnologias e versões:
+  - Node.js >= 18.0.0
+  - React 18.x
+  - Vite 8.x
+  - Tailwind CSS 4.2.2
+  - Supabase-js 2.x
 
-PROBLEMA: "Erro 401 no webhook Mercado Pago"
-SOLUÇÃO:
-  - Verificar se config.toml tem: verify_jwt = false
-  - Confirmar MERCADOPAGO_ACCESS_TOKEN está em Supabase Secrets
-  - Testar webhook manualmente em Mercado Pago Dashboard
-
-PROBLEMA: "Design desapareceu (Tailwind CDN warning)"
-SOLUÇÃO:
-  - Tailwind CDN está correto em produção (ignore warning)
-  - Se quiser remover warning, mudar para build npm (complexo)
-  - Deixa como está por enquanto
-
-PROBLEMA: "npm run dev não inicia"
-SOLUÇÃO:
-  - Matar processo node: taskkill /IM node.exe /F (Windows)
-  - Deletar node_modules: rm -r node_modules && npm install
-  - Verificar versão Node: npm --version (deve ser >= 18)
-
-═══════════════════════════════════════════════════════════════════════════════
-11. CONTATO E SUPORTE
-═══════════════════════════════════════════════════════════════════════════════
-
-Documentação técnica:
-  - SUPABASE_SETUP.md     - Schema SQL completo
-  - SECURITY_AUDIT.md     - Análise de segurança
-  - .env.example          - Variáveis necessárias
-
-Links úteis:
+Links principais:
+  - GitHub: https://github.com/seu-usuario/loja_react_pronta
   - Supabase Dashboard: https://supabase.com/dashboard
-  - Mercado Pago Sandbox: https://www.mercadopago.com.br/
-  - Vercel Deploy: https://vercel.com
-  - React Docs: https://react.dev
-  - Tailwind CSS: https://tailwindcss.com
-
-Versões utilizadas:
-  - Node.js: >= 18.0.0
-  - React: 18.x
-  - Vite: 8.x
-  - Tailwind: 4.2.2
-  - Supabase-js: 2.x
+  - Mercado Pago: https://www.mercadopago.com.br (use conta teste)
+  - Vercel: https://vercel.com
+  - React: https://react.dev
+  - Tailwind: https://tailwindcss.com
 
 ═══════════════════════════════════════════════════════════════════════════════
 
 Última atualização: 10 de Abril de 2026
-Status: ✅ Pronto para produção com localização pt-BR
-Versão: 1.1.0
+Status: ✅ Pronto para Produção (v1.1.0)
+Desenvolvido por: Copilot Agent
 
 ================================================================================

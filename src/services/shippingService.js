@@ -20,21 +20,8 @@ export const shippingService = {
         return { data: null, error: 'CEP inválido' };
       }
 
-      // Tenta buscar do banco, mas usa padrão se falhar
-      let metodos = METODOS_PADRAO;
-      
-      try {
-        const { data: metodosDB, error: metodosError } = await supabase
-          .from('shipping_methods')
-          .select('*')
-          .eq('ativo', true);
-
-        if (metodosDB && metodosDB.length > 0) {
-          metodos = metodosDB;
-        }
-      } catch (err) {
-        console.log('Usando métodos de frete padrão');
-      }
+      // Usar métodos de frete padrão
+      const metodos = METODOS_PADRAO;
 
       // Calcula preço ajustado baseado na região
       const metodosComPreco = metodos.map(metodo => {

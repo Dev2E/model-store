@@ -1,6 +1,6 @@
 -- Script SQL para popular Vellenia Store com 20 produtos
 -- Execute este script no SQL Editor do Supabase
--- https://supabase.com/dashboard/project/kfqquqappfixjuakgotf/sql/new
+-- https://supabase.com/dashboard (SQL Editor > New Query)
 
 -- Desativar produtos antigos
 UPDATE products SET active = false;

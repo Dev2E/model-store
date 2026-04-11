@@ -1,16 +1,17 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { useCart } from '../context/CartContext';
 import { productsService } from '../services/supabaseService';
+import { formatCurrency } from '../utils/formatters';
 
 export default function Produtos() {
-  const { addToCart } = useCart();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [priceRange, setPriceRange] = useState(1000);
   const [sortBy, setSortBy] = useState('featured');
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   // Carregar produtos do Supabase
   useEffect(() => {
@@ -74,6 +75,17 @@ export default function Produtos() {
     }
   });
 
+  // Paginação
+  const totalPages = Math.ceil(sorted.length / itemsPerPage);
+  const startIdx = (currentPage - 1) * itemsPerPage;
+  const endIdx = startIdx + itemsPerPage;
+  const paginatedProducts = sorted.slice(startIdx, endIdx);
+
+  // Reset página quando filtros mudam
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, priceRange, sortBy]);
+
   return (
     <main className="min-h-screen bg-white">
       {/* Header */}
@@ -122,18 +134,12 @@ export default function Produtos() {
                   onChange={(e) => setPriceRange(parseInt(e.target.value))}
                   className="w-full"
                 />
-                <p className="text-sm text-gray-600 mt-2">Até R$ {priceRange.toLocaleString('pt-BR')},00</p>
+                <p className="text-sm text-gray-600 mt-2">Até {formatCurrency(priceRange)}</p>
               </div>
-            </div>
-
-            {/* Featured Banner */}
-            <div className="bg-gray-300 h-40 rounded-lg flex items-center justify-center text-4xl overflow-hidden">
-              🎨
             </div>
           </div>
         </div>
 
-        {/* Products Grid */}
         <div className="lg:col-span-3">
           {/* Header with Sort */}
           <div className="flex justify-between items-center mb-8">
@@ -168,10 +174,10 @@ export default function Produtos() {
           {/* Products Grid */}
           {!loading && !error && sorted.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-              {sorted.map((product) => (
-                <div key={product.id} className="group">
+              {paginatedProducts.map((product) => (
+                <div key={product.id} className="group overflow-hidden">
                   <Link to={`/produto/${product.id}`} className="block">
-                    <div className="bg-gray-200 h-64 rounded-lg flex items-center justify-center text-6xl mb-4 group-hover:bg-gray-300 transition relative">
+                    <div className="bg-gray-200 h-64 rounded-lg flex items-center justify-center text-6xl mb-4 group-hover:bg-gray-300 transition relative overflow-hidden">
                       {product.image || '📦'}
                       <span className="absolute top-3 right-3 bg-white bg-opacity-90 px-3 py-1 text-xs font-semibold rounded">
                         LIMITADO
@@ -180,12 +186,15 @@ export default function Produtos() {
                     <h3 className="font-semibold text-sm mb-2">{product.name}</h3>
                   </Link>
                   <div className="flex justify-between items-center">
-                    <p className="text-lg font-bold">R$ {product.price.toLocaleString('pt-BR')},00</p>
+                    <p className="text-lg font-bold">{formatCurrency(product.price)}</p>
                     <button 
-                      onClick={() => addToCart({ ...product, image: product.image || '📦' }, 1)}
+                      onClick={() => {
+                        window.location.href = `/produto/${product.id}`;
+                      }}
                       className="bg-gray-800 text-white rounded px-3 py-1 text-xs font-semibold hover:bg-gray-900 transition opacity-0 group-hover:opacity-100"
+                      title="Clique para selecionar tamanho e adicionar ao carrinho"
                     >
-                      Adicionar
+                      Ver Detalhes
                     </button>
                   </div>
                 </div>
@@ -201,15 +210,53 @@ export default function Produtos() {
           )}
 
           {/* Pagination */}
-          <div className="flex justify-center items-center gap-2">
-            <button className="px-3 py-2 border border-gray-300 rounded hover:bg-gray-100">←</button>
-            <button className="px-4 py-2 bg-gray-800 text-white rounded">1</button>
-            <button className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100">2</button>
-            <button className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100">3</button>
-            <span className="px-3 py-2">...</span>
-            <button className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100">32</button>
-            <button className="px-3 py-2 border border-gray-300 rounded hover:bg-gray-100">→</button>
-          </div>
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-2 flex-wrap">
+              <button 
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+                className="px-3 py-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                ←
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => {
+                const page = i + 1;
+                // Mostrar página atual, primeira, última e 2 paginas ao redor
+                if (page === 1 || page === totalPages || (page >= currentPage - 1 && page <= currentPage + 1)) {
+                  return (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`px-4 py-2 rounded ${
+                        currentPage === page
+                          ? 'bg-gray-800 text-white'
+                          : 'border border-gray-300 hover:bg-gray-100'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  );
+                } else if ((page === currentPage - 2 || page === currentPage + 2) && totalPages > 1) {
+                  return <span key={`dots-${page}`} className="px-2">...</span>;
+                }
+                return null;
+              })}
+              <button 
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages}
+                className="px-3 py-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                →
+              </button>
+            </div>
+          )}
+          
+          {/* Info sobre página */}
+          {sorted.length > 0 && (
+            <div className="text-center mt-6 text-sm text-gray-600">
+              Mostrando {startIdx + 1} a {Math.min(endIdx, sorted.length)} de {sorted.length} produtos
+            </div>
+          )}
         </div>
       </div>
     </main>

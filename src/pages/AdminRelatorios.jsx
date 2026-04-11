@@ -263,7 +263,7 @@ export default function AdminRelatorios() {
                       <span className="text-white text-xs font-bold">{day.orders} pedidos</span>
                     </div>
                   </div>
-                  <span className="text-white font-bold w-28">{formatCurrency(day.amount)}</span>\n                </div>
+                  <span className="text-white font-bold w-28">{formatCurrency(day.amount)}</span>
                 </div>
               ))}
             </div>

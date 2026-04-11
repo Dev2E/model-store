@@ -2,14 +2,15 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
+import { formatCurrency } from '../utils/formatters';
 import { productsService } from '../services/supabaseService';
 
 export default function Produto() {
   const { id } = useParams();
-  const { addToCart, toggleWishlist, isInWishlist } = useCart();
+  const { addToCart, toggleWishlist, isInWishlist, showNotification } = useCart();
   
   const [selectedColor, setSelectedColor] = useState('black');
-  const [selectedSize, setSelectedSize] = useState('41');
+  const [selectedSize, setSelectedSize] = useState(null); // Inicializa como null para forçar seleção
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -27,7 +28,7 @@ export default function Produto() {
         } else {
           setProduct(data);
           setSelectedColor(data?.colors?.[0]?.name || 'black');
-          setSelectedSize(data?.sizes?.[0] || '41');
+          setSelectedSize(null); // Sem tamanho pré-selecionado
           setQuantity(1);
 
           // Carregar produtos relacionados
@@ -37,6 +38,9 @@ export default function Produto() {
               ?.filter(p => p.id !== id)
               .slice(0, 4) || []
           );
+          
+          // Scroll para o topo
+          window.scrollTo(0, 0);
         }
       } catch (err) {
         setError('Erro ao carregar produto');
@@ -49,7 +53,21 @@ export default function Produto() {
   }, [id]);
 
   const handleAddToCart = () => {
+    // Validar se tamanho foi selecionado (validação dupla)
+    if (!selectedSize || selectedSize === null || selectedSize === '') {
+      showNotification('ERRO: Você DEVE selecionar um tamanho!', 'error');
+      return false;
+    }
+
+    // Validar se produto existe
+    if (!product || !product.id) {
+      showNotification('Erro: Produto não carregado', 'error');
+      return false;
+    }
+
+    // Adicionar ao carrinho
     addToCart(product, quantity, selectedColor, selectedSize);
+    return true;
   };
 
   const handleToggleWishlist = () => {
@@ -79,7 +97,7 @@ export default function Produto() {
         {/* Left Column - Images */}
         <div className="lg:col-span-2">
           {/* Main Image */}
-          <div className="bg-gradient-to-br from-blue-900 to-blue-600 rounded-lg h-96 lg:h-screen flex items-center justify-center text-9xl mb-6">
+          <div className="bg-gradient-to-br from-blue-900 to-blue-600 rounded-lg h-96 flex items-center justify-center text-9xl mb-6">
             {product.image}
           </div>
 
@@ -99,7 +117,7 @@ export default function Produto() {
           
           <h1 className="text-3xl font-bold font-manrope mb-4">{product.name}</h1>
           
-          <p className="text-3xl font-bold mb-6">R$ {product.price.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
+          <p className="text-3xl font-bold mb-6">{formatCurrency(product.price)}</p>
 
           {/* Color Selection */}
           <div className="mb-6">
@@ -132,11 +150,16 @@ export default function Produto() {
           {/* Size Selection */}
           <div className="mb-6">
             <div className="flex justify-between items-center mb-3">
-              <label className="text-sm font-semibold">SELECIONE O TAMANHO</label>
+              <label className="text-sm font-semibold">
+                SELECIONE O TAMANHO
+                <span className="text-red-600 ml-1">*</span>
+              </label>
               <a href="#" className="text-xs text-gray-600 hover:underline">Guia de Tamanhos</a>
             </div>
             <div className="grid grid-cols-4 gap-2">
-              {Array.isArray(product.sizes) && product.sizes.map((size) => (
+              {(Array.isArray(product.sizes) && product.sizes.length > 0 
+                ? product.sizes 
+                : ['P', 'M', 'G', 'GG']).map((size) => (
                 <button
                   key={size}
                   onClick={() => setSelectedSize(size)}
@@ -153,7 +176,17 @@ export default function Produto() {
           </div>
 
           {/* Add to Bag Button */}
-          <button onClick={handleAddToCart} className="w-full bg-gray-800 text-white font-semibold py-3 rounded hover:bg-gray-900 transition mb-4">Adicionar à Sacola</button>
+          <button 
+            onClick={handleAddToCart} 
+            disabled={!selectedSize}
+            className={`w-full font-semibold py-3 rounded transition mb-4 ${
+              !selectedSize 
+                ? 'bg-gray-400 text-gray-600 cursor-not-allowed opacity-60' 
+                : 'bg-gray-800 text-white hover:bg-gray-900'
+            }`}
+          >
+            Adicionar à Sacola
+          </button>
           
           {/* Add to Wishlist */}
           <button onClick={handleToggleWishlist} className={`w-full font-semibold py-3 rounded transition ${
@@ -217,7 +250,7 @@ export default function Produto() {
                   {relProduct.image || '📦'}
                 </div>
                 <h3 className="font-semibold text-sm mb-2">{relProduct.name}</h3>
-                <p className="text-lg font-bold">R$ {relProduct.price.toLocaleString('pt-BR')},00</p>
+                <p className="text-lg font-bold">{formatCurrency(relProduct.price)}</p>
               </Link>
             ))}
           </div>

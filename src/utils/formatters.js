@@ -1,14 +1,20 @@
 // Formatadores para valores brasileiros
 
 export const formatCurrency = (value) => {
-  if (value === null || value === undefined) return 'R$ 0,00';
+  if (value === null || value === undefined || value === '') return 'R$ 0,00';
   
-  const numValue = parseFloat(value);
-  if (isNaN(numValue)) return 'R$ 0,00';
+  // Converter para número, removendo qualquer caractere não numérico
+  let numValue = typeof value === 'string' 
+    ? parseFloat(value.replace(/[^\d.-]/g, ''))
+    : parseFloat(value);
+  
+  if (isNaN(numValue) || numValue === undefined) return 'R$ 0,00';
   
   return new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(numValue);
 };
 

@@ -47,7 +47,7 @@ export default function AdminLogs() {
     const agora = new Date();
     const logs = [];
     const tipos = ["login", "produto_criado", "produto_editado", "produto_deletado", "pedido_criado", "usuario_registration"];
-    const usuarios = ["admin@loja.com", "user1@example.com", "user2@example.com"];
+    const usuarios = ["admin@loja.com"];
 
     for (let i = 0; i < 20; i++) {
       const data = new Date(agora.getTime() - Math.random() * 7 * 24 * 60 * 60 * 1000);

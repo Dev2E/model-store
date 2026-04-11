@@ -151,16 +151,23 @@ export const ordersService = {
         .insert([
           {
             user_id: userId,
-            items: orderData.items,
-            total: orderData.total,
+            items: orderData.items || [],
+            total: orderData.total || 0,
             status: 'pending',
             created_at: new Date().toISOString(),
           },
         ])
         .select();
-      return { data, error };
+
+      if (error) {
+        console.error('Erro ao criar pedido:', error);
+        return { data: null, error: error.message || 'Erro ao criar pedido' };
+      }
+
+      return { data: data?.[0], error: null };
     } catch (error) {
-      return { data: null, error };
+      console.error('Exceção ao criar pedido:', error);
+      return { data: null, error: error?.message || 'Erro desconhecido ao criar pedido' };
     }
   },
 

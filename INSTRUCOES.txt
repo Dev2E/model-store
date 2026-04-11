@@ -1,313 +1,349 @@
 ================================================================================
-                    INSTRUCOES PARA PROXIMA IA/DESENVOLVEDOR
-                         LEIA ANTES DE QUALQUER MUDANCA
+                    INSTRUÇÕES PARA DESENVOLVEDORES
+                         LEIA ANTES DE QUALQUER MUDANÇA
 ================================================================================
 
+Data: 10 de Abril de 2026
+Versão: 1.1.0
+Status: ✅ Pronto para Manutenção e Evolução
+
 ═══════════════════════════════════════════════════════════════════════════════
-⚠️ AVISOS CRITICOS
+⚠️ AVISOS CRÍTICOS
 ═══════════════════════════════════════════════════════════════════════════════
 
-1. TAILWIND CSS - AMBIENTE DE DESENVOLVIMENTO
+1. CLIENTE SUPABASE - SINGLETON CENTRALIZADO
    
-   ✅ IMPLEMENTADO:
-      O projeto usa Tailwind CSS via CDN em DESENVOLVIMENTO:
-      <script src="https://cdn.tailwindcss.com"></script>
+   ✅ ÚNICO PONTO DE ENTRADA: src/lib/supabase.js
    
-   ⚡ AÇÃO SE DESIGN SUMIR:
-      1. Verificar se script está em index.html (ANTES de </head>)
-      2. Se removido acidentalmente, reparar: 
-         <script src="https://cdn.tailwindcss.com"></script>
-      3. Limpar cache do navegador (Ctrl+Shift+Del)
+   Sempre use:
+     import { supabase } from '../lib/supabase';
    
-   🔴 NÃO FAÇA:
-      ✗ Remover script do CDN sem configurar build npm
-      ✗ Usar Tailwind v4 syntax diferente do config atual
-      ✗ Mexer em postcss.config.js (DEV já está correto)
-
-───────────────────────────────────────────────────────────────────────────────
-
-2. SUPABASE CLIENT - SINGLETON CONSOLIDADO
-   
-   ✅ IMPLEMENTADO:
-      Apenas 1 cliente Supabase em src/lib/supabase.js
-      Todas as páginas importam daqui:
-      import { supabase } from '../lib/supabase';
-   
-   🔴 NÃO FAÇA:
-      ✗ Criar novo createClient() em outro lugar
-      ✗ Importar de src/config/supabase.js (deletado)
-      ✗ Ter múltiplas instâncias GoTrueClient
+   🔴 NUNCA FAÇA:
+     ✗ createClient() em outro arquivo
+     ✗ Múltiplas instâncias de Supabase
+     ✗ Importar de src/config/ ou src/services/
    
    ⚡ SE APARECER "Multiple GoTrueClient instances":
-      Procure por createClient() no código
-      Sempre use o import de src/lib/supabase.js
+     1. Procure por createClient() no código
+     2. Remova a instância duplicada
+     3. Use SEMPRE o import de src/lib/supabase.js
 
 ───────────────────────────────────────────────────────────────────────────────
 
-3. FORMATAÇÃO LOCALIZADA (pt-BR) - NOVO ✨
+2. TAILWIND CSS - USANDO CDN (DESENVOLVIMENTO)
    
-   ✅ IMPLEMENTADO:
-      Arquivo: src/utils/formatters.js
-      Exporta funções para localização brasileira:
-      
-      - formatCurrency(value) → R$ 349,90 (vírgula decimal)
-      - formatCurrencyWithoutSymbol(value) → 349,90
-      - formatDate(dateString) → 10/04/2026
-      - formatDateTime(dateString) → 10/04/2026 14:30:45
-      - formatPhone(phone) → (11) 12345-6789
-      - formatCPF(cpf) → 123.456.789-00
+   ✅ CONFIGURADO: <script src="https://cdn.tailwindcss.com"></script>
    
-   📝 COMO USAR:
-      import { formatCurrency } from '../utils/formatters';
-     VALORES AGORA FORMATADOS EM pt-BR:
-      Mostram como: R$ 25,00 (não R$ 25.00)
-      Usa formatCurrency() do utils/formatters.js
-
-───────────────────────────────────────────────────────────────────────────────
-
-5     ✗ Usar .toFixed(2) para valores monetários em páginas
-      ✗ .replace('.', ',') manual (use formatCurrency)
-      ✗ Deixar valores em formato pt-BR hardcoded
-      ✗ Mostrar datas sem formatDate()
-
-───────────────────────────────────────────────────────────────────────────────
-
-4. FRETE/SHIPPING - DADOS PADRÃO
-   
-   ✅ SISTEMA ATUAL:
-      - Usa dados padrão (fictícios) para cálculo de frete
-      - 3 métodos: SEDEX (R$25), PAC (R$15), Expresso (R$40)
-      - Ajusta preço por região/peso automaticamente
-      - CEP validado via ViaCEP API pública (gratuito)
-   
-   📦 MÉTODOS DE ENVIO (em shippingService.js):
-      const METODOS_PADRAO = [
-        { id: 1, nome: 'SEDEX', preco: 25.00, tempo_dias: 2, ativo: true },
-        { id: 2, nome: 'PAC', preco: 15.00, tempo_dias: 7, ativo: true },
-        { id: 3, nome: 'Expresso', preco: 40.00, tempo_dias: 1, ativo: true },
-      ];
-   
-   ⚡ PARA USAR API REAL (Melhor Envio):
-      - Criar arquivo supabase/functions/calcular-frete-melhor-envio/index.ts
-      - Atualizar shippingService.calcularFrete() para chamar Edge Function
-      - Adicionar MELHOR_ENVIO_TOKEN em Supabase Secrets
-      - Ver MANUAL.txt seção "Futuras Implementações"
-
-───────────────────────────────────────────────────────────────────────────────
-
-4. MERCADO PAGO - INTEGRAÇÃO 100% FUNCIONAL
-   
-   ✅ FUNCIONANDO:
-      - Edge Function criar-pagamento cria preferência
-      - Checkout redireciona para Mercado Pago Sandbox
-      - Webhook recebe confirmação de pagamento
-      - Status atualizado em tempo real
-   
-   🔐 CONFIGURAÇÃO:
-      - MERCADOPAGO_ACCESS_TOKEN está em Supabase Secrets (seguro)
-      - Não está em .env.local (evita vazar no git)
-      - Token de produção deve ser diferente do sandbox
-   
-   📝 SE PRECISAR MUDAR TOKEN:
-      npx supabase secrets set MERCADOPAGO_ACCESS_TOKEN="novo-token"
-   
-   🔗 3 EDGE FUNCTIONS (todas em produção):
-      GET /functions/v1/criar-pagamento
-      POST /functions/v1/webhooks-mercadopago
-      GET /functions/v1/consultar-pagamento
-
-───────────────────────────────────────────────────────────────────────────────
-
-5. AUTENTICAÇÃO - CONSOLIDADA EM src/context/AuthContext.jsx
-   
-6  ✅ FUNCIONANDO:
-      - Login/Signup com email/senha
-      - JWT automaticamente gerenciado
-      - Contexto global com user state
-      - reCAPTCHA no formulário de login
-   
-   🔐 PROTEÇÕES:
-      - 2FA via código de 6 dígitos (resetar senha)
-      - CORS restrito a localhost + domínio produção
-      - RLS policies no Supabase
-   
-   ⚠️ IMPORTANTE:
-      Se aparecer "Cannot read properties of undefined (reading 'from')":
-      Procure no shippingService.js - já foi corrigido
-      Tem import { supabase } from '../lib/supabase'; correto
-
-───────────────────────────────────────────────────────────────────────────────
-
-7. PRODUTOS - 20 ITEMS VELLENIA STORE
-   
-   ✅ IMPLEMENTADO:
-      - 20 produtos de moda minimalista
-      - Distribuídos em categorias: Camisetas, Calças, Blazers, Vestidos, 
-        Cardigans, Acessórios
-      - Preços de R$ 79,90 a R$ 349,90
-      - Script SQL: scripts/seed-products.sql
-   
-   📝 PARA POPULAR BANCO:
-      1. Supabase Dashboard > SQL Editor
-      2. Copiar conteúdo de scripts/seed-products.sql
-      3. Executar no SQL Editor
-      4. Verificar: 20 produtos criados
-   
-   ⚠️ IMPORTANTE:
-      - Usar scripts/seed-products.sql (atualizado)
-      - SEED_INSTRUCTIONS.txt foi deletado (obsoleto)
-      - seedProducts.mjs foi deletado (obsoleto)
-
-───────────────────────────────────────────────────────────────────────────────
-
-8. ADMIN FEATURES AVANÇADAS - NOVO ✨
-    + novos features)
-□ Ler este arquivo (INSTRUCOES.txt) completamente
-□ Entender src/lib/supabase.js (cliente único)
-□ Verificar src/utils/formatters.js para valores monetários
-□ Verificar se existe Edge Function pronta em supabase/functions/
-□ Conferir supabaseService.js para não duplicar lógica
-□ Testar em http://localhost:5173 antes de commitar
-□ Sempre usar formatCurrency() para valores em páginas
-      ✅ Relatório imprimível com resumo
-   
-   DASHBOARD (Admin > Dashboard):
-      ✅ Total de pedidos
-      ✅ Receita total formatada (pt-BR)
-      ✅ Total de clientes
-      ✅ Taxa de conversão
-      ✅ Pedidos recentes com status
-   
-   rc/utils/         - Utilitários como formatters.js
-  supabase/functions/ - Edge Functions de backend
-  Sempre npm run dev depois de mudança
-
-⚠️ CUIDADO EXTREMO:
-  src/lib/supabase.js            - Único cliente, não duplicar
-  src/context/AuthContext.jsx    - GoTrueClient consolidado
-  src/services/supabaseService.js - Tem 19 métodos, não quebrar
-  src/utils/formatters.js        - Formatação global, usar em toda parte
-  index.html                     - CDN Tailwind está aqui
-  postcss.config.js              - Não mexer (DEV=CDN
-      ✅ Criar novo product com categoria
-      ✅ Editar nome, preço, descrição, estoque, categoria
-      ✅ Preços exibidos em pt-BR
-      ✅ Buscar por nome
-      ✅ Deletar produtos
-   
-   ENVIOS (Admin > Envios):
-      ✅ Métodos: SEDEX, PAC, Expresso
-      ✅ Preços formatados em pt-BR
-      ✅R$ 89.90 em vez de R$ 89,90"
-  → Arquivo: Qualquer página de produtos/admin
-  → Causa: Não usando formatCurrency()
-  → Solução: import { formatCurrency } from '../utils/formatters';
-             Mudar {valor.toFixed(2)} para {formatCurrency(valor)}
-
-ERRO: " Tempo de entrega estimado
-      ✅ Status Ativo/Inativo
-      ✅ Editar e deletar
-
-───────────────────────────────────────────────────────────────────────────────
-
-9. .gitignore - CREDENCIAIS PROTEGIDAS
-   
-   ✅ ARQUIVOS IGNORADOS (seguro):
-      .env.local         - Variáveis locais não são versionadas
-      node_modules/      - Re-instala com npm install
-      dist/              - Build gerado localmente
-      .supabase/         - Tokens locais ignorados
-   
-   ️⚠️ SE CLONAR O PROJETO:
-      cp .env.example .env.local
-      Preencher com suas credenciais (nunca commit .env.local)
+   Localizado em: index.html (ANTES de </head>)
    
    🔴 NÃO FAÇA:
-      ✗ Fazer git commit -m "add .env.local" (vaza credenciais)
+     ✗ Remover script sem configurar build npm
+     ✗ Mudar versão do CDN sem testar
+     ✗ Mexer em postcss.config.js (já está correto)
+   
+   ⚡ SE DESIGN SUMIR:
+     1. Verificar se script está em index.html
+     2. Limpar cache (Ctrl+Shift+Del)
+     3. Recarregar página (Ctrl+R)
+     4. Verificar console para erros do CDN
+
+───────────────────────────────────────────────────────────────────────────────
+
+3. FORMATAÇÃO pt-BR - OBRIGATÓRIA
+   
+   ✅ IMPLEMENTADO: src/utils/formatters.js
+   
+   Funções disponíveis:
+     - formatCurrency(349.90)      → "R$ 349,90"
+     - formatCurrencyNoSymbol(349) → "349,90"
+     - formatDate("2026-04-10")    → "10/04/2026"
+     - formatDateTime(...)         → "10/04/2026 14:30:45"
+     - formatPhone("11999999999")  → "(11) 99999-9999"
+     - formatCPF("12345678909")    → "123.456.789-09"
+   
+   📝 COMO USAR:
+     import { formatCurrency } from '../utils/formatters';
+     
+     <span>{formatCurrency(349.90)}</span> // Mostra "R$ 349,90"
+   
+   🔴 NUNCA FAÇA:
+     ✗ .replace('.', ',') manual em componentes
+     ✗ .toFixed(2) para valores monetários
+     ✗ Valores com formato hardcoded em páginas
+     ✗ Datas sem formatDate()
+   
+   ⚠️ SE VALOR APARECER ERRADO (ex: "R$ 89.90" em vez de "R$ 89,90"):
+     1. Procure pelo valor na página/componente
+     2. Mude {valor.toFixed(2)} para {formatCurrency(valor)}
+     3. Adicione import { formatCurrency } no topo
+     4. Teste em desenvolvimento
+
+───────────────────────────────────────────────────────────────────────────────
+
+4. VALIDAÇÃO DE FORMULÁRIO E CPF
+   
+   ✅ IMPLEMENTADO: Em Checkout.jsx
+   
+   Funcionalidades:
+     ✓ Formatação automática enquanto digita
+     ✓ Validação ao colar (Ctrl+V)
+     ✓ CPF obrigatório (11 dígitos)
+     ✓ Rejeita caracteres inválidos
+     ✓ Feedback visual (bordas verde/vermelho)
+     ✓ Máximo de caracteres aplicado
+   
+   Campos formatados:
+     - Nome: livre, sem limite
+     - Telefone: (11) 99999-9999
+     - CPF: 123.456.789-09 (OBRIGATÓRIO - 11 dígitos)
+     - CEP: 12345-678
+     - Email: validação padrão HTML
+   
+   ⚠️ IMPORTANTE - CPF:
+     ✓ É enviado para Mercado Pago na identificação
+     ✓ SEMPRE obrigatório (valida na Etapa 1)
+     ✓ Deve ter exatamente 11 dígitos
+     ✓ Rejeita CPF com menos de 11 dígitos
+     ✓ Edge Function também valida (não aceita fallback)
+
+───────────────────────────────────────────────────────────────────────────────
+
+5. SELEÇÃO OBRIGATÓRIA DE TAMANHO (PRODUTO)
+   
+   ✅ IMPLEMENTADO: Em 3 camadas
+   
+   Camada 1 - Produto.jsx:
+     ✓ Botão "Adicionar ao Carrinho" desabilitado se size = null
+     ✓ handleAddToCart() valida antes de chamar context
+   
+   Camada 2 - CartContext.jsx:
+     ✓ addToCart() rejeita se item.size vazio/null
+     ✓ Não adiciona ao carrinho
+   
+   Camada 3 - Carrinho.jsx:
+     ✓ handleCheckout() verifica TODOS os items
+     ✓ Bloqueia checkout se algum item sem tamanho
+   
+   Resultado: Matematicamente impossível ter item sem size
+
+───────────────────────────────────────────────────────────────────────────────
+
+6. MERCADO PAGO - INTEGRAÇÃO COMPLETA
+   
+   ✅ ESTADO ATUAL:
+      - Edge Function criada em supabase/functions/criar-pagamento/
+      - Webhook configurado para receber confirmações
+      - Sandbox mode: ativado (mude para false em produção)
+      - CPF integrado na identificação do pagador
+   
+   ✅ FLUXO DE PAGAMENTO:
+      1. Checkout.jsx coleta dados (incluindo CPF)
+      2. Submit → chama Edge Function criar-pagamento
+      3. Edge Function:
+         - Valida CPF (11 dígitos)
+         - Cria preferência no Mercado Pago
+         - Retorna URL de redirecionamento
+      4. Usuário redirecionado para Mercado Pago Checkout
+      5. Seleciona método: PIX, Cartão, Débito, Boleto
+      6. Realiza pagamento em sandbox
+      7. Webhook recebe confirmação automática
+      8. Redireciona para /pedido-confirmado
+   
+   🔐 CONFIGURAÇÃO:
+      - MERCADOPAGO_ACCESS_TOKEN em Supabase Secrets (NUNCA em .env.local)
+      - VITE_MERCADO_PAGO_PUBLIC_KEY em .env.local (OK, é pública)
+      - Credenciais de teste e produção são DIFERENTES
+   
+   ⚠️ ANTES IR A PRODUÇÃO:
+      1. Mudar sandbox_mode: true → false em Edge Function
+      2. Usar ACCESS_TOKEN de produção
+      3. Usar PUBLIC_KEY de produção (conta real)
+      4. Testar com valores pequenos reais
+      5. Monitorar webhooks em Dashboard Mercado Pago
+
+───────────────────────────────────────────────────────────────────────────────
+
+7. PRODUTOS - DADOS E SEED
+   
+   ✅ BANCO JÁ CRIADO: 20 produtos em 6 categorias
+   
+   Como popular (primeira vez):
+     1. Supabase Dashboard > SQL Editor
+     2. Copiar conteúdo de scripts/seed-products.sql
+     3. Executar no SQL Editor
+     4. Verificar: 20 produtos criados em tabela "products"
+   
+   Estrutura do produto:
+     {
+       id: UUID,
+       name: "Camiseta Minimalista",
+       description: "Descrição detalhada",
+       price: 79.90,
+       category: "Camisetas",
+       created_at: timestamp
+     }
+   
+   ⚠️ IMPORTANTE:
+      - Arquivo: scripts/seed-products.sql (atualizado)
+      - Obsoleto: SEED_INSTRUCTIONS.txt (deletar)
+      - Obsoleto: seedProducts.mjs (deletar)
+
+───────────────────────────────────────────────────────────────────────────────
+
+8. CÁLCULO DE FRETE - SINCRONIZADO
+   
+   ✅ IMPLEMENTADO: Em Carrinho.jsx e Checkout.jsx
+   
+   Fórmula padronizada:
+     parseFloat(selectedShipping.preco_final || selectedShipping.preco_ajustado || 0)
+   
+   3 Métodos disponíveis:
+     - SEDEX: R$ 25,00 (2 dias úteis)
+     - PAC: R$ 15,00 (7 dias úteis)
+     - Expresso: R$ 40,00 (1 dia útil)
+   
+   Cálculo em tempo real:
+     1. Usuário entra CEP válido (8 dígitos)
+     2. ViaCEP API valida CEP
+     3. Retorna opções de frete para aquela região
+     4. Valores recalculados dinamicamente
+   
+   ⚠️ IMPORTANTE:
+      - AMBAS as páginas usam MESMA fórmula
+      - Se mudar cálculo de frete, mude nos DOIS lugares
+      - localStorage carrega selectedShipping (verify na Etapa 2)
+
+───────────────────────────────────────────────────────────────────────────────
+
+9. ROTAS PROTEGIDAS E ROLES DE ADMIN
+   
+   ✅ IMPLEMENTADO: AuthContext verifica role
+   
+   Funções de verificação:
+     - isAuthenticated: boolean (user !== null)
+     - isAdmin: boolean (user?.role === 'admin')
+     - user: objeto do usuário
+   
+   Proteção em componentes:
+     useEffect(() => {
+       if (!isAuthenticated) navigate('/login');
+       if (needsAdmin && !isAdmin) navigate('/');
+     }, [isAuthenticated, isAdmin, navigate]);
+   
+   ⚠️ NÃO CONFIAR NA LÓGICA FRONTEND:
+      - SEMPRE validar role na Edge Function
+      - Row Level Security (RLS) protege no Supabase
+      - Frontend é apenas UX (esconde botões/rotas)
+
+───────────────────────────────────────────────────────────────────────────────
+
+10. .gitignore - PROTEÇÃO DE CREDENCIAIS
+   
+   ✅ ARQUIVOS IGNORADOS (NUNCA commitados):
+      .env.local     - Variáveis locais (para desenvolvimento)
+      node_modules/  - Reinstalado com npm install
+      dist/          - Build gerado localmente
+      .supabase/     - Tokens de sessão do Supabase CLI
+   
+   ✅ ARQUIVOS COMMITADOS (seguros):
+      .env.example   - Template de variáveis (sem valores reais)
+      MANUAL.txt     - Sem credenciais reais
+      INSTRUCOES.txt - Sem credenciais reais
+   
+   🔴 NUNCA FAÇA:
+      ✗ git commit -m "add .env.local" (vaza credenciais!)
       ✗ Remover .env.local do .gitignore
-      ✗ Fazer push com MERCADOPAGO_ACCESS_TOKEN visível
+      ✗ Fazer push com tokens visíveis
+      ✗ Deixar senhas em comentários de código
+   
+   ✅ ANTES DE GIT PUSH:
+      $ git status | grep .env.local
+      (Não deve aparecer)
+      
+      $ git diff --cached | grep -iE "(password|token|secret)"
+      (Não deve retornar nada sensível)
 
 ═══════════════════════════════════════════════════════════════════════════════
-CHECKLIST ANTES DE FAZER QUALQUER MUDANÇA
+CHECKLIST ANTES DE QUALQUER MUDANÇA
 ═══════════════════════════════════════════════════════════════════════════════
 
-Antes de adicionar feature nova ou mexer em código:
+Antes de adicionar features ou mexer em código:
 
-□ Ler MANUAL.txt (entender arquitetura)
-□ Ler este arquivo (INSTRUCOES.txt) completamente
+□ Ler MANUAL.txt (entender que site faz)
+□ Ler este arquivo completamente
 □ Entender src/lib/supabase.js (cliente único)
-□ Verificar se existe Edge Function pronta em supabase/functions/
-□ Conferir supabaseService.js para não duplicar lógica
+□ Verificar src/utils/formatters.js (para valores monetários)
+□ Se vai mexer em API: conferir supabaseService.js
+□ Se vai criar Edge Function: usar Deno/TypeScript
 □ Testar em http://localhost:5173 antes de commitar
-□ Nunca fazer git commit com .env.local
+□ Nunca commitar .env.local ou tokens
 
 ═══════════════════════════════════════════════════════════════════════════════
-ESTRUTURA DE PASTAS - O QUE MEXER E O QUE NÃO MEXER
+ESTRUTURA - O QUE MEXER E O QUE NÃO MEXER
 ═══════════════════════════════════════════════════════════════════════════════
 
 ✅ SEGURO MEXER:
-  src/pages/         - Componentes de página (rotas)
-  src/components/    - Componentes reutilizáveis
-  src/services/      - Lógica de negócio (menos supabaseService.js)
-  src/context/       - Estados globais (Auth, Cart)
-  supabase/functions/ - Edge Functions de backend
-  Sempre npm run dev depois de mudança
+  src/pages/              - Componentes de página (rotas)
+  src/components/         - Componentes reutilizáveis
+  src/context/            - Estados globais (com cuidado)
+  supabase/functions/     - Edge Functions de backend
+  scripts/                - Scripts SQL e automação
 
 ⚠️ CUIDADO EXTREMO:
-  src/lib/supabase.js            - Único cliente, não duplicar
-  src/context/AuthContext.jsx    - GoTrueClient consolidado
-  src/services/supabaseService.js - Tem 19 métodos, não quebrar
-  index.html                     - CDN Tailwind está aqui, deixar
-  postcss.config.js              - Não mexer (DEV=CDN, PROD=npm)
+  src/lib/supabase.js     - Único cliente, não duplicar
+  src/services/           - Lógica crítica, impacta todo app
+  src/utils/formatters.js - Formatação global, usada em toda parte
+  index.html              - CDN Tailwind está aqui
+  .gitignore              - Já está correto
+  package.json            - Versões fixadas e testadas
 
 ❌ NUNCA MEXER:
-  .gitignore          - Já está correto
-  package.json        - Dependências estáveis (versões fixadas)
-  vite.config.js      - Build já configurado
-  tailwind.config.js  - Já tem colors/fonts corretos
+  .env.local (mesmo ignorado, nunca commitar)
+  node_modules/
+  dist/ (gerado automaticamente)
+  postcss.config.js (DEV já está certo)
 
 ═══════════════════════════════════════════════════════════════════════════════
-ERROS COMUNS E COMO RESOLVER
+ERROS COMUNS E SOLUÇÕES
 ═══════════════════════════════════════════════════════════════════════════════
 
 ERRO: "Cannot read properties of undefined (reading 'from')"
-  → Arquivo: src/services/shippingService.js
-  → Causa: Estava importando supabaseService.supabase (deletado)
-  → Solução: Já corrigido, mas se aparecer novamente:
-             Procure "supabaseService.supabase" e mude para "supabase"
-             import { supabase } from '../lib/supabase';
+  → Causa: Importar supabaseService.supabase (deletado)
+  → Solução: import { supabase } from '../lib/supabase';
 
 ERRO: "Multiple GoTrueClient instances detected"
-  → Arquivo: src/context/AuthContext.jsx ou src/services/
-  → Causa: Múltiplos createClient() diferentes
+  → Causa: createClient() em múltiplos arquivos
   → Solução: Usar SEMPRE import de src/lib/supabase.js
-             Deletar qualquer createClient() que não esteja em lib/supabase.js
 
-ERRO: "API 406 Not Acceptable"
-  → Arquivo: supabaseService.js, método isUserAdmin()
-  → Causa: Query com filtros duplicados
-  → Solução: Já foi corrigido para:
-             .select('role').eq('id', userId).single()
-             Depois verificar role === 'admin' em JS
-
-ERRO: "Design sumiu / CSS não aplica"
-  → Arquivo: index.html (procure CDN script)
+ERRO: "Design sumiu / CSS não funciona"
   → Causa: CDN Tailwind removido ou quebrado
-  → Solução: Verificar se <script src="https://cdn.tailwindcss.com"></script>
-             está em uma linha vazia ANTES de </head>
+  → Solução: Verificar <script src="https://cdn.tailwindcss.com"></script>
+             em index.html ANTES de </head>
 
 ERRO: "npm run dev não inicia"
-  → Comando: taskkill /IM node.exe /F (Windows) ou pkill node (Mac/Linux)
-  → Depois: npm run dev novamente
+  → Causa: Processo Node anterior ainda rodando
+  → Solução: taskkill /IM node.exe /F (Windows)
+             pkill node (Mac/Linux)
+             npm run dev
+
+ERRO: "Valor monetário com . em vez de ,"
+  → Causa: Não usando formatCurrency()
+  → Solução: Mude {valor.toFixed(2)} para {formatCurrency(valor)}
+             import { formatCurrency } from '../utils/formatters';
+
+ERRO: "CPF mostra como inválido no checkout"
+  → Causa: Edge Function valida 11 dígitos
+  → Solução: Verificar se CPF tem exatamente 11 dígitos
+             formatCPF() já faz limpeza no input
 
 ═══════════════════════════════════════════════════════════════════════════════
-COMO ADICIONAR NOVAS FEATURES (PASSO A PASSO)
+COMO ADICIONAR NOVAS FEATURES
 ═══════════════════════════════════════════════════════════════════════════════
 
-EXEMPLO: Adicionar "Cupons de Desconto"
+EXEMPLO: Adicionar sistema de cupons/desconto
 
 1. CRIAR TABELA NO SUPABASE
-   Supabase Dashboard > SQL Editor > Nova query:
+   Supabase > SQL Editor:
    
    CREATE TABLE cupons (
      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -317,87 +353,50 @@ EXEMPLO: Adicionar "Cupons de Desconto"
      created_at TIMESTAMP DEFAULT NOW()
    );
 
-2. CRIAR SERVIÇO (src/services/supabaseService.js)
+2. CRIAR MÉTODOS EM supabaseService.js
    
    export const cuponsService = {
      async verificarCupom(codigo) {
        const { data, error } = await supabase
          .from('cupons')
          .select('*')
-   import { formatCurrency } from '../utils/formatters';
-   
-   const aplicarCupom = async (codigo) => {
-     const { data: cupom, error } = await cuponsService.verificarCupom(codigo);
-     if (cupom) {
-       setDesconto(cupom.desconto_pct);
-       setDescricaoDesconto(formatCurrency(valorDesconto)); // Usar formatador!
-   };
-
-3. USAR EM COMPONENTE (src/pages/Checkout.jsx)
-   
-   import { cuponsService } from '../se e exibe em pt-BR
-
-5. COMMITAR
-   git add .
-   git commit -m "feat: adicionar sistema de cupons com formatação pt-BR
-       setDesconto(cupom.desconto_pct);
+         .eq('codigo', codigo)
+         .eq('ativo', true)
+         .single();
+       return { data, error };
      }
    };
 
-4. TESTAR
+3. USAR EM COMPONENTE (ex: Checkout.jsx)
+   
+   const [cupomCode, setCupomCode] = useState('');
+   
+   const aplicarCupom = async () => {
+     const { data: cupom } = await cuponsService.verificarCupom(cupomCode);
+     if (cupom) {
+       setDesconto(cupom.desconto_pct);
+       // Usar formatCurrency() para exibir!
+       setDescricaoDesconto(formatCurrency(valorDesconto));
+     }
+   };
+
+4. TESTAR EM DESENVOLVIMENTO
    npm run dev
-   Preencher formulário com cupom
-   Verificar console se aplica desconto
+   Verificar 100% funcional
 
 5. COMMITAR
    git add .
-   git commit -m "feat: adicionar sistema de cupons"
-
-═══════════════════════════════════════════════════════════════════════════════
-ANTES DE FAZER DEPLOY PARA PRODUCAO
-══════════════════════ com preços em pt-BR
-  └─ Carrinho exibe valores corretamente (R$ 89,90)
-  └─ Frete calcula
-  └─ Checkout valores em pt-BR
-  └─ Admin filters funcionam
-□ npm run build (criar dist/)
-  └─ Verificar se não há erros
-  └─ Verificar arquivo gerado em dist/index.html
-
-□ Testar em http://localhost:5173
-  └─ Login funciona
-  └─ Produtos carregam
-  └─ Carrinho funciona
-  └─ Frete calcula
-  └─ Checkout redireciona
-
-□ Variáveis de produção
-  └─ VITE_SUPABASE_URL correto
-  └─ VITE_MERCADO_PAGO_PUBLIC_KEY é de PRODUÇÃO (não sandbox)
-  └─ VITE_RECAPTCHA_PUBLIC_KEY é de produção
-
-□ Edge Functions
-  └─ npx supabase functions deploy
-  └─ Verificar em Supabase Dashboard > Edge Functions
-
-□ Secrets em prformatação de valores (R$ XXX,XX)
-  └─ Verificar webhook recebeu confirmação
+   git commit -m "feat: adicionar sistema de cupons
+   
+   - Tabela cupons criada
+   - Métodos em supabaseService.js
+   - Integração em Checkout.jsx
+   - Formatação pt-BR aplicada"
 
 ═══════════════════════════════════════════════════════════════════════════════
 
 Última atualização: 10 de Abril de 2026
-Versão: 2.0.0 (com formatação pt-BR e admin features avançadas)
-Status: ✅ Pronto para prod
-   → Token em Supabase Secrets (seguro)
-   → 3 Edge Functions já deployed
-   
-5. Nunca commitar .env.local
-   → Sempre usar .env.example como template
-
-═══════════════════════════════════════════════════════════════════════════════
-
-Última atualização: 9 de Abril de 2026
-Criado por: Copilot Agent
-Status: ✅ Pronto para manutenção e evolução
+Status: ✅ Pronto para Manutenção
+Versão: 1.1.0
 
 ================================================================================
