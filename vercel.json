@@ -4,24 +4,12 @@
   "installCommand": "npm install",
   "framework": "vite",
   "env": {
-    "VITE_SUPABASE_URL": {
-      "description": "URL do projeto Supabase"
-    },
-    "VITE_SUPABASE_ANON_KEY": {
-      "description": "Chave anônima do Supabase (segura para cliente)"
-    },
-    "VITE_MERCADOPAGO_PUBLIC_KEY": {
-      "description": "Chave pública do Mercado Pago"
-    },
-    "VITE_SANDBOX_MODE": {
-      "description": "true = testes, false = produção"
-    },
-    "VITE_RECAPTCHA_KEY": {
-      "description": "Site key reCAPTCHA v3 (opcional)"
-    },
-    "VITE_FRONTEND_URL": {
-      "description": "URL do frontend em produção"
-    }
+    "VITE_SUPABASE_URL": "@vite_supabase_url",
+    "VITE_SUPABASE_ANON_KEY": "@vite_supabase_anon_key",
+    "VITE_MERCADOPAGO_PUBLIC_KEY": "@vite_mercadopago_public_key",
+    "VITE_SANDBOX_MODE": "@vite_sandbox_mode",
+    "VITE_RECAPTCHA_KEY": "@vite_recaptcha_key",
+    "VITE_FRONTEND_URL": "@vite_frontend_url"
   },
   "headers": [
     {
