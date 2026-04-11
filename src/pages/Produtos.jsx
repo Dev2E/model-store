@@ -89,21 +89,21 @@ export default function Produtos() {
   return (
     <main className="min-h-screen bg-white">
       {/* Header */}
-      <section className="px-6 py-12 max-w-7xl mx-auto border-b border-gray-200">
-        <p className="text-sm font-semibold text-gray-500 mb-2">CATÁLOGO DIGITAL</p>
-        <h1 className="text-5xl font-bold font-manrope mb-4">Objetos para o Estúdio Moderno</h1>
-        <p className="text-gray-600">Coleção curada de essenciais minimalistas projetados para funcionalidade e longevidade.</p>
+      <section className="px-4 sm:px-6 py-8 sm:py-12 max-w-7xl mx-auto border-b border-gray-200">
+        <p className="text-xs sm:text-sm font-semibold text-gray-500 mb-2">CATÁLOGO DIGITAL</p>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold font-manrope mb-4">Objetos para o Estúdio Moderno</h1>
+        <p className="text-xs sm:text-sm md:text-base text-gray-600">Coleção curada de essenciais minimalistas projetados para funcionalidade e longevidade.</p>
       </section>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 px-6 py-12 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8 px-4 sm:px-6 py-8 sm:py-12 max-w-7xl mx-auto">
         {/* Sidebar - Filters */}
-        <div className="lg:col-span-1">
-          <div className="bg-gray-50 p-6 rounded-lg sticky top-24">
+        <div className="md:col-span-1">
+          <div className="bg-gray-50 p-4 sm:p-6 rounded-lg md:sticky md:top-4 md:h-fit">
             {/* Category Filter */}
-            <div className="mb-8">
-              <h3 className="font-semibold text-sm mb-4">Categoria</h3>
-              <div className="space-y-3">
+            <div className="mb-6 sm:mb-8">
+              <h3 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4">Categoria</h3>
+              <div className="space-y-2 sm:space-y-3">
                 {categories.map((cat) => (
                   <label key={cat.id} className="flex items-center cursor-pointer">
                     <input
@@ -115,7 +115,7 @@ export default function Produtos() {
                       disabled={loading}
                       className="w-4 h-4 disabled:cursor-not-allowed"
                     />
-                    <span className="ml-3 text-sm text-gray-700">{cat.name}</span>
+                    <span className="ml-2 sm:ml-3 text-xs sm:text-sm text-gray-700">{cat.name}</span>
                     <span className="ml-auto text-xs text-gray-500">{cat.count}</span>
                   </label>
                 ))}
@@ -123,8 +123,8 @@ export default function Produtos() {
             </div>
 
             {/* Price Range */}
-            <div className="mb-8">
-              <h3 className="font-semibold text-sm mb-4">Faixa de Preço</h3>
+            <div className="mb-6 sm:mb-8">
+              <h3 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4">Faixa de Preço</h3>
               <div>
                 <input
                   type="range"
@@ -134,21 +134,21 @@ export default function Produtos() {
                   onChange={(e) => setPriceRange(parseInt(e.target.value))}
                   className="w-full"
                 />
-                <p className="text-sm text-gray-600 mt-2">Até {formatCurrency(priceRange)}</p>
+                <p className="text-xs sm:text-sm text-gray-600 mt-2">Até {formatCurrency(priceRange)}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="lg:col-span-3">
+        <div className="md:col-span-3">
           {/* Header with Sort */}
-          <div className="flex justify-between items-center mb-8">
-            <p className="text-sm text-gray-600">Mostrando {sorted.length} de {allProducts.length} produtos</p>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
+            <p className="text-xs sm:text-sm text-gray-600">Mostrando {sorted.length} de {allProducts.length} produtos</p>
             <select 
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               disabled={loading}
-              className="text-sm border border-gray-300 rounded px-3 py-2 disabled:bg-gray-100"
+              className="text-xs sm:text-sm border border-gray-300 rounded px-3 py-2 disabled:bg-gray-100 w-full sm:w-auto"
             >
               <option value="featured">Destacados</option>
               <option value="cheapest">Preço: Menor para Maior</option>
@@ -160,41 +160,41 @@ export default function Produtos() {
           {/* Loading State */}
           {loading && (
             <div className="flex items-center justify-center h-64">
-              <p className="text-gray-600">Carregando produtos...</p>
+              <p className="text-sm text-gray-600">Carregando produtos...</p>
             </div>
           )}
 
           {/* Error State */}
           {error && !loading && (
-            <div className="bg-red-50 border border-red-200 rounded p-6 mb-8">
-              <p className="text-red-700">Erro ao carregar produtos: {error}</p>
+            <div className="bg-red-50 border border-red-200 rounded p-4 sm:p-6 mb-8">
+              <p className="text-xs sm:text-sm text-red-700">Erro ao carregar produtos: {error}</p>
             </div>
           )}
 
           {/* Products Grid */}
           {!loading && !error && sorted.length > 0 && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6 mb-8 sm:mb-12">
               {paginatedProducts.map((product) => (
                 <div key={product.id} className="group overflow-hidden">
                   <Link to={`/produto/${product.id}`} className="block">
-                    <div className="bg-gray-200 h-64 rounded-lg flex items-center justify-center text-6xl mb-4 group-hover:bg-gray-300 transition relative overflow-hidden">
+                    <div className="bg-gray-200 h-40 sm:h-56 md:h-64 rounded-lg flex items-center justify-center text-3xl sm:text-5xl md:text-6xl mb-3 sm:mb-4 group-hover:bg-gray-300 transition relative overflow-hidden">
                       {product.image || '📦'}
-                      <span className="absolute top-3 right-3 bg-white bg-opacity-90 px-3 py-1 text-xs font-semibold rounded">
+                      <span className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-white bg-opacity-90 px-2 sm:px-3 py-1 text-xs font-semibold rounded">
                         LIMITADO
                       </span>
                     </div>
-                    <h3 className="font-semibold text-sm mb-2">{product.name}</h3>
+                    <h3 className="font-semibold text-xs sm:text-sm mb-2 line-clamp-2">{product.name}</h3>
                   </Link>
-                  <div className="flex justify-between items-center">
-                    <p className="text-lg font-bold">{formatCurrency(product.price)}</p>
+                  <div className="flex justify-between items-center gap-2">
+                    <p className="text-base sm:text-lg font-bold">{formatCurrency(product.price)}</p>
                     <button 
                       onClick={() => {
                         window.location.href = `/produto/${product.id}`;
                       }}
-                      className="bg-gray-800 text-white rounded px-3 py-1 text-xs font-semibold hover:bg-gray-900 transition opacity-0 group-hover:opacity-100"
+                      className="bg-gray-800 text-white rounded px-2 sm:px-3 py-1 text-xs font-semibold hover:bg-gray-900 transition opacity-0 group-hover:opacity-100"
                       title="Clique para selecionar tamanho e adicionar ao carrinho"
                     >
-                      Ver Detalhes
+                      Ver
                     </button>
                   </div>
                 </div>
@@ -205,17 +205,17 @@ export default function Produtos() {
           {/* Empty State */}
           {!loading && !error && sorted.length === 0 && (
             <div className="flex items-center justify-center h-64">
-              <p className="text-gray-600">Nenhum produto encontrado com esses critérios</p>
+              <p className="text-sm text-gray-600">Nenhum produto encontrado com esses critérios</p>
             </div>
           )}
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex justify-center items-center gap-2 flex-wrap">
+            <div className="flex justify-center items-center gap-1 sm:gap-2 flex-wrap">
               <button 
                 onClick={() => setCurrentPage(1)}
                 disabled={currentPage === 1}
-                className="px-3 py-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-2 sm:px-3 py-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
               >
                 ←
               </button>
@@ -227,7 +227,7 @@ export default function Produtos() {
                     <button
                       key={page}
                       onClick={() => setCurrentPage(page)}
-                      className={`px-4 py-2 rounded ${
+                      className={`px-2 sm:px-4 py-2 rounded text-xs sm:text-sm ${
                         currentPage === page
                           ? 'bg-gray-800 text-white'
                           : 'border border-gray-300 hover:bg-gray-100'
@@ -237,14 +237,14 @@ export default function Produtos() {
                     </button>
                   );
                 } else if ((page === currentPage - 2 || page === currentPage + 2) && totalPages > 1) {
-                  return <span key={`dots-${page}`} className="px-2">...</span>;
+                  return <span key={`dots-${page}`} className="px-1 sm:px-2 text-xs">...</span>;
                 }
                 return null;
               })}
               <button 
                 onClick={() => setCurrentPage(totalPages)}
                 disabled={currentPage === totalPages}
-                className="px-3 py-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-2 sm:px-3 py-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
               >
                 →
               </button>
@@ -253,7 +253,7 @@ export default function Produtos() {
           
           {/* Info sobre página */}
           {sorted.length > 0 && (
-            <div className="text-center mt-6 text-sm text-gray-600">
+            <div className="text-center mt-4 sm:mt-6 text-xs sm:text-sm text-gray-600">
               Mostrando {startIdx + 1} a {Math.min(endIdx, sorted.length)} de {sorted.length} produtos
             </div>
           )}

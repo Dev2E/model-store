@@ -1,6 +1,6 @@
 // Serviço de Integração com Mercado Pago
 export const mercadoPagoService = {
-  publicKey: import.meta.env.VITE_MERCADO_PAGO_PUBLIC_KEY,
+  publicKey: import.meta.env.VITE_MERCADOPAGO_PUBLIC_KEY,
 
   // Inicializar SDK Mercado Pago
   async initMercadoPago() {

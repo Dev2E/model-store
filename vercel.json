@@ -1,0 +1,82 @@
+{
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "env": {
+    "VITE_SUPABASE_URL": {
+      "description": "URL do projeto Supabase"
+    },
+    "VITE_SUPABASE_ANON_KEY": {
+      "description": "Chave anônima do Supabase (segura para cliente)"
+    },
+    "VITE_MERCADOPAGO_PUBLIC_KEY": {
+      "description": "Chave pública do Mercado Pago"
+    },
+    "VITE_SANDBOX_MODE": {
+      "description": "true = testes, false = produção"
+    },
+    "VITE_RECAPTCHA_KEY": {
+      "description": "Site key reCAPTCHA v3 (opcional)"
+    },
+    "VITE_FRONTEND_URL": {
+      "description": "URL do frontend em produção"
+    }
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=31536000; includeSubDomains; preload"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "SAMEORIGIN"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-cache, no-store, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)://(.*)/(.*)",
+      "destination": "https://$2/$3",
+      "permanent": true
+    }
+  ]
+}

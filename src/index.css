@@ -16,80 +16,9 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
 }
 
-.material-symbols-outlined {
-  font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 24;
-}
+/* ========== ANIMAÇÕES GLOBAIS ========== */
 
-button {
-  transition: all 0.3s ease;
-}
-
-.btn-primary {
-  background-color: #2d2d2d;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  border-radius: 0.375rem;
-}
-
-.btn-primary:hover {
-  background-color: #1a1a1a;
-}
-
-.btn-secondary {
-  background-color: #f3f4f6;
-  color: #1f2937;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-  border-radius: 0.375rem;
-}
-
-.btn-secondary:hover {
-  background-color: #e5e7eb;
-}
-
-.floating-cart {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  z-index: 50;
-}
-
-.cart-badge {
-  position: absolute;
-  top: -0.5rem;
-  right: -0.5rem;
-  background-color: #ef4444;
-  color: white;
-  border-radius: 9999px;
-  width: 1.5rem;
-  height: 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 700;
-}
-
-/* Animações */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideInFromBottom {
+@keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(20px);
@@ -100,10 +29,10 @@ button {
   }
 }
 
-@keyframes slideInFromRight {
+@keyframes slideInLeft {
   from {
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateX(-30px);
   }
   to {
     opacity: 1;
@@ -111,10 +40,10 @@ button {
   }
 }
 
-@keyframes slideInFromLeft {
+@keyframes slideInRight {
   from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(30px);
   }
   to {
     opacity: 1;
@@ -122,10 +51,21 @@ button {
   }
 }
 
-@keyframes zoomIn {
+@keyframes slideInDown {
   from {
     opacity: 0;
-    transform: scale(0.9);
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
   }
   to {
     opacity: 1;
@@ -133,65 +73,289 @@ button {
   }
 }
 
-@keyframes bounce {
+@keyframes pulse {
   0%, 100% {
-    transform: translateY(0);
+    opacity: 1;
   }
   50% {
-    transform: translateY(-10px);
+    opacity: 0.5;
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-in;
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
 }
 
-.animate-slide-in-bottom {
-  animation: slideInFromBottom 0.4s ease-out;
+/* ========== BASE TRANSITIONS ========== */
+
+button,
+a,
+input,
+select,
+textarea {
+  transition: all 0.3s ease;
 }
 
-.animate-slide-in-right {
-  animation: slideInFromRight 0.4s ease-out;
+/* ========== PAGE ANIMATIONS ========== */
+
+main {
+  animation: fadeInUp 0.6s ease-out;
 }
 
-.animate-slide-in-left {
-  animation: slideInFromLeft 0.4s ease-out;
+header {
+  animation: slideInDown 0.5s ease-out;
 }
 
-.animate-zoom-in {
-  animation: zoomIn 0.3s ease-out;
+footer {
+  animation: fadeInUp 0.6s ease-out 0.2s both;
 }
 
-/* Desabilitar badge do reCAPTCHA */
-.grecaptcha-badge {
-  display: none !important;
+/* ========== CARD & PRODUCT ANIMATIONS ========== */
+
+.card,
+[class*="card"],
+[class*="product"],
+[class*="item"] {
+  animation: fadeInUp 0.5s ease-out;
 }
 
-.animate-bounce {
-  animation: bounce 1s infinite;
+.product-card {
+  animation: fadeInUp 0.5s ease-out;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
-/* Responsividade mobile otimizada */
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.product-card img:hover {
+  transform: scale(1.05);
+}
+
+/* ========== BUTTON STYLES ========== */
+
+.btn-primary {
+  background-color: #2d2d2d;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.btn-primary:hover {
+  background-color: #1a1a1a;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+.btn-secondary {
+  background-color: #f3f4f6;
+  color: #1f2937;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  border-radius: 0.375rem;
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+button:hover {
+  transform: translateY(-2px) !important;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+/* ========== FORM INPUT STYLES ========== */
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: #2d2d2d;
+  box-shadow: 0 0 0 3px rgba(45, 45, 45, 0.1);
+  transition: all 0.2s ease;
+}
+
+/* ========== ICON STYLES ========== */
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24;
+  transition: transform 0.3s ease;
+}
+
+button:active .material-symbols-outlined {
+  transform: scale(0.95);
+}
+
+/* ========== LINK STYLES ========== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* ========== IMAGE STYLES ========== */
+
+img {
+  transition: transform 0.3s ease;
+}
+
+/* ========== LOADER & SKELETON ========== */
+
+.loading {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.skeleton {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(90deg, #efefef 25%, #f5f5f5 50%, #efefef 75%);
+  background-size: 1000px 100%;
+}
+
+/* ========== TOAST/NOTIFICATION ANIMATIONS ========== */
+
+[class*="toast"],
+[class*="notification"],
+[class*="alert"] {
+  animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========== MODAL ANIMATIONS ========== */
+
+[class*="modal"],
+[class*="dialog"] {
+  animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========== BADGE ANIMATIONS ========== */
+
+.badge {
+  animation: scaleIn 0.3s ease-out;
+}
+
+/* ========== FORM GROUP ANIMATIONS ========== */
+
+.form-group {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* ========== LIST ITEM STAGGER ========== */
+
+li,
+tr {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+li:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+li:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+li:nth-child(n+4) {
+  animation-delay: 0.3s;
+}
+
+/* ========== CHECKBOX/RADIO ANIMATIONS ========== */
+
+input[type="checkbox"],
+input[type="radio"] {
+  transition: all 0.2s ease;
+}
+
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+  transform: scale(1.1);
+}
+
+/* ========== SELECT ANIMATIONS ========== */
+
+select {
+  transition: all 0.3s ease;
+}
+
+select:hover {
+  border-color: #2d2d2d;
+}
+
+/* ========== CLOSE/DISMISS ANIMATIONS ========== */
+
+[class*="close"],
+[class*="dismiss"] {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+[class*="close"]:hover,
+[class*="dismiss"]:hover {
+  transform: rotate(90deg) scale(1.1);
+}
+
+/* ========== EXPAND/COLLAPSE ANIMATIONS ========== */
+
+details {
+  transition: all 0.3s ease;
+}
+
+details[open] summary {
+  animation: slideInDown 0.3s ease;
+}
+
+/* ========== DELAY CLASSES ========== */
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-500 { animation-delay: 0.5s; }
+
+/* ========== RESPONSIVE TRANSITIONS ========== */
+
 @media (max-width: 768px) {
-  body {
-    font-size: 16px; /* Evita zoom em inputs */
-  }
-
-  h1 {
-    font-size: 2rem;
-  }
-
-  h2 {
-    font-size: 1.5rem;
-  }
-
-  .sticky {
-    position: relative;
-  }
-
-  /* Grid responsivo */
-  .grid-responsive {
-    grid-template-columns: 1fr;
+  * {
+    transition: all 0.3s ease;
   }
 }
 
+/* ========== HIDE RECAPTCHA BADGE ========== */
+/* Remove o badge flutuante do reCAPTCHA v3 */
+.grecaptcha-badge {
+  visibility: hidden;
+}

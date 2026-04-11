@@ -93,16 +93,16 @@ export default function Carrinho() {
     <>
       {cartItems.length === 0 ? (
         <main className="min-h-screen bg-white">
-          <section className="px-6 py-12 max-w-4xl mx-auto border-b border-gray-200">
-            <p className="text-sm font-semibold text-gray-500 mb-2">COMPRAS</p>
-            <h1 className="text-5xl font-bold font-manrope">Carrinho Vazio</h1>
+          <section className="px-4 sm:px-6 py-8 sm:py-12 max-w-4xl mx-auto border-b border-gray-200">
+            <p className="text-xs sm:text-sm font-semibold text-gray-500 mb-2">COMPRAS</p>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-manrope">Carrinho Vazio</h1>
           </section>
-          <div className="max-w-4xl mx-auto px-6 py-12 text-center">
-            <p className="text-6xl mb-4">🛒</p>
-            <p className="text-gray-600 mb-6">Seu carrinho está vazio. Explore nossa coleção!</p>
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
+            <p className="text-5xl sm:text-6xl mb-4">🛒</p>
+            <p className="text-sm sm:text-base text-gray-600 mb-6">Seu carrinho está vazio. Explore nossa coleção!</p>
             <Link
               to="/produtos"
-              className="inline-block bg-gray-800 text-white px-8 py-3 rounded font-semibold hover:bg-gray-900 transition"
+              className="inline-block bg-gray-800 text-white px-6 sm:px-8 py-2 sm:py-3 rounded font-semibold hover:bg-gray-900 transition text-sm sm:text-base"
             >
               Ver Produtos
             </Link>
@@ -110,47 +110,47 @@ export default function Carrinho() {
         </main>
       ) : (
         <main className="min-h-screen bg-white">
-          <section className="px-6 py-12 max-w-6xl mx-auto border-b border-gray-200">
-            <p className="text-sm font-semibold text-gray-500 mb-2">COMPRAS</p>
-            <h1 className="text-5xl font-bold font-manrope">Carrinho</h1>
+          <section className="px-4 sm:px-6 py-8 sm:py-12 max-w-6xl mx-auto border-b border-gray-200">
+            <p className="text-xs sm:text-sm font-semibold text-gray-500 mb-2">COMPRAS</p>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold font-manrope">Carrinho</h1>
           </section>
 
-          <div className="max-w-6xl mx-auto px-6 py-12">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-12">
               <div className="lg:col-span-2">
-                <div className="space-y-6">
+                <div className="space-y-4 sm:space-y-6">
                   {cartItems.map((item) => (
-                    <div key={`${item.id}-${item.color}-${item.size}`} className="border border-gray-200 rounded-lg p-6 flex gap-6 hover:shadow-lg transition">
-                      <div className="text-6xl flex-shrink-0">{item.image || '📦'}</div>
+                    <div key={`${item.id}-${item.color}-${item.size}`} className="border border-gray-200 rounded-lg p-4 sm:p-6 flex gap-4 sm:gap-6 hover:shadow-lg transition">
+                      <div className="text-4xl sm:text-5xl md:text-6xl flex-shrink-0">{item.image || '📦'}</div>
                       
-                      <div className="flex-1">
-                        <h3 className="font-bold text-lg mb-1">{item.name}</h3>
-                        <p className="text-sm text-gray-500 mb-3">{item.category}</p>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-sm sm:text-lg mb-1 break-words">{item.name}</h3>
+                        <p className="text-xs sm:text-sm text-gray-500 mb-3">{item.category}</p>
                         
-                        <div className="flex items-center gap-4 mb-4">
-                          <div>
-                            {item.color && <p className="text-sm"><span className="text-gray-600">Cor:</span> {item.color}</p>}
-                            {item.size && <p className="text-sm"><span className="text-gray-600">Tamanho:</span> {item.size}</p>}
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-4">
+                          <div className="text-xs sm:text-sm">
+                            {item.color && <p><span className="text-gray-600">Cor:</span> {item.color}</p>}
+                            {item.size && <p><span className="text-gray-600">Tamanho:</span> {item.size}</p>}
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                          <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1 w-fit">
                             <button
                               onClick={() => updateQuantity(item.id, item.quantity - 1, item.color, item.size)}
-                              className="px-3 py-1 hover:bg-gray-200 transition rounded"
+                              className="px-2 sm:px-3 py-1 hover:bg-gray-200 transition rounded text-sm"
                             >
                               −
                             </button>
-                            <span className="px-4 py-1 font-semibold">{item.quantity}</span>
+                            <span className="px-3 sm:px-4 py-1 font-semibold text-sm">{item.quantity}</span>
                             <button
                               onClick={() => updateQuantity(item.id, item.quantity + 1, item.color, item.size)}
-                              className="px-3 py-1 hover:bg-gray-200 transition rounded"
+                              className="px-2 sm:px-3 py-1 hover:bg-gray-200 transition rounded text-sm"
                             >
                               +
                             </button>
                           </div>
-                          <p className="font-bold text-lg">{formatCurrency(item.price * item.quantity)}</p>
+                          <p className="font-bold text-base sm:text-lg">{formatCurrency(item.price * item.quantity)}</p>
                         </div>
                       </div>
 
@@ -166,12 +166,12 @@ export default function Carrinho() {
               </div>
 
               <div className="lg:col-span-1">
-                <div className="bg-gray-50 rounded-lg p-6 sticky top-4 space-y-6">
+                <div className="bg-gray-50 rounded-lg p-4 sm:p-6 lg:sticky lg:top-4 space-y-4 sm:space-y-6">
                   {/* Cálculo de Frete */}
-                  <div className="border-b border-gray-200 pb-6">
-                    <h3 className="font-bold text-lg mb-4">📮 Calcular Frete</h3>
+                  <div className="border-b border-gray-200 pb-4 sm:pb-6">
+                    <h3 className="font-bold text-base sm:text-lg mb-4">📮 Calcular Frete</h3>
                     
-                    <form onSubmit={calculateShipping} className="space-y-3">
+                    <form onSubmit={calculateShipping} className="space-y-3 sm:space-y-4">
                       <input
                         type="text"
                         placeholder="Digite seu CEP"
@@ -183,7 +183,7 @@ export default function Carrinho() {
                       <button
                         type="submit"
                         disabled={loadingShipping}
-                        className="w-full bg-gray-800 text-white py-2 rounded font-semibold hover:bg-gray-900 transition disabled:opacity-50"
+                        className="w-full bg-gray-800 text-white py-2 rounded font-semibold hover:bg-gray-900 transition disabled:opacity-50 text-sm"
                       >
                         {loadingShipping ? '⏳ Calculando...' : '🔍 Calcular'}
                       </button>
@@ -204,19 +204,19 @@ export default function Carrinho() {
                     {shippingMethods.length > 0 && (
                       <div className="mt-4 space-y-2 max-h-48 overflow-y-auto">
                         {shippingMethods.map((metodo) => (
-                          <label key={metodo.id} className="flex items-center gap-2 p-2 border border-gray-200 rounded cursor-pointer hover:bg-white transition">
+                          <label key={metodo.id} className="flex items-center sm:items-start gap-2 p-2 border border-gray-200 rounded cursor-pointer hover:bg-white transition text-xs sm:text-sm">
                             <input
                               type="radio"
                               name="shipping"
                               checked={selectedShipping?.id === metodo.id}
                               onChange={() => setSelectedShipping(metodo)}
-                              className="w-4 h-4"
+                              className="w-4 h-4 mt-0.5 flex-shrink-0"
                             />
-                            <div className="flex-1 text-sm">
+                            <div className="flex-1 min-w-0">
                               <p className="font-semibold">{metodo.nome}</p>
                               <p className="text-gray-600 text-xs">{metodo.tempo_entrega_ajustado} dias úteis</p>
                             </div>
-                            <p className="font-bold">{formatCurrency(metodo.preco_final)}</p>
+                            <p className="font-bold flex-shrink-0">{formatCurrency(metodo.preco_final)}</p>
                           </label>
                         ))}
                       </div>
@@ -224,27 +224,27 @@ export default function Carrinho() {
                   </div>
 
                   {/* Resumo do Pedido */}
-                  <div className="pt-4">
-                    <h3 className="font-bold text-lg mb-4">Resumo do Pedido</h3>
+                  <div className="pt-2 sm:pt-4">
+                    <h3 className="font-bold text-base sm:text-lg mb-4">Resumo do Pedido</h3>
                     
-                    <div className="space-y-3 border-b border-gray-200 pb-4 mb-4">
-                      <div className="flex justify-between text-sm">
+                    <div className="space-y-2 sm:space-y-3 border-b border-gray-200 pb-3 sm:pb-4 mb-3 sm:mb-4">
+                      <div className="flex justify-between text-xs sm:text-sm">
                         <span className="text-gray-600">Subtotal</span>
                         <span>{formatCurrency(subtotal)}</span>
                       </div>
-                      <div className="flex justify-between text-sm">
+                      <div className="flex justify-between text-xs sm:text-sm">
                         <span className="text-gray-600">Frete</span>
                         <span className={selectedShipping && shipping === 0 ? 'text-green-600 font-semibold' : ''}>
                           {selectedShipping ? formatCurrency(shipping) : '—'}
                         </span>
                       </div>
-                      <div className="flex justify-between text-sm">
+                      <div className="flex justify-between text-xs sm:text-sm">
                         <span className="text-gray-600">Impostos</span>
                         <span>{formatCurrency(tax)}</span>
                       </div>
                     </div>
 
-                    <div className="flex justify-between font-bold text-lg mb-6">
+                    <div className="flex justify-between font-bold text-base sm:text-lg mb-4 sm:mb-6">
                       <span>Total</span>
                       <span>{formatCurrency(total)}</span>
                     </div>
@@ -252,14 +252,14 @@ export default function Carrinho() {
                     <button
                       onClick={handleCheckout}
                       disabled={!selectedShipping}
-                      className="w-full bg-gray-800 text-white py-3 rounded font-semibold hover:bg-gray-900 transition mb-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full bg-gray-800 text-white py-3 rounded font-semibold hover:bg-gray-900 transition mb-2 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                     >
                       Finalizar Compra
                     </button>
 
                     <Link
                       to="/produtos"
-                      className="block text-center text-gray-600 hover:text-gray-800 transition py-2 text-sm"
+                      className="block text-center text-gray-600 hover:text-gray-800 transition py-2 text-xs sm:text-sm"
                     >
                       Continuar Comprando
                     </Link>

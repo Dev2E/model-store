@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { ShoppingCartIcon, UserCircleIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 
 export default function Header() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -55,9 +56,9 @@ export default function Header() {
         <div className="flex items-center gap-6">
           {/* Cart */}
           <Link to="/carrinho" className="relative">
-            <span className="text-2xl">🛍️</span>
+            <ShoppingCartIcon className="w-6 h-6 text-gray-900 hover:text-gray-600 transition" />
             {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute -top-3 -right-3 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
                 {cartCount}
               </span>
             )}
@@ -66,14 +67,14 @@ export default function Header() {
           {/* Auth Status */}
           {isAuthenticated ? (
             <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-gray-700">
+              <span className="text-sm font-semibold text-gray-700 hidden sm:inline">
                 Oi, {user?.user_metadata?.name || user?.email?.split('@')[0]}
               </span>
               <button
                 onClick={() => setSidebarOpen(!sidebarOpen)}
-                className="text-2xl"
+                className="text-gray-900 hover:text-gray-600 transition"
               >
-                👤
+                <UserCircleIcon className="w-6 h-6" />
               </button>
             </div>
           ) : (
@@ -85,9 +86,10 @@ export default function Header() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="md:hidden text-2xl"
+            className="md:hidden text-gray-900 hover:text-gray-600 transition"
+            aria-label="Abrir menu"
           >
-            ☰
+            <Bars3Icon className="w-6 h-6" />
           </button>
         </div>
       </nav>
@@ -96,16 +98,17 @@ export default function Header() {
       {sidebarOpen && (
         <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setSidebarOpen(false)}>
           <div
-            className="fixed right-0 top-0 w-80 h-screen bg-white shadow-lg overflow-y-auto"
+            className="fixed right-0 top-0 w-72 sm:w-80 h-screen bg-white shadow-lg overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6">
               {/* Close Button */}
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="float-right text-2xl"
+                className="float-right text-gray-600 hover:text-gray-900 transition"
+                aria-label="Fechar menu"
               >
-                ✕
+                <XMarkIcon className="w-6 h-6" />
               </button>
 
               <h2 className="text-xl font-bold font-manrope mb-6 clear-both">Menu</h2>
@@ -138,8 +141,9 @@ export default function Header() {
               {/* Auth Section */}
               {isAuthenticated ? (
                 <div className="border-t pt-6">
-                  <p className="font-semibold mb-4">
-                    👤 {user?.user_metadata?.name || user?.email}
+                  <p className="font-semibold mb-4 flex items-center gap-2">
+                    <UserCircleIcon className="w-5 h-5" />
+                    {user?.user_metadata?.name || user?.email}
                   </p>
                   <div className="space-y-2">
                     <Link

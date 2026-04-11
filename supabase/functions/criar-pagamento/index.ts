@@ -185,11 +185,15 @@ serve(async (req: Request) => {
         failure: `${Deno.env.get("FRONTEND_URL") || "http://localhost:5173"}/pagamento-recusado`,
         pending: `${Deno.env.get("FRONTEND_URL") || "http://localhost:5173"}/pagamento-pendente`,
       },
+      auto_return: "approved",
       external_reference: body.orderId,
-      sandbox_mode: true, // MODO SANDBOX - Trocar para false em PRODUÇÃO
+      sandbox_mode: Deno.env.get("MERCADOPAGO_SANDBOX_MODE") === "true" || Deno.env.get("VITE_SANDBOX_MODE") === "true",
     };
 
-    console.log("Enviando para Mercado Pago:", preference);
+    // Log apenas em desenvolvimento
+    if (Deno.env.get("ENVIRONMENT") === "dev") {
+      console.log("Enviando para Mercado Pago (DEV):", preference);
+    }
 
     // Fazer requisição para Mercado Pago
     const mpResponse = await fetch("https://api.mercadopago.com/checkout/preferences", {

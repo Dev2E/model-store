@@ -103,17 +103,6 @@ export default function Categorias() {
           ))}
         </div>
       </section>
-
-      {/* CTA Section */}
-      <section className="px-6 py-16 max-w-7xl mx-auto bg-gray-100 rounded-lg text-center">
-        <h2 className="text-3xl font-bold font-manrope mb-4">Seleção Personalizada</h2>
-        <p className="text-gray-600 mb-6 max-w-2xl mx-auto">
-          Não encontrou o que procura? Nossa equipe de estilistas pode criar uma seleção exclusiva para você.
-        </p>
-        <button className="bg-gray-800 text-white px-6 py-3 font-semibold hover:bg-gray-900 transition">
-          Solicitar Consultoria
-        </button>
-      </section>
     </main>
   );
 }

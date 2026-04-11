@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import CookieNotice from "./components/CookieNotice";
 import Toast from "./components/Toast";
+import SSLBadge from "./components/SSLBadge";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
 import Home from "./pages/Home";
@@ -82,6 +83,7 @@ function AppContent() {
       {!isAdminPage && <Footer />}
       <CookieNotice />
       <Toast />
+      <SSLBadge />
     </>
   );
 }

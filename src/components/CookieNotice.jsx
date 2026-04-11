@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 export default function CookieNotice() {
   const [showCookie, setShowCookie] = useState(false);
@@ -26,38 +27,49 @@ export default function CookieNotice() {
 
   return (
     <>
-      {/* Cookie Notice */}
+      {/* Cookie Notice - Floating Card */}
       {showCookie && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900 text-white p-6 shadow-lg">
-          <div className="max-w-6xl mx-auto">
-            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-              <div className="flex-1">
-                <h3 className="font-bold mb-2">🍪 Política de Cookies</h3>
-                <p className="text-sm text-gray-300">
-                  Utilizamos cookies para melhorar sua experiência de navegação. Ao continuar navegando, você concorda com nossa{' '}
-                  <button
-                    onClick={() => setShowTerms(true)}
-                    className="underline hover:text-white"
-                  >
-                    Política de Cookies
-                  </button>
-                  .
-                </p>
-              </div>
-              <div className="flex gap-3 w-full md:w-auto">
+        <div className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50 bg-gray-900 text-white rounded-lg shadow-xl max-w-xs sm:max-w-sm w-full animate-in fade-in slide-in-from-bottom-5 duration-300">
+          <div className="p-4 sm:p-5 relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowCookie(false)}
+              className="absolute top-3 sm:top-4 right-3 sm:right-4 text-gray-400 hover:text-white transition"
+              aria-label="Fechar"
+            >
+              <XMarkIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+            </button>
+
+            {/* Content */}
+            <div className="pr-8">
+              <h3 className="font-bold text-sm mb-2 flex items-center gap-2">
+                <span>🍪</span> Cookies
+              </h3>
+              <p className="text-xs text-gray-300 mb-4">
+                Usamos cookies para melhorar sua experiência.{' '}
                 <button
-                  onClick={handleReject}
-                  className="flex-1 md:flex-none px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded transition text-sm font-semibold"
+                  onClick={() => setShowTerms(true)}
+                  className="underline hover:text-white transition"
                 >
-                  Rejeitar
+                  Saiba mais
                 </button>
-                <button
-                  onClick={handleAccept}
-                  className="flex-1 md:flex-none px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded transition text-sm font-semibold"
-                >
-                  Aceitar Tudo
-                </button>
-              </div>
+              </p>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-2">
+              <button
+                onClick={handleReject}
+                className="flex-1 px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded transition text-xs font-semibold"
+              >
+                Rejeitar
+              </button>
+              <button
+                onClick={handleAccept}
+                className="flex-1 px-3 py-1.5 bg-white text-gray-900 hover:bg-gray-100 rounded transition text-xs font-semibold"
+              >
+                Aceitar
+              </button>
             </div>
           </div>
         </div>
@@ -71,9 +83,10 @@ export default function CookieNotice() {
               <h2 className="text-2xl font-bold font-manrope">Política de Cookies</h2>
               <button
                 onClick={() => setShowTerms(false)}
-                className="text-gray-600 hover:text-gray-800"
+                className="text-gray-600 hover:text-gray-800 transition"
+                aria-label="Fechar"
               >
-                <span className="material-symbols-outlined">close</span>
+                <XMarkIcon className="w-5 h-5" />
               </button>
             </div>
 

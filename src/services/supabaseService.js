@@ -220,7 +220,7 @@ export const usersService = {
   async getUserProfile(userId) {
     try {
       const { data, error } = await supabase
-        .from('users')
+        .from('users_profile')
         .select('*')
         .eq('id', userId)
         .single();
@@ -234,7 +234,7 @@ export const usersService = {
   async updateUserProfile(userId, profileData) {
     try {
       const { data, error } = await supabase
-        .from('users')
+        .from('users_profile')
         .update(profileData)
         .eq('id', userId)
         .select();

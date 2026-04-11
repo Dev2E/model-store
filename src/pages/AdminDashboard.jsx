@@ -3,6 +3,20 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { adminService } from '../services/supabaseService';
 import { formatCurrency } from '../utils/formatters';
+import {
+  ChartBarIcon,
+  CubeIcon,
+  ShoppingCartIcon,
+  UserGroupIcon,
+  TruckIcon,
+  ClipboardDocumentListIcon,
+  ArrowTrendingUpIcon,
+  CogIcon,
+  PlusIcon,
+  EnvelopeIcon,
+  ArrowLeftOnRectangleIcon,
+  SparklesIcon,
+} from '@heroicons/react/24/outline';
 
 export default function AdminDashboard() {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -87,32 +101,36 @@ export default function AdminDashboard() {
       {/* Sidebar - FIXED */}
       <div className="fixed left-0 top-0 h-screen w-64 bg-slate-800 shadow-2xl border-r border-slate-700 flex flex-col overflow-hidden z-50">
         <div className="p-6 flex-shrink-0">
-          <h1 className="text-2xl font-bold text-white font-manrope">🔧 Admin</h1>
+          <div className="flex items-center gap-2 mb-1">
+            <CogIcon className="w-6 h-6 text-blue-400" />
+            <h1 className="text-2xl font-bold text-white font-manrope">Admin</h1>
+          </div>
           <p className="text-slate-400 text-sm mt-1">Gerenciamento</p>
         </div>
 
         {/* Scrollable Nav */}
         <nav className="px-4 py-6 space-y-2 overflow-y-auto flex-1">
           <div className="text-slate-400 text-xs font-semibold py-4 px-2">MENU PRINCIPAL</div>
-          <NavLink to="/admin/dashboard" icon="📊" label="Dashboard" active />
-          <NavLink to="/admin/produtos" icon="📦" label="Produtos" />
-          <NavLink to="/admin/pedidos" icon="🛒" label="Pedidos" />
-          <NavLink to="/admin/clientes" icon="👥" label="Clientes" />
+          <NavLink to="/admin/dashboard" Icon={ChartBarIcon} label="Dashboard" active />
+          <NavLink to="/admin/produtos" Icon={CubeIcon} label="Produtos" />
+          <NavLink to="/admin/pedidos" Icon={ShoppingCartIcon} label="Pedidos" />
+          <NavLink to="/admin/clientes" Icon={UserGroupIcon} label="Clientes" />
 
           <div className="text-slate-400 text-xs font-semibold py-4 px-2 mt-8">OUTRAS SEÇÕES</div>
-          <NavLink to="/admin/envios" icon="📮" label="Métodos de Envio" />
-          <NavLink to="/admin/logs" icon="📋" label="Logs do Sistema" />
-          <NavLink to="/admin/relatorios" icon="📈" label="Relatórios" />
-          <NavLink to="/admin/configuracoes" icon="⚙️" label="Configurações" />
+          <NavLink to="/admin/envios" Icon={TruckIcon} label="Métodos de Envio" />
+          <NavLink to="/admin/logs" Icon={ClipboardDocumentListIcon} label="Logs do Sistema" />
+          <NavLink to="/admin/relatorios" Icon={ArrowTrendingUpIcon} label="Relatórios" />
+          <NavLink to="/admin/configuracoes" Icon={CogIcon} label="Configurações" />
         </nav>
 
         {/* Logout Button - FIXED AT BOTTOM */}
         <div className="p-4 flex-shrink-0 border-t border-slate-700">
           <button
             onClick={handleLogout}
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition"
+            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded transition flex items-center justify-center gap-2"
           >
-            🚪 Sair
+            <ArrowLeftOnRectangleIcon className="w-5 h-5" />
+            Sair
           </button>
         </div>
       </div>
@@ -135,25 +153,25 @@ export default function AdminDashboard() {
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <StatCard
-            icon="🛒"
+            Icon={ShoppingCartIcon}
             title="Pedidos"
             value={stats.totalOrders}
             color="from-blue-500 to-blue-600"
           />
           <StatCard
-            icon="💰"
+            Icon={SparklesIcon}
             title="Receita Total"
             value={formatCurrency(stats.totalRevenue)}
             color="from-green-500 to-green-600"
           />
           <StatCard
-            icon="👥"
+            Icon={UserGroupIcon}
             title="Clientes"
             value={stats.totalUsers}
             color="from-purple-500 to-purple-600"
           />
           <StatCard
-            icon="📦"
+            Icon={CubeIcon}
             title="Produtos"
             value={stats.totalProducts}
             color="from-orange-500 to-orange-600"
@@ -167,10 +185,10 @@ export default function AdminDashboard() {
             <div className="bg-slate-700/50 backdrop-blur border border-slate-600 rounded-xl p-6">
               <h3 className="text-lg font-bold text-white font-manrope mb-4">Ações Rápidas</h3>
               <div className="space-y-3">
-                <QuickActionButton to="/admin/produtos/novo" icon="➕" label="Novo Produto" />
-                <QuickActionButton to="/admin/pedidos" icon="📋" label="Ver Pedidos" />
-                <QuickActionButton to="/admin/clientes" icon="📧" label="Messagemns" />
-                <QuickActionButton to="/admin/configuracoes" icon="⚙️" label="Configurações" />
+              <QuickActionButton to="/admin/produtos/novo" Icon={PlusIcon} label="Novo Produto" />
+              <QuickActionButton to="/admin/pedidos" Icon={ClipboardDocumentListIcon} label="Ver Pedidos" />
+              <QuickActionButton to="/admin/clientes" Icon={EnvelopeIcon} label="Mensagens" />
+              <QuickActionButton to="/admin/configuracoes" Icon={CogIcon} label="Configurações" />
               </div>
             </div>
           </div>
@@ -216,19 +234,19 @@ export default function AdminDashboard() {
         {/* Management Options */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <ManagementCard
-            icon="📦"
+            Icon={CubeIcon}
             title="Gerenciar Produtos"
             description="Adicione, edite ou remova produtos do catálogo"
             to="/admin/produtos"
           />
           <ManagementCard
-            icon="🛒"
+            Icon={ShoppingCartIcon}
             title="Gerenciar Pedidos"
             description="Visualize e atualize o status dos pedidos"
             to="/admin/pedidos"
           />
           <ManagementCard
-            icon="👥"
+            Icon={UserGroupIcon}
             title="Gerenciar Clientes"
             description="Visualize e gerencie dados dos clientes"
             to="/admin/clientes"
@@ -241,7 +259,7 @@ export default function AdminDashboard() {
 }
 
 // Components
-function NavLink({ to, icon, label, active }) {
+function NavLink({ to, Icon, label, active }) {
   return (
     <Link
       to={to}
@@ -251,13 +269,13 @@ function NavLink({ to, icon, label, active }) {
           : 'text-slate-300 hover:bg-slate-700/50'
       }`}
     >
-      <span className="text-xl">{icon}</span>
+      <Icon className="w-5 h-5" />
       <span className="font-medium">{label}</span>
     </Link>
   );
 }
 
-function StatCard({ icon, title, value, color }) {
+function StatCard({ Icon, title, value, color }) {
   return (
     <div className={`bg-gradient-to-br ${color} rounded-xl p-6 text-white shadow-lg`}>
       <div className="flex justify-between items-start">
@@ -265,29 +283,29 @@ function StatCard({ icon, title, value, color }) {
           <p className="text-white/80 text-sm font-semibold">{title}</p>
           <p className="text-3xl font-bold font-manrope mt-2">{value}</p>
         </div>
-        <span className="text-4xl">{icon}</span>
+        <Icon className="w-10 h-10 opacity-80" />
       </div>
     </div>
   );
 }
 
-function QuickActionButton({ to, icon, label }) {
+function QuickActionButton({ to, Icon, label }) {
   return (
     <Link
       to={to}
       className="flex items-center gap-3 p-3 bg-slate-600/50 hover:bg-slate-600 rounded-lg text-slate-100 transition"
     >
-      <span className="text-xl">{icon}</span>
+      <Icon className="w-5 h-5" />
       <span className="font-medium">{label}</span>
     </Link>
   );
 }
 
-function ManagementCard({ icon, title, description, to }) {
+function ManagementCard({ Icon, title, description, to }) {
   return (
     <Link to={to}>
       <div className="bg-slate-700/50 backdrop-blur border border-slate-600 rounded-xl p-6 hover:border-slate-500 hover:bg-slate-700/70 transition cursor-pointer">
-        <div className="text-4xl mb-4">{icon}</div>
+        <Icon className="w-8 h-8 mb-4 text-blue-400" />
         <h3 className="text-lg font-bold text-white font-manrope mb-2">{title}</h3>
         <p className="text-slate-400 text-sm">{description}</p>
       </div>

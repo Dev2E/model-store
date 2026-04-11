@@ -65,68 +65,68 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white">
       {/* Hero Section */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-8 px-6 py-16 max-w-7xl mx-auto">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 px-4 sm:px-6 py-10 sm:py-16 max-w-7xl mx-auto">
         {/* Text Content */}
         <div className="flex flex-col justify-center">
-          <p className="text-sm font-semibold text-gray-500 mb-2">VELLENIA STORE 2026</p>
-          <h1 className="text-5xl md:text-6xl font-bold font-manrope leading-tight mb-6">
+          <p className="text-xs sm:text-sm font-semibold text-gray-500 mb-2">VELLENIA STORE 2026</p>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-manrope leading-tight mb-4 sm:mb-6">
             Moda Contemporânea.
           </h1>
-          <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+          <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-6 sm:mb-8 leading-relaxed">
             Descubra uma seleção curada de peças que combinam estilo, qualidade e conforto. Cada item foi selecionado para trazer sofisticação ao seu guarda-roupa.
           </p>
-          <div className="flex gap-4">
-            <button className="bg-gray-900 text-white px-6 py-3 rounded-md hover:bg-gray-800 transition">Explorar Coleção</button>
-            <button className="border border-gray-300 text-gray-900 px-6 py-3 rounded-md hover:bg-gray-50 transition">Ver Lookbook</button>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            <button className="bg-gray-900 text-white px-4 sm:px-6 py-3 rounded-md hover:bg-gray-800 transition text-sm sm:text-base">Explorar Coleção</button>
+            <button className="border border-gray-300 text-gray-900 px-4 sm:px-6 py-3 rounded-md hover:bg-gray-50 transition text-sm sm:text-base">Ver Lookbook</button>
           </div>
         </div>
 
         {/* Hero Image */}
-        <div className="bg-gray-200 rounded-lg h-96 md:h-full flex items-center justify-center text-6xl shadow-inner">
+        <div className="bg-gray-200 rounded-lg h-64 sm:h-80 md:h-96 lg:h-full flex items-center justify-center text-5xl sm:text-6xl shadow-inner">
           👔
         </div>
       </section>
 
       {/* Categories Section */}
-      <section className="px-6 py-16 max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-4xl font-bold font-manrope">Compre por Categoria</h2>
-          <a href="#" className="text-sm font-semibold text-gray-800 hover:underline">VER TODAS AS CATEGORIAS</a>
+      <section className="px-4 sm:px-6 py-10 sm:py-16 max-w-7xl mx-auto">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-manrope">Compre por Categoria</h2>
+          <a href="#" className="text-xs sm:text-sm font-semibold text-gray-800 hover:underline">VER TODAS AS CATEGORIAS</a>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
           {categories.map((category) => (
             <Link key={category.id} to={`/produtos?categoria=${category.id}`}>
-              <div className="bg-gray-100 rounded-lg h-64 flex items-center justify-center text-6xl cursor-pointer hover:bg-gray-200 transition duration-300">
+              <div className="bg-gray-100 rounded-lg h-40 sm:h-56 md:h-64 flex items-center justify-center text-4xl sm:text-5xl md:text-6xl cursor-pointer hover:bg-gray-200 transition duration-300">
                 {category.image}
               </div>
-              <h3 className="mt-4 font-semibold text-lg text-gray-800">{category.name}</h3>
+              <h3 className="mt-3 sm:mt-4 font-semibold text-sm sm:text-base md:text-lg text-gray-800">{category.name}</h3>
             </Link>
           ))}
         </div>
       </section>
 
       {/* Featured Products - AGORA DINÂMICO! */}
-      <section className="px-6 py-16 max-w-7xl mx-auto">
-        <h2 className="text-4xl font-bold font-manrope mb-8">Destaques</h2>
+      <section className="px-4 sm:px-6 py-10 sm:py-16 max-w-7xl mx-auto">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-manrope mb-6 sm:mb-8">Destaques</h2>
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <p className="text-gray-500 animate-pulse">Carregando coleção...</p>
+            <p className="text-gray-500 animate-pulse text-sm sm:text-base">Carregando coleção...</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
             {featuredProducts.map((product) => (
               <Link key={product.id} to={`/produto/${product.id}`}>
                 <div className="group cursor-pointer">
-                  <div className="bg-gray-100 rounded-lg h-64 flex items-center justify-center text-6xl mb-4 group-hover:bg-gray-200 transition duration-300">
+                  <div className="bg-gray-100 rounded-lg h-40 sm:h-56 md:h-64 flex items-center justify-center text-4xl sm:text-5xl md:text-6xl mb-3 sm:mb-4 group-hover:bg-gray-200 transition duration-300">
                     {/* Usamos o emoji que está salvo no banco de dados temporariamente */}
                     {product.image}
                   </div>
-                  <h3 className="font-semibold text-sm mb-1 text-gray-800 group-hover:text-black transition truncate">
+                  <h3 className="font-semibold text-xs sm:text-sm mb-1 text-gray-800 group-hover:text-black transition truncate">
                     {product.name}
                   </h3>
-                  <p className="text-lg font-bold text-gray-900">
+                  <p className="text-base sm:text-lg font-bold text-gray-900">
                     {formatCurrency(product.price)}
                   </p>
                 </div>
@@ -137,21 +137,21 @@ export default function Home() {
       </section>
 
       {/* Article Section */}
-      <section className="px-6 py-16 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="bg-gray-200 h-96 rounded-lg flex items-center justify-center text-6xl">
+      <section className="px-4 sm:px-6 py-10 sm:py-16 max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
+          <div className="bg-gray-200 h-64 sm:h-80 md:h-96 rounded-lg flex items-center justify-center text-5xl sm:text-6xl">
             🪴
           </div>
 
           <div>
             <p className="text-xs font-semibold text-gray-500 mb-2">ARTIGO EM DESTAQUE</p>
-            <h2 className="text-4xl font-bold font-manrope mb-6 text-gray-900">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-manrope mb-4 sm:mb-6 text-gray-900">
               A Arte de Viver Bem em Pequenos Espaços.
             </h2>
-            <p className="text-gray-600 leading-relaxed mb-8">
+            <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-6 sm:mb-8">
               Descubra como o design minimalista está revolucionando a vida urbana. Neste artigo, conversamos com arquitetos sobre a intersecção entre utilidade e beleza na casa moderna.
             </p>
-            <a href="#" className="font-bold text-gray-900 flex items-center gap-2 hover:gap-4 transition-all">
+            <a href="#" className="font-bold text-gray-900 flex items-center gap-2 hover:gap-4 transition-all text-sm sm:text-base">
               LER ARTIGO
               <span className="text-xl">→</span>
             </a>
@@ -160,15 +160,15 @@ export default function Home() {
       </section>
 
       {/* Community Section */}
-      <section className="px-6 py-16 max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-4xl font-bold font-manrope">Estilizado por Você</h2>
-          <a href="#" className="text-sm font-semibold text-gray-800 hover:underline">Marque @boutique_digital</a>
+      <section className="px-4 sm:px-6 py-10 sm:py-16 max-w-7xl mx-auto">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-manrope">Estilizado por Você</h2>
+          <a href="#" className="text-xs sm:text-sm font-semibold text-gray-800 hover:underline">Marque @boutique_digital</a>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-4">
           {[1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="bg-gray-100 hover:bg-gray-200 transition h-48 rounded-lg flex items-center justify-center text-4xl cursor-pointer">
+            <div key={i} className="bg-gray-100 hover:bg-gray-200 transition h-32 sm:h-40 md:h-48 rounded-lg flex items-center justify-center text-2xl sm:text-3xl md:text-4xl cursor-pointer">
               📸
             </div>
           ))}

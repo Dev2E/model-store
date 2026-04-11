@@ -1,7 +1,21 @@
 import { useCart } from '../context/CartContext';
+import { CheckCircleIcon, ExclamationCircleIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 
 export default function Toast() {
   const { notifications, dismissNotification } = useCart();
+
+  const renderIcon = (type) => {
+    const iconProps = 'w-5 h-5';
+    switch (type) {
+      case 'success':
+        return <CheckCircleIcon className={iconProps} />;
+      case 'error':
+        return <ExclamationCircleIcon className={iconProps} />;
+      case 'info':
+      default:
+        return <InformationCircleIcon className={iconProps} />;
+    }
+  };
 
   return (
     <div className="fixed top-4 right-4 z-50 space-y-2 pointer-events-none">
@@ -18,13 +32,7 @@ export default function Toast() {
           }`}
         >
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-lg">
-              {notification.type === 'success'
-                ? 'check_circle'
-                : notification.type === 'error'
-                ? 'error'
-                : 'info'}
-            </span>
+            {renderIcon(notification.type)}
             {notification.message}
           </div>
         </div>

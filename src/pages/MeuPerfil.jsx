@@ -23,15 +23,15 @@ export default function MeuPerfil() {
     return <div className="min-h-screen flex items-center justify-center">Carregando...</div>;
   }
 
-  const handleSaveProfile = () => {
-    // Atualizar dados na tela
-    if (user?.user_metadata) {
-      setProfileData({
-        name: user.user_metadata.name || 'Sem nome',
-        email: user.email || '',
-        phone: user.user_metadata.phone || '',
-        avatar: user.user_metadata.avatar || '👤',
-      });
+  const handleSaveProfile = (updatedData) => {
+    // Atualizar dados na tela com os dados que vieram da modal
+    if (updatedData) {
+      setProfileData(prevData => ({
+        ...prevData,
+        name: updatedData.name || prevData.name,
+        phone: updatedData.phone || prevData.phone,
+        avatar: updatedData.avatar || prevData.avatar,
+      }));
     }
   };
 

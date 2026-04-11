@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 export default function Contato() {
   const [formData, setFormData] = useState({
@@ -193,9 +194,9 @@ export default function Contato() {
             { q: 'Os produtos têm garantia?', a: 'Todos os itens têm garantia de 1 ano contra defeitos de fabricação.' },
           ].map((faq, i) => (
             <details key={i} className="border border-gray-200 rounded-lg p-4 group cursor-pointer">
-              <summary className="flex justify-between items-center font-semibold">
+              <summary className="flex justify-between items-center font-semibold list-none">
                 {faq.q}
-                <span className="material-symbols-outlined group-open:rotate-180 transition">expand_more</span>
+                <ChevronDownIcon className="w-5 h-5 group-open:rotate-180 transition text-gray-600" />
               </summary>
               <p className="text-gray-600 mt-4">{faq.a}</p>
             </details>

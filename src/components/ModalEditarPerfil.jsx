@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { usersService } from '../services/supabaseService';
 
 export default function Modal({ isOpen, user, onClose, onSave }) {
@@ -10,6 +10,19 @@ export default function Modal({ isOpen, user, onClose, onSave }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  // Atualizar formData quando modal for aberta ou user mudar
+  useEffect(() => {
+    if (isOpen && user) {
+      setFormData({
+        name: user.user_metadata?.name || '',
+        phone: user.user_metadata?.phone || '',
+        avatar: user.user_metadata?.avatar || ''
+      });
+      setError('');
+      setSuccess('');
+    }
+  }, [isOpen, user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,11 +47,15 @@ export default function Modal({ isOpen, user, onClose, onSave }) {
       });
 
       if (updateError) {
-        setError(updateError);
+        // Extrair mensagem do erro corretamente (pode ser string ou objeto)
+        const errorMessage = typeof updateError === 'string' 
+          ? updateError 
+          : updateError?.message || 'Erro ao atualizar perfil';
+        setError(errorMessage);
       } else {
         setSuccess('Perfil atualizado com sucesso!');
         setTimeout(() => {
-          onSave();
+          onSave(formData);
           onClose();
         }, 1500);
       }
@@ -53,14 +70,14 @@ export default function Modal({ isOpen, user, onClose, onSave }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pt-20">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 px-4 pt-20 animate-fadeInUp">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-8 animate-scaleIn">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold font-manrope">Editar Perfil</h2>
           <button
             onClick={onClose}
             disabled={loading}
-            className="text-2xl hover:text-gray-600 disabled:opacity-50"
+            className="text-2xl hover:text-gray-600 disabled:opacity-50 transition"
           >
             ✕
           </button>
@@ -76,7 +93,7 @@ export default function Modal({ isOpen, user, onClose, onSave }) {
               value={formData.name}
               onChange={handleChange}
               disabled={loading}
-              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-gray-800 disabled:bg-gray-100"
+              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-gray-800 disabled:bg-gray-100 transition"
               placeholder="Seu nome"
             />
           </div>
@@ -90,7 +107,7 @@ export default function Modal({ isOpen, user, onClose, onSave }) {
               value={formData.phone}
               onChange={handleChange}
               disabled={loading}
-              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-gray-800 disabled:bg-gray-100"
+              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-gray-800 disabled:bg-gray-100 transition"
               placeholder="(11) 99999-9999"
             />
           </div>
@@ -105,15 +122,15 @@ export default function Modal({ isOpen, user, onClose, onSave }) {
               onChange={handleChange}
               disabled={loading}
               maxLength={2}
-              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-gray-800 disabled:bg-gray-100 text-center text-3xl"
+              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-gray-800 disabled:bg-gray-100 transition text-center text-3xl"
               placeholder="😊"
             />
             <p className="text-xs text-gray-500 mt-2">Use um emoji simples (ex: 😊, 🎉, 👨)</p>
           </div>
 
           {/* Mensagens */}
-          {error && <p className="text-red-600 text-sm text-center">{error}</p>}
-          {success && <p className="text-green-600 text-sm text-center">{success}</p>}
+          {error && <p className="text-red-600 text-sm text-center font-semibold">{error}</p>}
+          {success && <p className="text-green-600 text-sm text-center font-semibold">{success}</p>}
 
           {/* Botões */}
           <div className="flex gap-3">
