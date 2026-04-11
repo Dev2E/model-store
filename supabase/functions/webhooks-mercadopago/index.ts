@@ -21,7 +21,6 @@ serve(async (req: Request) => {
 
   try {
     // Validar request vem do Mercado Pago
-    // Aceita webhook sem autenticação JWT - Mercado Pago não consegue enviar anon key
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
@@ -42,7 +41,7 @@ serve(async (req: Request) => {
 
     // Se for payment, consulte a API do Mercado Pago
     if (type === "payment") {
-      const accessToken = Deno.env.get("MERCADOPAGO_ACCESS_TOKEN");
+      const accessToken = Deno.env.get("MERCADOPAGO_ACCESS_TOKEN");  // Server-side secret
 
       const paymentResponse = await fetch(
         `https://api.mercadopago.com/v1/payments/${dataId}`,

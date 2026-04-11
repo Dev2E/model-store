@@ -117,14 +117,11 @@ Chaves que vão em `.env.local`:
 ```env
 # ✅ SEGURAS - Chaves de cliente (pública)
 VITE_SUPABASE_URL=https://seu-projeto.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGc...  # Anon key (pública)
+VITE_SUPABASE_ANON_KEY=sk_...  # Anon key (pública)
 VITE_MERCADOPAGO_PUBLIC_KEY=APP_USR_...  # Pública
-
-# ✅ SEGURAS - Chaves privadas em Supabase Secrets
-# (NÃO em .env)
-SUPABASE_SERVICE_KEY=...  # Rpc secret (servidor Supabase)
-MERCADOPAGO_ACCESS_TOKEN=...  # (servidor Supabase)
 ```
+
+**Nota:** Chaves privadas de servidor devem ser adicionadas diretamente em Supabase Secrets ou Vercel Environment Variables, **nunca em repositório público**.
 
 ### 3. Verificação Automática de Segurança
 
@@ -192,14 +189,13 @@ O arquivo `vercel.json` já está configurado com:
 ### Variáveis de Ambiente no Vercel
 
 1. **Vercel Dashboard** → Project Settings → Environment Variables
-2. Adicionar cada variável:
+2. Adicionar apenas variáveis públicas (VITE_*):
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   - `VITE_MERCADOPAGO_PUBLIC_KEY`
+   - Outras variáveis públicas do seu projeto
 
-```
-VITE_SUPABASE_URL = https://seu-projeto.supabase.co
-VITE_SUPABASE_ANON_KEY = eyJhbGc...
-VITE_MERCADOPAGO_PUBLIC_KEY = APP_USR_...
-VITE_SANDBOX_MODE = false (produção) ou true (testes)
-```
+**Não adicione** chaves privadas/de servidor no Vercel - elas vão apenas em Supabase Secrets
 
 3. Clicar "Add Environment Variable"
 4. Deploy automático recarrega variáveis
