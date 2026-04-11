@@ -19,11 +19,6 @@ export const authService = {
         return { success: false, error: error.message || error };
       }
 
-      // Auto-criar perfil em users_profile
-      if (data?.user?.id) {
-        await this.ensureUserProfile(data.user.id, email, name);
-      }
-
       return { success: true, data };
     } catch (error) {
       return { success: false, error: error?.message || 'Erro ao criar conta' };
@@ -42,44 +37,9 @@ export const authService = {
         return { success: false, error: error.message || error };
       }
 
-      // Auto-criar perfil em users_profile se não existir
-      if (data?.user?.id) {
-        await this.ensureUserProfile(data.user.id, email, data.user.user_metadata?.name);
-      }
-
       return { success: true, data };
     } catch (error) {
       return { success: false, error: error?.message || 'Erro ao fazer login' };
-    }
-  },
-
-  // Garantir que o usuário existe em users_profile
-  async ensureUserProfile(userId, email, name = null) {
-    try {
-      if (!userId) return;
-
-      // Verificar se já existe
-      const { data: existing } = await supabase
-        .from('users_profile')
-        .select('id')
-        .eq('id', userId)
-        .single();
-
-      // Se não existe, criar
-      if (!existing) {
-        await supabase
-          .from('users_profile')
-          .insert([
-            {
-              id: userId,
-              email,
-              name: name || email.split('@')[0],
-              role: 'customer',
-            },
-          ]);
-      }
-    } catch (err) {
-      console.log('Nota: usuário pode já existir em users_profile', err?.message);
     }
   },
 
@@ -97,12 +57,6 @@ export const authService = {
   async getCurrentUser() {
     try {
       const { data, error } = await supabase.auth.getUser();
-      
-      // Auto-criar perfil em users_profile se não existir
-      if (data?.user?.id && !error) {
-        await this.ensureUserProfile(data.user.id, data.user.email, data.user.user_metadata?.name);
-      }
-      
       return { data, error };
     } catch (error) {
       return { data: null, error };

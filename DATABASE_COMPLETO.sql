@@ -237,13 +237,14 @@ CREATE POLICY "Users can read own profile"
 ON users_profile FOR SELECT 
 USING (auth.uid() = id);
 
-CREATE POLICY "Users can create own profile" 
-ON users_profile FOR INSERT 
-WITH CHECK (auth.uid() = id);
-
 CREATE POLICY "Users can update own profile" 
 ON users_profile FOR UPDATE 
 USING (auth.uid() = id);
+
+-- Permitir que o sistema (função trigger) insira perfis durante signup
+CREATE POLICY "Service can create profiles" 
+ON users_profile FOR INSERT 
+WITH CHECK (true);
 
 -- === STORES ===
 CREATE POLICY "Owners can view own stores"
@@ -355,6 +356,26 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Função para criar perfil automaticamente ao assinar
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.users_profile (id, email, name, role)
+  VALUES (
+    new.id,
+    new.email,
+    COALESCE(new.raw_user_meta_data->>'name', new.email),
+    'customer'
+  );
+  RETURN new;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger para criar perfil quando novo usuário assina
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION handle_new_user();
 
 -- Trigger para STORES
 CREATE TRIGGER update_stores_updated_at BEFORE UPDATE ON stores
