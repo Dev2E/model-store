@@ -39,6 +39,7 @@ import PedidoConfirmado from "./pages/PedidoConfirmado";
 import PagamentoRecusado from "./pages/PagamentoRecusado";
 import PagamentoPendente from "./pages/PagamentoPendente";
 import ConfirmacaoEmail from "./pages/ConfirmacaoEmail";
+import Diagnostico from "./pages/Diagnostico";
 
 function AppContent() {
   const location = useLocation();
@@ -79,6 +80,7 @@ function AppContent() {
         <Route path="/pedido-confirmado" element={<PedidoConfirmado />} />
         <Route path="/pagamento-recusado" element={<PagamentoRecusado />} />
         <Route path="/pagamento-pendente" element={<PagamentoPendente />} />
+        <Route path="/diagnostico" element={<Diagnostico />} />
       </Routes>
       {!isAdminPage && <Footer />}
       <CookieNotice />
