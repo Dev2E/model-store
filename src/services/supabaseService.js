@@ -475,4 +475,17 @@ export const adminService = {
       return { isAdmin: false, error };
     }
   },
+
+  // Obter todas as categorias
+  async getCategories() {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('id, name, slug')
+        .order('name', { ascending: true });
+      return { data, error };
+    } catch (error) {
+      return { data: null, error };
+    }
+  },
 }

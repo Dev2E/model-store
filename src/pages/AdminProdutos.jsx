@@ -8,6 +8,7 @@ import { formatCurrency } from '../utils/formatters';
 
 export default function AdminProdutos() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -16,19 +17,25 @@ export default function AdminProdutos() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [newColor, setNewColor] = useState({ name: '', label: '' });
 
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     price: '',
-    category: '',
+    category_id: '',
     collection: '',
     stock: '',
     image: '',
     shipping: '',
     sustainability: '',
-    image_path: '', // Armazenar path para deletar depois
+    image_path: '',
+    sizes: [],
+    colors: [],
+    active: true
   });
+
+  const sizesOptions = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
   const { user, isAuthenticated } = useAuth();
   const { showNotification } = useCart();
@@ -57,6 +64,12 @@ export default function AdminProdutos() {
         } else {
           setProducts(data || []);
         }
+
+        // Carregar categorias
+        const { data: catsData, error: catsError } = await adminService.getCategories();
+        if (!catsError && catsData) {
+          setCategories(catsData);
+        }
       } catch (err) {
         console.error('Error:', err);
         navigate('/');
@@ -69,10 +82,38 @@ export default function AdminProdutos() {
   }, [user?.id, isAuthenticated, navigate, showNotification]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleSizeToggle = (size) => {
+    setFormData(prev => {
+      const sizes = prev.sizes || [];
+      if (sizes.includes(size)) {
+        return { ...prev, sizes: sizes.filter(s => s !== size) };
+      } else {
+        return { ...prev, sizes: [...sizes, size] };
+      }
+    });
+  };
+
+  const handleAddColor = () => {
+    if (newColor.name && newColor.label) {
+      setFormData(prev => ({
+        ...prev,
+        colors: [...(prev.colors || []), { ...newColor }]
+      }));
+      setNewColor({ name: '', label: '' });
+    }
+  };
+
+  const handleRemoveColor = (index) => {
+    setFormData(prev => ({
+      ...prev,
+      colors: prev.colors.filter((_, i) => i !== index)
     }));
   };
 
@@ -169,18 +210,22 @@ export default function AdminProdutos() {
       name: '',
       description: '',
       price: '',
-      category: '',
+      category_id: '',
       collection: '',
       stock: '',
       image: '',
       shipping: '',
       sustainability: '',
       image_path: '',
+      sizes: [],
+      colors: [],
+      active: true
     });
     setImageFile(null);
     setImagePreview(null);
     setEditingId(null);
     setShowForm(false);
+    setNewColor({ name: '', label: '' });
   };
 
   const handleEdit = (product) => {
@@ -317,14 +362,18 @@ export default function AdminProdutos() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold mb-2">Categoria</label>
-                  <input
-                    type="text"
-                    name="category"
-                    value={formData.category}
+                  <select
+                    name="category_id"
+                    value={formData.category_id}
                     onChange={handleChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-gray-800"
                     disabled={submitting}
-                  />
+                  >
+                    <option value="">Selecione uma categoria</option>
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    ))}
+                  </select>
                 </div>
                 <div>
                   <label className="block text-sm font-semibold mb-2">Coleção</label>
@@ -399,6 +448,89 @@ export default function AdminProdutos() {
                   className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-gray-800"
                   disabled={submitting}
                 />
+              </div>
+
+              {/* TAMANHOS */}
+              <div>
+                <label className="block text-sm font-semibold mb-3">Tamanhos</label>
+                <div className="grid grid-cols-3 gap-3">
+                  {sizesOptions.map(size => (
+                    <label key={size} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.sizes.includes(size)}
+                        onChange={() => handleSizeToggle(size)}
+                        disabled={submitting}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm">{size}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* CORES */}
+              <div>
+                <label className="block text-sm font-semibold mb-2">Cores</label>
+                <div className="space-y-3 mb-4">
+                  {(formData.colors || []).map((color, idx) => (
+                    <div key={idx} className="flex items-center gap-2 bg-gray-50 p-3 rounded">
+                      <div className="flex-1">
+                        <p className="text-sm font-semibold">{color.label}</p>
+                        <p className="text-xs text-gray-500">{color.name}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveColor(idx)}
+                        disabled={submitting}
+                        className="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600"
+                      >
+                        Remover
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  <input
+                    type="text"
+                    placeholder="Nome da cor (ex: black)"
+                    value={newColor.name}
+                    onChange={(e) => setNewColor({...newColor, name: e.target.value})}
+                    disabled={submitting}
+                    className="px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-800"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Label (ex: Preto)"
+                    value={newColor.label}
+                    onChange={(e) => setNewColor({...newColor, label: e.target.value})}
+                    disabled={submitting}
+                    className="px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-gray-800"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={handleAddColor}
+                  disabled={submitting || !newColor.name || !newColor.label}
+                  className="w-full px-4 py-2 bg-blue-500 text-white rounded font-semibold hover:bg-blue-600 disabled:opacity-50"
+                >
+                  + Adicionar Cor
+                </button>
+              </div>
+
+              {/* STATUS */}
+              <div>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="active"
+                    checked={formData.active}
+                    onChange={handleChange}
+                    disabled={submitting}
+                    className="w-4 h-4"
+                  />
+                  <span className="text-sm font-semibold">Produto Ativo</span>
+                </label>
               </div>
 
               <div className="flex gap-3">
