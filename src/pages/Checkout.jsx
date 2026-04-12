@@ -354,6 +354,10 @@ export default function Checkout() {
       }
 
       // Chamar Edge Function do Supabase para criar preferência
+      const shippingCost = selectedShipping ? parseFloat(selectedShipping.preco_final || selectedShipping.preco_ajustado || 0) : 0;
+      const taxAmount = Math.round((cartTotal - discount) * 0.1 * 100) / 100;
+      const totalAmount = Math.round((cartTotal + shippingCost + taxAmount - discount) * 100) / 100;
+
       const paymentPayload = {
         items: cartItems.map(item => ({
           id: item.id.toString(),
@@ -365,9 +369,9 @@ export default function Checkout() {
         })),
         payer: formData,
         orderId: order.id,
-        shipping: shipping,
+        shipping: shippingCost,
         discount: discount,
-        total: total,
+        total: totalAmount,
       };
 
       const response = await fetch(
