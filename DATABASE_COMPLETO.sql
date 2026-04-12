@@ -149,6 +149,7 @@ CREATE TABLE orders (
   
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
   store_id UUID REFERENCES stores(id) ON DELETE CASCADE,
+  order_number VARCHAR(50) UNIQUE,
   
   items JSONB NOT NULL,
   total DECIMAL(10, 2) NOT NULL,
