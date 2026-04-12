@@ -76,8 +76,26 @@ export default function Produtos() {
   const categories = dataCategories;
 
   // Extrair todos os tamanhos e cores únicos
-  const allSizes = [...new Set(allProducts.flatMap(p => p.sizes || []))].filter(Boolean).sort();
-  const allColorObjects = [...new Map(allProducts.flatMap(p => (p.colors || []).filter(c => c && c.name)).map(c => [c.name, c])).values()];
+  const allSizes = [...new Set(allProducts.flatMap(p => {
+    // Se não tiver sizes, usar padrão
+    if (!p.sizes || p.sizes.length === 0) {
+      return ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    }
+    return p.sizes;
+  }))].filter(Boolean).sort((a, b) => {
+    const order = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    return order.indexOf(a) - order.indexOf(b);
+  });
+
+  const allColorObjects = [...new Map(allProducts.flatMap(p => {
+    // Se não tiver colors, usar padrão
+    const colors = p.colors && p.colors.length > 0 ? p.colors : [
+      { name: 'white', label: 'Branco' },
+      { name: 'black', label: 'Preto' },
+      { name: 'gray', label: 'Cinza' }
+    ];
+    return colors.filter(c => c && c.name).map(c => [c.name, c]);
+  }).map(([name, c]) => [name, c])).values()];
 
   // Debug: Log os dados para verificar estrutura
   useEffect(() => {
@@ -97,11 +115,17 @@ export default function Produtos() {
     const searchMatch = (p.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                         (p.description || '').toLowerCase().includes(searchTerm.toLowerCase());
     
-    // Filtro de tamanho (se nenhum selecionado, mostra todos)
-    const sizeMatch = selectedSizes.length === 0 || (p.sizes && selectedSizes.some(s => p.sizes.includes(s)));
+    // Filtro de tamanho - usar fallback se vazio
+    const productSizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+    const sizeMatch = selectedSizes.length === 0 || selectedSizes.some(s => productSizes.includes(s));
     
-    // Filtro de cor (se nenhuma selecionada, mostra todas)
-    const colorMatch = selectedColors.length === 0 || (p.colors && selectedColors.some(sc => p.colors.some(pc => pc.name === sc)));
+    // Filtro de cor - usar fallback se vazio
+    const productColors = (p.colors && p.colors.length > 0) ? p.colors : [
+      { name: 'white', label: 'Branco' },
+      { name: 'black', label: 'Preto' },
+      { name: 'gray', label: 'Cinza' }
+    ];
+    const colorMatch = selectedColors.length === 0 || selectedColors.some(sc => productColors.some(pc => pc.name === sc));
     
     return categoryMatch && priceMatch && searchMatch && sizeMatch && colorMatch;
   });
