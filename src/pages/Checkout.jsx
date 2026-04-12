@@ -114,13 +114,6 @@ export default function Checkout() {
   useEffect(() => {
     // Apenas mostrar notificações uma única vez
     if (notificationShownRef.current) return;
-    
-    if (!isAuthenticated) {
-      showNotification('Por favor, faça login para continuar', 'error');
-      notificationShownRef.current = true;
-      navigate('/login');
-      return;
-    }
 
     if (cartItems.length === 0) {
       showNotification('Carrinho vazio', 'error');
