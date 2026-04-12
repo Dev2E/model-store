@@ -14,7 +14,7 @@ export default function Produtos() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 12;
 
   // Filtros avançados
   const [selectedSizes, setSelectedSizes] = useState([]);
