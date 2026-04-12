@@ -75,10 +75,11 @@ export default function Home() {
           <p className="text-sm sm:text-base md:text-lg text-gray-600 mb-6 sm:mb-8 leading-relaxed">
             Descubra uma seleção curada de peças que combinam estilo, qualidade e conforto. Cada item foi selecionado para trazer sofisticação ao seu guarda-roupa.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-            <button className="bg-gray-900 text-white px-4 sm:px-6 py-3 rounded-md hover:bg-gray-800 transition text-sm sm:text-base">Explorar Coleção</button>
-            <button className="border border-gray-300 text-gray-900 px-4 sm:px-6 py-3 rounded-md hover:bg-gray-50 transition text-sm sm:text-base">Ver Lookbook</button>
-          </div>
+          <Link to="/produtos" className="inline-block">
+            <button className="bg-gray-900 text-white px-4 sm:px-6 py-3 rounded-md hover:bg-gray-800 transition text-sm sm:text-base">
+              Explorar Coleção
+            </button>
+          </Link>
         </div>
 
         {/* Hero Image */}
@@ -86,6 +87,33 @@ export default function Home() {
           👔
         </div>
       </section>
+
+      {/* Carrossel de Produtos em Destaque */}
+      {!loading && featuredProducts.length > 0 && (
+        <section className="px-4 sm:px-6 py-10 sm:py-16 max-w-7xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold font-manrope mb-6 sm:mb-8">Novidades da Semana</h2>
+          
+          <div className="overflow-x-auto scrollbar-hide">
+            <div className="flex gap-4 sm:gap-6 pb-4">
+              {featuredProducts.map((product) => (
+                <Link key={product.id} to={`/produto/${product.id}`} className="flex-shrink-0 w-40 sm:w-56">
+                  <div className="group cursor-pointer">
+                    <div className="bg-gray-100 rounded-lg h-40 sm:h-56 flex items-center justify-center text-4xl sm:text-5xl mb-3 sm:mb-4 group-hover:bg-gray-200 transition duration-300">
+                      {product.image}
+                    </div>
+                    <h3 className="font-semibold text-xs sm:text-sm mb-1 text-gray-800 group-hover:text-black transition truncate">
+                      {product.name}
+                    </h3>
+                    <p className="text-base sm:text-lg font-bold text-gray-900">
+                      {formatCurrency(product.price)}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Categories Section */}
       <section className="px-4 sm:px-6 py-10 sm:py-16 max-w-7xl mx-auto">
