@@ -32,11 +32,12 @@ export default function Produto() {
           setSelectedSize(null); // Sem tamanho pré-selecionado
           setQuantity(1);
 
-          // Carregar produtos relacionados
+          // Carregar produtos relacionados (excluindo o produto atual)
           const { data: allProducts } = await productsService.getAllProducts();
+          const currentProductId = parseInt(id);
           setRelatedProducts(
             allProducts
-              ?.filter(p => p.id !== id)
+              ?.filter(p => parseInt(p.id) !== currentProductId)
               .slice(0, 4) || []
           );
           
