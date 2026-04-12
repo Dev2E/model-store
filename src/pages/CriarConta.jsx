@@ -18,7 +18,7 @@ export default function CriarConta() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const { signup, isAuthenticated } = useAuth();
-  const { showNotification } = useCart();
+  const { showNotification, persistCartAfterLogin } = useCart();
   const navigate = useNavigate();
 
   // Redireciona se já está autenticado
@@ -75,6 +75,8 @@ export default function CriarConta() {
       const { success, error } = await signup(formData.email, formData.password, formData.name);
       
       if (success) {
+        // Persistir carrinho após criação de conta
+        persistCartAfterLogin();
         showNotification('Conta criada! Verifique seu email para ativar a conta.', 'success');
         // Limpa o formulário
         setFormData({

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { EyeIcon, EyeSlashIcon, EnvelopeIcon, LockClosedIcon } from '@heroicons/react/24/outline';
 
@@ -13,6 +14,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
+  const { persistCartAfterLogin } = useCart();
   const { executeRecaptcha } = useGoogleReCaptcha();
 
   useEffect(() => {
@@ -56,6 +58,8 @@ export default function Login() {
       if (result.error) {
         setError(result.error);
       } else {
+        // Persistir carrinho após login bem-sucedido
+        persistCartAfterLogin();
         setSuccess('Login realizado! Redirecionando para home...');
         setError('');
         setTimeout(() => navigate('/'), 1500);

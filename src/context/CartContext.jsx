@@ -96,6 +96,13 @@ export function CartProvider({ children }) {
     );
   };
 
+  // Persistir carrinho após login (mantém os itens que foram adicionados antes)
+  const persistCartAfterLogin = () => {
+    // O carrinho já está no localStorage, então nada precisa ser feito
+    // Mas podemos sincronizar com banco de dados no futuro
+    showNotification('Seu carrinho foi mantido!', 'success', 2000);
+  };
+
   // Limpar carrinho
   const clearCart = () => {
     setCartItems([]);
@@ -158,6 +165,7 @@ export function CartProvider({ children }) {
     removeFromCart,
     updateQuantity,
     clearCart,
+    persistCartAfterLogin,
 
     // Wishlist
     wishlist,
