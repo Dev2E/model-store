@@ -153,14 +153,30 @@ export const authService = {
 
 // Serviço de Pedidos
 export const ordersService = {
+  // Gerar número único de pedido
+  generateOrderNumber() {
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(-2); // Últimos 2 dígitos do ano
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hour = String(now.getHours()).padStart(2, '0');
+    const minute = String(now.getMinutes()).padStart(2, '0');
+    const random = Math.floor(Math.random() * 9999).toString().padStart(4, '0');
+    
+    return `PED-${year}${month}${day}-${hour}${minute}-${random}`;
+  },
+
   // Criar novo pedido
   async createOrder(userId, orderData) {
     try {
+      const orderNumber = this.generateOrderNumber();
+      
       const { data, error } = await supabase
         .from('orders')
         .insert([
           {
             user_id: userId,
+            order_number: orderNumber,
             items: orderData.items || [],
             total: orderData.total || 0,
             status: 'pending',

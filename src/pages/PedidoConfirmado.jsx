@@ -100,7 +100,7 @@ export default function PedidoConfirmado() {
                     <div className="border-b border-gray-200 pb-4">
                       <p className="text-sm text-gray-600 mb-1">Número do Pedido</p>
                       <p className="text-2xl font-bold font-manrope text-gray-900">
-                        #{orderData.id.slice(0, 8).toUpperCase()}
+                        {orderData.order_number || `#${orderData.id.slice(0, 8).toUpperCase()}`}
                       </p>
                     </div>
 

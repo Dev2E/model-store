@@ -259,7 +259,9 @@ export default function MeusPedidos() {
                       <div className="flex items-center gap-3 mb-4">
                         <span className="text-3xl">{statusBadge.emoji}</span>
                         <div>
-                          <h3 className="font-bold text-lg">Pedido #{order.id.slice(0, 8).toUpperCase()}</h3>
+                          <h3 className="font-bold text-lg">
+                            Pedido {order.order_number || `#${order.id.slice(0, 8).toUpperCase()}`}
+                          </h3>
                           <p className={`text-sm font-semibold ${statusBadge.text}`}>
                             {statusBadge.label}
                           </p>
