@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { productsService } from '../services/supabaseService';
 import { useCart } from '../context/CartContext';
@@ -6,6 +6,7 @@ import { formatCurrency } from '../utils/formatters';
 
 export default function Produtos() {
   const { addToCart, showNotification } = useCart();
+  const [searchParams] = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [priceRange, setPriceRange] = useState(1000);
   const [sortBy, setSortBy] = useState('featured');
@@ -49,6 +50,14 @@ export default function Produtos() {
     loadProducts();
   }, []);
 
+  // Ler categoria do URL quando a página carrega
+  useEffect(() => {
+    const categoryFromUrl = searchParams.get('categoria');
+    if (categoryFromUrl) {
+      setSelectedCategory(categoryFromUrl);
+    }
+  }, [searchParams]);
+
   // Mapear categorias dinamicamente
   const dataCategories = [
     { id: 'all', name: 'Todos os Produtos', count: allProducts.length },
@@ -67,14 +76,23 @@ export default function Produtos() {
   const categories = dataCategories;
 
   // Extrair todos os tamanhos e cores únicos
-  const allSizes = [...new Set(allProducts.flatMap(p => p.sizes || []))].sort();
-  const allColorObjects = [...new Map(allProducts.flatMap(p => p.colors || []).map(c => [c.name, c])).values()];
+  const allSizes = [...new Set(allProducts.flatMap(p => p.sizes || []))].filter(Boolean).sort();
+  const allColorObjects = [...new Map(allProducts.flatMap(p => (p.colors || []).filter(c => c && c.name)).map(c => [c.name, c])).values()];
+
+  // Debug: Log os dados para verificar estrutura
+  useEffect(() => {
+    if (allProducts.length > 0) {
+      console.log('📦 Produtos carregados:', allProducts.length);
+      console.log('🏷️  Categorias encontradas:', [...new Set(allProducts.map(p => p.category || '').filter(c => c))]);
+      console.log('👕 Tamanhos encontrados:', allSizes);
+      console.log('🎨 Cores encontradas:', allColorObjects.map(c => c.label));
+    }
+  }, [allProducts, allSizes, allColorObjects]);
 
   // Filtrar produtos
   const filtered = allProducts.filter(p => {
-    const categoryMatch = selectedCategory === 'all' || 
-                          (p.category || '').toLowerCase().replace(/\s+/g, '-') === selectedCategory ||
-                          selectedCategory === 'all';
+    const categoryMatch = selectedCategory === 'all' ||
+                          (p.category || '').toLowerCase().replace(/\s+/g, '-') === selectedCategory;
     const priceMatch = p.price <= priceRange;
     const searchMatch = (p.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                         (p.description || '').toLowerCase().includes(searchTerm.toLowerCase());

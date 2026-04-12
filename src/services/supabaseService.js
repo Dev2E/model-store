@@ -310,17 +310,28 @@ export default {
 
 // Serviço de Produtos
 export const productsService = {
-  // Obter todos os produtos
+  // Obter todos os produtos com nome da categoria
   async getAllProducts() {
     try {
       const { data, error } = await supabase
         .from('products')
-        .select('*')
+        .select(`
+          *,
+          category:category_id (id, name)
+        `)
         .eq('active', true)
         .order('created_at', { ascending: false });
-      return { data, error };
+      
+      // Transformar dados para incluir category name como string
+      const transformedData = data?.map(product => ({
+        ...product,
+        category: product.category?.name || null,
+        categoryId: product.category_id
+      })) || [];
+      
+      return { data: transformedData, error };
     } catch (error) {
-      return { data: null, error };
+      return { data: null, error: error.message };
     }
   },
 
