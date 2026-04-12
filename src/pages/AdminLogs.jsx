@@ -74,8 +74,8 @@ export default function AdminLogs() {
 
   const filteredLogs = logs.filter((log) => {
     const matchFiltro = filtro === "todos" || log.tipo === filtro;
-    const matchBusca = log.usuario.toLowerCase().includes(busca.toLowerCase()) ||
-      log.descricao.toLowerCase().includes(busca.toLowerCase());
+    const matchBusca = (log.usuario || '').toLowerCase().includes((busca || '').toLowerCase()) ||
+      (log.descricao || '').toLowerCase().includes((busca || '').toLowerCase());
     return matchFiltro && matchBusca;
   });
 

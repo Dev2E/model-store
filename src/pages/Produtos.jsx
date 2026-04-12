@@ -40,11 +40,11 @@ export default function Produtos() {
     { id: 'all', name: 'Todos os Produtos', count: allProducts.length },
   ];
 
-  const uniqueCategories = [...new Set(allProducts.map(p => p.category))];
+  const uniqueCategories = [...new Set(allProducts.map(p => p.category || '').filter(c => c))];
   uniqueCategories.forEach(cat => {
     const count = allProducts.filter(p => p.category === cat).length;
     dataCategories.push({
-      id: cat.toLowerCase().replace(/\s+/g, '-'),
+      id: (cat || '').toLowerCase().replace(/\s+/g, '-'),
       name: cat,
       count: count
     });
@@ -55,7 +55,7 @@ export default function Produtos() {
   // Filtrar produtos
   const filtered = allProducts.filter(p => {
     const categoryMatch = selectedCategory === 'all' || 
-                          p.category.toLowerCase().replace(/\s+/g, '-') === selectedCategory ||
+                          (p.category || '').toLowerCase().replace(/\s+/g, '-') === selectedCategory ||
                           selectedCategory === 'all';
     const priceMatch = p.price <= priceRange;
     return categoryMatch && priceMatch;
