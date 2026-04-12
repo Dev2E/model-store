@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { productsService } from '../services/supabaseService';
+import { useCart } from '../context/CartContext';
 import { formatCurrency } from '../utils/formatters';
 
 export default function Produtos() {
+  const { addToCart, showNotification } = useCart();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [priceRange, setPriceRange] = useState(1000);
   const [sortBy, setSortBy] = useState('featured');
@@ -13,6 +15,13 @@ export default function Produtos() {
   const [error, setError] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+
+  // Modal para adicionar ao carrinho
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedProductModal, setSelectedProductModal] = useState(null);
+  const [selectedSize, setSelectedSize] = useState('');
+  const [selectedColor, setSelectedColor] = useState('');
+  const [quantity, setQuantity] = useState(1);
 
   // Carregar produtos do Supabase
   useEffect(() => {
@@ -208,12 +217,16 @@ export default function Produtos() {
                     <p className="text-base sm:text-lg font-bold">{formatCurrency(product.price)}</p>
                     <button 
                       onClick={() => {
-                        window.location.href = `/produto/${product.id}`;
+                        setSelectedProductModal(product);
+                        setSelectedSize(product.sizes?.[0] || '');
+                        setSelectedColor(product.colors?.[0]?.name || '');
+                        setQuantity(1);
+                        setModalOpen(true);
                       }}
                       className="bg-gray-800 text-white rounded px-2 sm:px-3 py-1 text-xs font-semibold hover:bg-gray-900 transition opacity-0 group-hover:opacity-100"
-                      title="Clique para selecionar tamanho e adicionar ao carrinho"
+                      title="Clique para adicionar ao carrinho"
                     >
-                      Ver
+                      Adicionar
                     </button>
                   </div>
                 </div>
@@ -278,6 +291,121 @@ export default function Produtos() {
           )}
         </div>
       </div>
+
+      {/* Modal de Adicionar ao Carrinho */}
+      {modalOpen && selectedProductModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">{selectedProductModal.name}</h2>
+              <button
+                onClick={() => setModalOpen(false)}
+                className="text-gray-500 hover:text-gray-700 text-2xl"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Cor */}
+            {selectedProductModal.colors && selectedProductModal.colors.length > 0 && (
+              <div className="mb-4">
+                <label className="block text-sm font-semibold mb-2">Cor</label>
+                <div className="flex flex-wrap gap-2">
+                  {selectedProductModal.colors.map((color) => (
+                    <button
+                      key={color.name}
+                      onClick={() => setSelectedColor(color.name)}
+                      className={`px-4 py-2 rounded border-2 transition ${
+                        selectedColor === color.name
+                          ? 'border-gray-900 bg-gray-900 text-white'
+                          : 'border-gray-300 hover:border-gray-900'
+                      }`}
+                    >
+                      {color.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Tamanho */}
+            {selectedProductModal.sizes && selectedProductModal.sizes.length > 0 && (
+              <div className="mb-4">
+                <label className="block text-sm font-semibold mb-2">Tamanho</label>
+                <div className="flex flex-wrap gap-2">
+                  {selectedProductModal.sizes.map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`px-3 py-2 rounded border-2 transition text-sm ${
+                        selectedSize === size
+                          ? 'border-gray-900 bg-gray-900 text-white'
+                          : 'border-gray-300 hover:border-gray-900'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Quantidade */}
+            <div className="mb-6">
+              <label className="block text-sm font-semibold mb-2">Quantidade</label>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100"
+                >
+                  −
+                </button>
+                <input
+                  type="number"
+                  value={quantity}
+                  onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                  className="w-16 text-center border border-gray-300 rounded py-1"
+                  min="1"
+                />
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-100"
+                >
+                  +
+                </button>
+              </div>
+            </div>
+
+            {/* Preço */}
+            <div className="mb-6 text-center">
+              <p className="text-sm text-gray-600">Preço</p>
+              <p className="text-2xl font-bold">
+                {formatCurrency(selectedProductModal.price * quantity)}
+              </p>
+            </div>
+
+            {/* Botões */}
+            <div className="flex gap-2">
+              <button
+                onClick={() => setModalOpen(false)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 transition font-semibold"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  addToCart(selectedProductModal, quantity, selectedColor, selectedSize);
+                  showNotification('Produto adicionado ao carrinho!', 'success');
+                  setModalOpen(false);
+                }}
+                className="flex-1 px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition font-semibold"
+              >
+                Adicionar ao Carrinho
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
