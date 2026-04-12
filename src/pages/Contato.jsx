@@ -1,30 +1,6 @@
-import { useState } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/outline';
 
 export default function Contato() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    subject: 'contato',
-    message: ''
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Aqui você conectaria com um serviço de email
-    alert('Obrigado pelo contato! Em breve retornaremos.');
-    setFormData({ name: '', email: '', phone: '', subject: 'contato', message: '' });
-  };
-
   return (
     <main className="min-h-screen bg-white">
       {/* Header */}
@@ -36,120 +12,34 @@ export default function Contato() {
 
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 px-6 py-16 max-w-7xl mx-auto">
-        {/* Contact Form */}
-        <div className="lg:col-span-2">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Name */}
-            <div>
-              <label className="block text-sm font-semibold mb-2">Nome Completo</label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Seu nome"
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-gray-800"
-              />
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-semibold mb-2">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="seu.email@example.com"
-                required
-                className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-gray-800"
-              />
-            </div>
-
-            {/* Phone */}
-            <div>
-              <label className="block text-sm font-semibold mb-2">Telefone (Opcional)</label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="(11) 99999-9999"
-                className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-gray-800"
-              />
-            </div>
-
-            {/* Subject */}
-            <div>
-              <label className="block text-sm font-semibold mb-2">Assunto</label>
-              <select
-                name="subject"
-                value={formData.subject}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-gray-800"
-              >
-                <option value="contato">Questão Geral</option>
-                <option value="pedido">Sobre um Pedido</option>
-                <option value="produto">Pergunta sobre Produto</option>
-                <option value="devolucao">Devolução/Troca</option>
-                <option value="parceria">Parceria</option>
-                <option value="outro">Outro</option>
-              </select>
-            </div>
-
-            {/* Message */}
-            <div>
-              <label className="block text-sm font-semibold mb-2">Mensagem</label>
-              <textarea
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                placeholder="Conte-nos mais sobre sua consulta..."
-                required
-                rows="6"
-                className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:border-gray-800 resize-none"
-              ></textarea>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full bg-gray-800 text-white py-3 font-semibold hover:bg-gray-900 transition"
-            >
-              Enviar Mensagem
-            </button>
-          </form>
-        </div>
-
-        {/* Contact Info */}
-        <div className="lg:col-span-1">
-          <div className="bg-gray-50 p-8 rounded-lg sticky top-24">
-            <h3 className="text-2xl font-bold font-manrope mb-6">Informações</h3>
+        {/* Contact Info - Centralizado */}
+        <div className="lg:col-span-3">
+          <div className="bg-gray-50 p-12 rounded-lg max-w-2xl mx-auto">
+            <h3 className="text-3xl font-bold font-manrope mb-8 text-center">Informações de Contato</h3>
 
             <div className="space-y-8">
               {/* Email */}
-              <div>
+              <div className="text-center">
                 <p className="text-xs font-semibold text-gray-500 mb-2">EMAIL</p>
                 <p className="text-lg">
-                  <a href="mailto:contato@boutique.com" className="text-gray-800 hover:text-gray-600">
+                  <a href="mailto:contato@boutique.com" className="text-gray-800 hover:text-gray-600 font-semibold">
                     contato@boutique.com
                   </a>
                 </p>
               </div>
 
               {/* Phone */}
-              <div>
+              <div className="text-center">
                 <p className="text-xs font-semibold text-gray-500 mb-2">TELEFONE</p>
                 <p className="text-lg">
-                  <a href="tel:+5511999999999" className="text-gray-800 hover:text-gray-600">
+                  <a href="tel:+5511999999999" className="text-gray-800 hover:text-gray-600 font-semibold">
                     +55 (11) 99999-9999
                   </a>
                 </p>
               </div>
 
               {/* Hours */}
-              <div>
+              <div className="text-center">
                 <p className="text-xs font-semibold text-gray-500 mb-2">HORÁRIO DE ATENDIMENTO</p>
                 <p className="text-sm text-gray-600">
                   Segunda - Sexta: 9:00 - 18:00<br />
@@ -159,7 +49,7 @@ export default function Contato() {
               </div>
 
               {/* Address */}
-              <div>
+              <div className="text-center">
                 <p className="text-xs font-semibold text-gray-500 mb-2">ENDEREÇO</p>
                 <p className="text-sm text-gray-600">
                   Rua da Curadoria, 123<br />
@@ -169,12 +59,12 @@ export default function Contato() {
               </div>
 
               {/* Social */}
-              <div>
+              <div className="text-center">
                 <p className="text-xs font-semibold text-gray-500 mb-3">SIGA-NOS</p>
-                <div className="flex gap-4">
-                  <a href="#" className="text-gray-600 hover:text-gray-800 text-2xl">📘</a>
-                  <a href="#" className="text-gray-600 hover:text-gray-800 text-2xl">📷</a>
-                  <a href="#" className="text-gray-600 hover:text-gray-800 text-2xl">𝕏</a>
+                <div className="flex gap-4 justify-center">
+                  <a href="#" className="text-gray-600 hover:text-gray-800 text-3xl">📘</a>
+                  <a href="#" className="text-gray-600 hover:text-gray-800 text-3xl">📷</a>
+                  <a href="#" className="text-gray-600 hover:text-gray-800 text-3xl">𝕏</a>
                 </div>
               </div>
             </div>

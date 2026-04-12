@@ -16,6 +16,10 @@ export default function Produtos() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  // Filtros avançados
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
+
   // Modal para adicionar ao carrinho
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProductModal, setSelectedProductModal] = useState(null);
@@ -62,6 +66,10 @@ export default function Produtos() {
 
   const categories = dataCategories;
 
+  // Extrair todos os tamanhos e cores únicos
+  const allSizes = [...new Set(allProducts.flatMap(p => p.sizes || []))].sort();
+  const allColorObjects = [...new Map(allProducts.flatMap(p => p.colors || []).map(c => [c.name, c])).values()];
+
   // Filtrar produtos
   const filtered = allProducts.filter(p => {
     const categoryMatch = selectedCategory === 'all' || 
@@ -70,7 +78,14 @@ export default function Produtos() {
     const priceMatch = p.price <= priceRange;
     const searchMatch = (p.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
                         (p.description || '').toLowerCase().includes(searchTerm.toLowerCase());
-    return categoryMatch && priceMatch && searchMatch;
+    
+    // Filtro de tamanho (se nenhum selecionado, mostra todos)
+    const sizeMatch = selectedSizes.length === 0 || (p.sizes && selectedSizes.some(s => p.sizes.includes(s)));
+    
+    // Filtro de cor (se nenhuma selecionada, mostra todas)
+    const colorMatch = selectedColors.length === 0 || (p.colors && selectedColors.some(sc => p.colors.some(pc => pc.name === sc)));
+    
+    return categoryMatch && priceMatch && searchMatch && sizeMatch && colorMatch;
   });
 
   // Ordenação
@@ -96,7 +111,7 @@ export default function Produtos() {
   // Reset página quando filtros mudam
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory, priceRange, sortBy, searchTerm]);
+  }, [selectedCategory, priceRange, sortBy, searchTerm, selectedSizes, selectedColors]);
 
   return (
     <main className="min-h-screen bg-white">
@@ -165,6 +180,62 @@ export default function Produtos() {
                 <p className="text-xs sm:text-sm text-gray-600 mt-2">Até {formatCurrency(priceRange)}</p>
               </div>
             </div>
+
+            {/* Size Filter */}
+            {allSizes.length > 0 && (
+              <div className="mb-6 sm:mb-8">
+                <h3 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4">Tamanho</h3>
+                <div className="space-y-2">
+                  {allSizes.map((size) => (
+                    <label key={size} className="flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={selectedSizes.includes(size)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedSizes([...selectedSizes, size]);
+                          } else {
+                            setSelectedSizes(selectedSizes.filter(s => s !== size));
+                          }
+                          setCurrentPage(1);
+                        }}
+                        disabled={loading}
+                        className="w-4 h-4 disabled:cursor-not-allowed"
+                      />
+                      <span className="ml-2 sm:ml-3 text-xs sm:text-sm text-gray-700">{size}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Color Filter */}
+            {allColorObjects.length > 0 && (
+              <div className="mb-6 sm:mb-8">
+                <h3 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4">Cor</h3>
+                <div className="space-y-2">
+                  {allColorObjects.map((color) => (
+                    <label key={color.name} className="flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={selectedColors.includes(color.name)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedColors([...selectedColors, color.name]);
+                          } else {
+                            setSelectedColors(selectedColors.filter(c => c !== color.name));
+                          }
+                          setCurrentPage(1);
+                        }}
+                        disabled={loading}
+                        className="w-4 h-4 disabled:cursor-not-allowed"
+                      />
+                      <span className="ml-2 sm:ml-3 text-xs sm:text-sm text-gray-700">{color.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
