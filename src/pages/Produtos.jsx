@@ -7,6 +7,7 @@ export default function Produtos() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [priceRange, setPriceRange] = useState(1000);
   const [sortBy, setSortBy] = useState('featured');
+  const [searchTerm, setSearchTerm] = useState('');
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -58,7 +59,9 @@ export default function Produtos() {
                           (p.category || '').toLowerCase().replace(/\s+/g, '-') === selectedCategory ||
                           selectedCategory === 'all';
     const priceMatch = p.price <= priceRange;
-    return categoryMatch && priceMatch;
+    const searchMatch = (p.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                        (p.description || '').toLowerCase().includes(searchTerm.toLowerCase());
+    return categoryMatch && priceMatch && searchMatch;
   });
 
   // Ordenação
@@ -84,7 +87,7 @@ export default function Produtos() {
   // Reset página quando filtros mudam
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory, priceRange, sortBy]);
+  }, [selectedCategory, priceRange, sortBy, searchTerm]);
 
   return (
     <main className="min-h-screen bg-white">
@@ -100,6 +103,22 @@ export default function Produtos() {
         {/* Sidebar - Filters */}
         <div className="md:col-span-1">
           <div className="bg-gray-50 p-4 sm:p-6 rounded-lg md:sticky md:top-4 md:h-fit">
+            {/* Search Filter */}
+            <div className="mb-6 sm:mb-8">
+              <h3 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4">🔍 Buscar</h3>
+              <input
+                type="text"
+                placeholder="Procure por nome..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+                disabled={loading}
+                className="w-full px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded disabled:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-400"
+              />
+            </div>
+
             {/* Category Filter */}
             <div className="mb-6 sm:mb-8">
               <h3 className="font-semibold text-xs sm:text-sm mb-3 sm:mb-4">Categoria</h3>
