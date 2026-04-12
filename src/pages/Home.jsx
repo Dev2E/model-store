@@ -12,6 +12,40 @@ export default function Home() {
   // 1. Criamos o estado para guardar os produtos que vêm do banco
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Slides do Herói
+  const heroSlides = [
+    {
+      id: 1,
+      title: 'Coleção Primavera',
+      subtitle: 'Cores vibrantes e roupas leves para a estação',
+      image: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=1200&h=600&fit=crop',
+      color: 'from-pink-100 to-orange-100'
+    },
+    {
+      id: 2,
+      title: 'Minimalismo Urbano',
+      subtitle: 'Peças essenciais para o dia a dia',
+      image: 'https://images.unsplash.com/photo-1485969962222-b8430a75612b?w=1200&h=600&fit=crop',
+      color: 'from-blue-100 to-gray-100'
+    },
+    {
+      id: 3,
+      title: 'Elegância Atemporal',
+      subtitle: 'Peças que transcendem as estações',
+      image: 'https://images.unsplash.com/photo-1469022563149-aa64dbd37dae?w=1200&h=600&fit=crop',
+      color: 'from-purple-100 to-blue-100'
+    }
+  ];
+
+  // Auto-slide a cada 5 segundos
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroSlides.length]);
 
   // Verificar se é admin e redirecionar
   useEffect(() => {
@@ -64,7 +98,77 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-white">
-      {/* Hero Section */}
+      {/* Carousel Hero Section */}
+      <section className="relative w-full h-96 sm:h-[500px] md:h-[600px] overflow-hidden bg-gray-200">
+        {/* Slides */}
+        {heroSlides.map((slide, index) => (
+          <div
+            key={slide.id}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+              index === currentSlide ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
+            <img
+              src={slide.image}
+              alt={slide.title}
+              className="w-full h-full object-cover"
+            />
+            {/* Overlay escuro para melhor legibilidade */}
+            <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+
+            {/* Content */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white px-4">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-manrope mb-3 sm:mb-4">
+                {slide.title}
+              </h2>
+              <p className="text-sm sm:text-base md:text-lg mb-6 sm:mb-8 max-w-2xl">
+                {slide.subtitle}
+              </p>
+              <Link to="/produtos" className="inline-block">
+                <button className="bg-white text-gray-900 px-6 sm:px-8 py-2 sm:py-3 rounded-md hover:bg-gray-100 transition font-semibold text-sm sm:text-base">
+                  Explorar Agora
+                </button>
+              </Link>
+            </div>
+          </div>
+        ))}
+
+        {/* Navigation Dots */}
+        <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex gap-2 z-10">
+          {heroSlides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentSlide(index)}
+              className={`w-3 h-3 rounded-full transition-all ${
+                index === currentSlide ? 'bg-white w-8' : 'bg-white bg-opacity-50 hover:bg-opacity-75'
+              }`}
+              aria-label={`Slide ${index + 1}`}
+            />
+          ))}
+        </div>
+
+        {/* Navigation Arrows */}
+        <button
+          onClick={() => setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)}
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 text-gray-900 p-2 rounded-full transition z-10"
+          aria-label="Slide anterior"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button
+          onClick={() => setCurrentSlide((prev) => (prev + 1) % heroSlides.length)}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 hover:bg-opacity-75 text-gray-900 p-2 rounded-full transition z-10"
+          aria-label="Próximo slide"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </section>
+
+      {/* Hero Section - MANTÉM ORIGINAL COMO FALLBACK */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 px-4 sm:px-6 py-10 sm:py-16 max-w-7xl mx-auto">
         {/* Text Content */}
         <div className="flex flex-col justify-center">
