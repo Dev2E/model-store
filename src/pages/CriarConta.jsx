@@ -75,7 +75,7 @@ export default function CriarConta() {
       const { success, error } = await signup(formData.email, formData.password, formData.name);
       
       if (success) {
-        showNotification('Conta criada com sucesso! Bem-vindo à Boutique!', 'success');
+        showNotification('Conta criada! Verifique seu email para ativar a conta.', 'success');
         // Limpa o formulário
         setFormData({
           name: '',
@@ -85,8 +85,8 @@ export default function CriarConta() {
           phone: '',
           acceptTerms: false,
         });
-        // Redireciona para o perfil
-        navigate('/meu-perfil');
+        // Redireciona para a página de confirmação de email
+        navigate('/confirmar-email');
       } else {
         // Converter erro para string se for objeto
         const errorMessage = error?.message || error || 'Erro desconhecido';

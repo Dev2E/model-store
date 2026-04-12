@@ -1,62 +1,56 @@
 import { useState, useEffect } from 'react';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { CheckCircleIcon, EnvelopeIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import { supabase } from '../lib/supabase';
-import { CheckCircleIcon, EnvelopeIcon, ArrowPathIcon, XCircleIcon } from '@heroicons/react/24/outline';
 
-export default function ConfirmacaoEmail() {
+export default function ConfirmarEmail() {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [status, setStatus] = useState('waiting'); // waiting, success, error, expired
-  const [message, setMessage] = useState('');
+  const [status, setStatus] = useState('waiting'); // waiting, success, error
   const [email, setEmail] = useState('');
   const [resendLoading, setResendLoading] = useState(false);
   const [resendSuccess, setResendSuccess] = useState(false);
-  const navigate = useNavigate();
-  const token = searchParams.get('token');
-  const type = searchParams.get('type');
 
   useEffect(() => {
-    const confirmEmail = async () => {
-      // Se não houver token, fica em estado de espera
-      if (!token) {
-        setStatus('waiting');
-        // Tenta obter o email do usuário atual
-        const { data } = await supabase.auth.getUser();
-        if (data?.user?.email) {
-          setEmail(data.user.email);
-        }
-        return;
-      }
+    // Tenta confirmar o email se houver token na URL
+    const handleEmailConfirmation = async () => {
+      const token = searchParams.get('token');
+      const type = searchParams.get('type');
 
-      // Se houver token, tenta confirmar
-      try {
-        const { error } = await supabase.auth.verifyOtp({
-          token_hash: token,
-          type: type || 'signup',
-        });
+      if (token && type === 'signup') {
+        try {
+          setStatus('waiting');
+          const { error } = await supabase.auth.verifyOtp({
+            token_hash: token,
+            type: 'signup',
+          });
 
-        if (error) {
-          if (error.message.includes('expired')) {
-            setStatus('expired');
-            setMessage('Seu link de confirmação expirou. Solicite um novo.');
+          if (!error) {
+            setStatus('success');
+            // Redireciona para o perfil em 3 segundos
+            setTimeout(() => navigate('/meu-perfil'), 3000);
           } else {
             setStatus('error');
-            setMessage('Erro ao confirmar email. ' + (error.message || 'Tente novamente.'));
+            console.error('Erro ao confirmar:', error);
           }
-        } else {
-          setStatus('success');
-          setMessage('Email confirmado com sucesso!');
-          // Redireciona para perfil após 3 segundos
-          setTimeout(() => navigate('/meu-perfil'), 3000);
+        } catch (err) {
+          setStatus('error');
+          console.error('Erro:', err);
         }
-      } catch (err) {
-        setStatus('error');
-        setMessage('Erro ao processar confirmação. Tente novamente.');
-        console.error('Email confirmation error:', err);
       }
     };
 
-    confirmEmail();
-  }, [token, type, navigate]);
+    handleEmailConfirmation();
+
+    // Tenta obter o email do usuário atual
+    const getEmail = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user?.email) {
+        setEmail(data.user.email);
+      }
+    };
+    getEmail();
+  }, [searchParams, navigate]);
 
   const handleResendEmail = async () => {
     if (!email) {
@@ -66,10 +60,9 @@ export default function ConfirmacaoEmail() {
 
     setResendLoading(true);
     try {
-      // Envia novo email de confirmação
       const { error } = await supabase.auth.resendEnrollmentEmail({
         email,
-        token: '',
+        token: window.location.hash.split('token=')[1]?.split('&')[0] || '',
       });
 
       if (!error) {
@@ -112,7 +105,7 @@ export default function ConfirmacaoEmail() {
           </div>
         )}
 
-        {/* Aguardando confirmação */}
+        {/* Aguardando */}
         {status === 'waiting' && (
           <div className="bg-white rounded-lg shadow-lg p-8">
             <div className="flex justify-center mb-6">
@@ -161,26 +154,18 @@ export default function ConfirmacaoEmail() {
               <ArrowPathIcon className={`w-4 h-4 ${resendLoading ? 'animate-spin' : ''}`} />
               {resendLoading ? 'Enviando...' : 'Reenviar Email'}
             </button>
-
-            <div className="mt-6 text-center">
-              <Link to="/login" className="text-blue-600 hover:underline text-sm">
-                Voltar ao Login
-              </Link>
-            </div>
           </div>
         )}
 
-        {/* Expirado */}
-        {status === 'expired' && (
+        {/* Erro */}
+        {status === 'error' && (
           <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-            <div className="flex justify-center mb-6">
-              <XCircleIcon className="w-16 h-16 text-orange-500" />
-            </div>
+            <div className="text-6xl mb-6">❌</div>
             <h1 className="text-3xl font-bold font-manrope text-gray-900 mb-3">
-              Link Expirado
+              Erro na Confirmação
             </h1>
             <p className="text-gray-600 mb-6">
-              {message}
+              Não conseguimos confirmar seu email. O link pode ter expirado.
             </p>
             <div className="space-y-3">
               <button
@@ -200,35 +185,16 @@ export default function ConfirmacaoEmail() {
           </div>
         )}
 
-        {/* Erro */}
-        {status === 'error' && (
-          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-            <div className="flex justify-center mb-6">
-              <XCircleIcon className="w-16 h-16 text-red-500" />
-            </div>
-            <h1 className="text-3xl font-bold font-manrope text-gray-900 mb-3">
-              Erro na Confirmação
-            </h1>
-            <p className="text-gray-600 mb-6">
-              {message}
-            </p>
-            <div className="space-y-3">
-              <button
-                onClick={handleResendEmail}
-                disabled={resendLoading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded font-semibold transition disabled:opacity-50"
-              >
-                {resendLoading ? 'Enviando...' : 'Reenviar Email'}
-              </button>
-              <Link
-                to="/login"
-                className="block bg-gray-200 hover:bg-gray-300 text-gray-900 px-6 py-3 rounded font-semibold transition"
-              >
-                Voltar ao Login
-              </Link>
-            </div>
-          </div>
-        )}
+        {/* Footer */}
+        <p className="text-center text-gray-600 text-sm mt-8">
+          Não recebeu o email?{' '}
+          <button
+            onClick={handleResendEmail}
+            className="text-blue-600 hover:underline font-semibold"
+          >
+            Clique aqui
+          </button>
+        </p>
       </div>
     </main>
   );
